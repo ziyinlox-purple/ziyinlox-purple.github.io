@@ -1,4 +1,4 @@
-baseURL = 'https://example.org/'
+baseURL = 'https://ziyinlox-purple.github.io/'
 languageCode = 'en-us'
 title = 'Purple Blog'
 theme = "PaperMod"

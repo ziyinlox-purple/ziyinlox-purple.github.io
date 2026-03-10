@@ -10,7 +10,7 @@
 <meta name="description" content="Theme PaperMod - https://github.com/adityatelange/hugo-PaperMod">
 <meta name="author" content="Theme PaperMod">
 <link rel="canonical" href="http://localhost:1313/tags/cryptography/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.2a3385d98a00167c2423d497e7f60843d438f87d516925cd0d1c4a6784881930.css" integrity="sha256-KjOF2YoAFnwkI9SX5/YIQ9Q4&#43;H1RaSXNDRxKZ4SIGTA=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.da3211e5ef867bf2b75fd5a6515cfed7195c011e8ab735694e203810a827097b.css" integrity="sha256-2jIR5e&#43;Ge/K3X9WmUVz&#43;1xlcAR6KtzVpTiA4EKgnCXs=" rel="preload stylesheet" as="style">
 <link rel="icon" href="http://localhost:1313/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
@@ -184,6 +184,51 @@ Plonkish Arithmetization is a unique arithmetization method specific to the Plon
   </div>
   <footer class="entry-footer"><span title='2026-03-10 00:00:00 +0000 UTC'>March 10, 2026</span>&nbsp;·&nbsp;<span>16 min</span>&nbsp;·&nbsp;<span>Theme PaperMod</span></footer>
   <a class="entry-link" aria-label="post link to Understanding PLONK (Part 1): Plonkish Arithmetization" href="http://localhost:1313/posts/1-arithmetization/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Understanding PLONK (Part 2): Lagrange-basis
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Introduction In the previous article, we mentioned that to implement the protocol verification process, the Prover initially encodes each column of the $W$ table using polynomial coding and sends the encoded results to the Verifier for verification. Through further interaction, we can verify whether the equation
+$$ q_{L}(X) \cdot w_{a}(X) &#43; q_{R}(X) \cdot w_{b}(X) &#43; q_{M}(X)\cdot(w_{a}(X)\cdot w_{b}(X)) &#43; q_{C}(X) - q_{O}(X)\cdot w_{c}(X) \overset{?}{=} 0 $$
+holds.
+This verifies the correctness of a circuit only when the Prover is honest. However, the Prover might misbehave. To prevent this and ensure the circuit’s correctness and security while satisfying constraints, we need to verify the relationship between $(\sigma_a(X),\sigma_b(X),\sigma_c(X))$ and $(w_a(X),w_b(X),w_c(X))$.
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2026-03-10 00:00:00 +0000 UTC'>March 10, 2026</span>&nbsp;·&nbsp;<span>20 min</span>&nbsp;·&nbsp;<span>Theme PaperMod</span></footer>
+  <a class="entry-link" aria-label="post link to Understanding PLONK (Part 2): Lagrange-basis" href="http://localhost:1313/posts/2-lagrange-basis/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Understanding PLONK (Part 3): Permutation Argument
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Plonkish circuit encoding uses two matrices, $(Q, \sigma)$, to describe the circuit’s scaffold, where $Q$ represents the operation selectors and $\sigma$ represents permutation constraints. These constraints enforce that certain positions in the $W$ matrix must hold identical values. This article focuses on explaining the principles of the permutation argument.
+Reviewing Copy Constraints The permutation $\sigma$ represents the relationship between positions before and after rearrangement. But what does $\sigma$ actually look like?
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2026-03-10 00:00:00 +0000 UTC'>March 10, 2026</span>&nbsp;·&nbsp;<span>22 min</span>&nbsp;·&nbsp;<span>Theme PaperMod</span></footer>
+  <a class="entry-link" aria-label="post link to Understanding PLONK (Part 3): Permutation Argument" href="http://localhost:1313/posts/3-permutation/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Understanding PLONK (Part 4): Arithmetic Constraints and Copy Constraints
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Recap of Permutation Argument In the previous section, we discussed how the Prover proves that two vectors $\vec{a}$ and $\vec{b}$ of length $n$ satisfy a pre-defined (public) permutation relationship $\sigma(\cdot)$, i.e.,
+$$ a_i = b_{\sigma(i)}. $$
+The basic idea involves requesting a random challenge $\beta$ from the Verifier, combining the “original vectors” ($\vec{a}$ and $\vec{b}$) with their “position vectors” ($\vec{i}$ and $\sigma$), and generating two new vectors, denoted as $\vec{a}’$ and $\vec{b}’$:
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2026-03-10 00:00:00 +0000 UTC'>March 10, 2026</span>&nbsp;·&nbsp;<span>14 min</span>&nbsp;·&nbsp;<span>Theme PaperMod</span></footer>
+  <a class="entry-link" aria-label="post link to Understanding PLONK (Part 4): Arithmetic Constraints and Copy Constraints" href="http://localhost:1313/posts/4-constraints/"></a>
 </article>
     </main>
     
