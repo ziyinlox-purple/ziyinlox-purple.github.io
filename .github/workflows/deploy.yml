@@ -3,6 +3,12 @@ on:
   push:
     branches:
       - main
+
+# add power for robot
+permissions:
+  contents: write
+
+  
 jobs:
   build:
     runs-on: ubuntu-latest
