@@ -1,8 +1,8 @@
 # Purple Blog
 
 ## Posts
-- [Understanding PLONK (Part 1): Plonkish Arithmetization](https://example.org/posts/1-arithmetization/)
-- [Understanding PLONK (Part 2): Lagrange-basis](https://example.org/posts/2-lagrange-basis/)
-- [Understanding PLONK (Part 3): Permutation Argument](https://example.org/posts/3-permutation/)
-- [Understanding PLONK (Part 4): Arithmetic Constraints and Copy Constraints](https://example.org/posts/4-constraints/)
-- [Understanding Plonk (Part 5): Polynomial Commitments](https://example.org/posts/5-polycom/)
+- [Understanding PLONK (Part 1): Plonkish Arithmetization](https://ziyinlox-purple.github.io/posts/1-arithmetization/)
+- [Understanding PLONK (Part 2): Lagrange-basis](https://ziyinlox-purple.github.io/posts/2-lagrange-basis/)
+- [Understanding PLONK (Part 3): Permutation Argument](https://ziyinlox-purple.github.io/posts/3-permutation/)
+- [Understanding PLONK (Part 4): Arithmetic Constraints and Copy Constraints](https://ziyinlox-purple.github.io/posts/4-constraints/)
+- [Understanding Plonk (Part 5): Polynomial Commitments](https://ziyinlox-purple.github.io/posts/5-polycom/)

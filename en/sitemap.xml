@@ -2,85 +2,85 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://example.org/categories/</loc>
+    <loc>https://ziyinlox-purple.github.io/categories/</loc>
     <lastmod>2026-03-10T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="zh"
-                href="https://example.org/zh/categories/"
+                href="https://ziyinlox-purple.github.io/zh/categories/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://example.org/categories/"
+                href="https://ziyinlox-purple.github.io/categories/"
                 />
   </url><url>
-    <loc>https://example.org/tags/cryptography/</loc>
+    <loc>https://ziyinlox-purple.github.io/tags/cryptography/</loc>
     <lastmod>2026-03-10T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://example.org/tags/math/</loc>
+    <loc>https://ziyinlox-purple.github.io/tags/math/</loc>
     <lastmod>2026-03-10T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://example.org/posts/</loc>
+    <loc>https://ziyinlox-purple.github.io/posts/</loc>
     <lastmod>2026-03-10T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://example.org/</loc>
+    <loc>https://ziyinlox-purple.github.io/</loc>
     <lastmod>2026-03-10T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="zh"
-                href="https://example.org/zh/"
+                href="https://ziyinlox-purple.github.io/zh/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://example.org/"
+                href="https://ziyinlox-purple.github.io/"
                 />
   </url><url>
-    <loc>https://example.org/tags/</loc>
+    <loc>https://ziyinlox-purple.github.io/tags/</loc>
     <lastmod>2026-03-10T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="zh"
-                href="https://example.org/zh/tags/"
+                href="https://ziyinlox-purple.github.io/zh/tags/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://example.org/tags/"
+                href="https://ziyinlox-purple.github.io/tags/"
                 />
   </url><url>
-    <loc>https://example.org/categories/tech/</loc>
+    <loc>https://ziyinlox-purple.github.io/categories/tech/</loc>
     <lastmod>2026-03-10T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://example.org/posts/1-arithmetization/</loc>
+    <loc>https://ziyinlox-purple.github.io/posts/1-arithmetization/</loc>
     <lastmod>2026-03-10T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://example.org/posts/2-lagrange-basis/</loc>
+    <loc>https://ziyinlox-purple.github.io/posts/2-lagrange-basis/</loc>
     <lastmod>2026-03-10T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://example.org/posts/3-permutation/</loc>
+    <loc>https://ziyinlox-purple.github.io/posts/3-permutation/</loc>
     <lastmod>2026-03-10T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://example.org/posts/4-constraints/</loc>
+    <loc>https://ziyinlox-purple.github.io/posts/4-constraints/</loc>
     <lastmod>2026-03-10T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://example.org/posts/5-polycom/</loc>
+    <loc>https://ziyinlox-purple.github.io/posts/5-polycom/</loc>
     <lastmod>2026-03-10T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://example.org/tags/zero-knowledge/</loc>
+    <loc>https://ziyinlox-purple.github.io/tags/zero-knowledge/</loc>
     <lastmod>2026-03-10T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://example.org/series/</loc>
+    <loc>https://ziyinlox-purple.github.io/series/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="zh"
-                href="https://example.org/zh/series/"
+                href="https://ziyinlox-purple.github.io/zh/series/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://example.org/series/"
+                href="https://ziyinlox-purple.github.io/series/"
                 />
   </url>
 </urlset>

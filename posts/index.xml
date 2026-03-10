@@ -2,31 +2,31 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Posts on Purple Blog</title>
-    <link>https://example.org/posts/</link>
+    <link>https://ziyinlox-purple.github.io/posts/</link>
     <description>Recent content in Posts on Purple Blog</description>
     <image>
       <title>Purple Blog</title>
-      <url>https://example.org/images/papermod-cover.png</url>
-      <link>https://example.org/images/papermod-cover.png</link>
+      <url>https://ziyinlox-purple.github.io/images/papermod-cover.png</url>
+      <link>https://ziyinlox-purple.github.io/images/papermod-cover.png</link>
     </image>
     <generator>Hugo</generator>
     <language>en</language>
     <lastBuildDate>Tue, 10 Mar 2026 00:00:00 +0000</lastBuildDate>
-    <atom:link href="https://example.org/posts/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://ziyinlox-purple.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Understanding PLONK (Part 1): Plonkish Arithmetization</title>
-      <link>https://example.org/posts/1-arithmetization/</link>
+      <link>https://ziyinlox-purple.github.io/posts/1-arithmetization/</link>
       <pubDate>Tue, 10 Mar 2026 00:00:00 +0000</pubDate>
-      <guid>https://example.org/posts/1-arithmetization/</guid>
+      <guid>https://ziyinlox-purple.github.io/posts/1-arithmetization/</guid>
       <description>&lt;h1 id=&#34;introduction&#34;&gt;Introduction&lt;/h1&gt;
 &lt;p&gt;Arithmetization refers to the process of converting computations into mathematical objects and then proving them using zero-knowledge proofs.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Plonkish Arithmetization&lt;/strong&gt; is a unique arithmetization method specific to the Plonk proof system. Before the advent of Plonkish, the dominant circuit representation was &lt;strong&gt;R1CS&lt;/strong&gt;, which was widely adopted by systems like Pinocchio, Groth16, and Bulletproofs. In 2019, the Plonk scheme introduced a seemingly retro style of circuit encoding. However, since Plonk pushed polynomial encoding to its limits, it is no longer confined to arithmetic circuits with just &amp;ldquo;addition gates&amp;rdquo; and &amp;ldquo;multiplication gates&amp;rdquo;; it can also support more flexible &lt;strong&gt;custom gates&lt;/strong&gt; and &lt;strong&gt;lookup gates&lt;/strong&gt;.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Understanding PLONK (Part 2): Lagrange-basis</title>
-      <link>https://example.org/posts/2-lagrange-basis/</link>
+      <link>https://ziyinlox-purple.github.io/posts/2-lagrange-basis/</link>
       <pubDate>Tue, 10 Mar 2026 00:00:00 +0000</pubDate>
-      <guid>https://example.org/posts/2-lagrange-basis/</guid>
+      <guid>https://ziyinlox-purple.github.io/posts/2-lagrange-basis/</guid>
       <description>&lt;h1 id=&#34;introduction&#34;&gt;Introduction&lt;/h1&gt;
 &lt;p&gt;In the previous article, we mentioned that to implement the protocol verification process, the Prover initially encodes each column of the $W$ table using polynomial coding and sends the encoded results to the Verifier for verification. Through further interaction, we can verify whether the equation&lt;/p&gt;
 &lt;p&gt;$$
@@ -37,9 +37,9 @@ $$&lt;/p&gt;
     </item>
     <item>
       <title>Understanding PLONK (Part 3): Permutation Argument</title>
-      <link>https://example.org/posts/3-permutation/</link>
+      <link>https://ziyinlox-purple.github.io/posts/3-permutation/</link>
       <pubDate>Tue, 10 Mar 2026 00:00:00 +0000</pubDate>
-      <guid>https://example.org/posts/3-permutation/</guid>
+      <guid>https://ziyinlox-purple.github.io/posts/3-permutation/</guid>
       <description>&lt;p&gt;Plonkish circuit encoding uses two matrices, $(Q, \sigma)$, to describe the circuit&amp;rsquo;s scaffold, where $Q$ represents the operation selectors and $\sigma$ represents permutation constraints. These constraints enforce that certain positions in the $W$ matrix must hold identical values. This article focuses on explaining the principles of the &lt;strong&gt;permutation argument&lt;/strong&gt;.&lt;/p&gt;
 &lt;/br&gt;
 &lt;h2 id=&#34;reviewing-copy-constraints&#34;&gt;Reviewing Copy Constraints&lt;/h2&gt;
@@ -47,9 +47,9 @@ $$&lt;/p&gt;
     </item>
     <item>
       <title>Understanding PLONK (Part 4): Arithmetic Constraints and Copy Constraints</title>
-      <link>https://example.org/posts/4-constraints/</link>
+      <link>https://ziyinlox-purple.github.io/posts/4-constraints/</link>
       <pubDate>Tue, 10 Mar 2026 00:00:00 +0000</pubDate>
-      <guid>https://example.org/posts/4-constraints/</guid>
+      <guid>https://ziyinlox-purple.github.io/posts/4-constraints/</guid>
       <description>&lt;h2 id=&#34;recap-of-permutation-argument&#34;&gt;Recap of Permutation Argument&lt;/h2&gt;
 &lt;p&gt;In the previous section, we discussed how the Prover proves that two vectors $\vec{a}$ and $\vec{b}$ of length $n$ satisfy a pre-defined (public) permutation relationship $\sigma(\cdot)$, i.e.,&lt;/p&gt;
 &lt;p&gt;$$
@@ -59,9 +59,9 @@ $$&lt;/p&gt;
     </item>
     <item>
       <title>Understanding Plonk (Part 5): Polynomial Commitments</title>
-      <link>https://example.org/posts/5-polycom/</link>
+      <link>https://ziyinlox-purple.github.io/posts/5-polycom/</link>
       <pubDate>Tue, 10 Mar 2026 00:00:00 +0000</pubDate>
-      <guid>https://example.org/posts/5-polycom/</guid>
+      <guid>https://ziyinlox-purple.github.io/posts/5-polycom/</guid>
       <description>&lt;h2 id=&#34;what-is-a-polynomial-commitment&#34;&gt;What is a Polynomial Commitment?&lt;/h2&gt;
 &lt;p&gt;A &lt;strong&gt;commitment&lt;/strong&gt; is a way to &amp;ldquo;lock&amp;rdquo; a message, resulting in a commitment value. This value is referred to as the &lt;strong&gt;commitment&lt;/strong&gt; to the object.&lt;/p&gt;
 &lt;p&gt;$$
