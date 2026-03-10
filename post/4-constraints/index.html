@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=51400&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Understanding PLONK (Part 4): Arithmetic Constraints and Copy Constraints | Purple Blog</title>
+<meta name="keywords" content="">
+<meta name="description" content="Recap of Permutation Argument
+In the previous section, we discussed how the Prover proves that two vectors $\vec{a}$ and $\vec{b}$ of length $n$ satisfy a pre-defined (public) permutation relationship $\sigma(\cdot)$, i.e.,
+$$
+a_i = b_{\sigma(i)}.
+$$
+The basic idea involves requesting a random challenge $\beta$ from the Verifier, combining the &ldquo;original vectors&rdquo; ($\vec{a}$ and $\vec{b}$) with their &ldquo;position vectors&rdquo; ($\vec{i}$ and $\sigma$), and generating two new vectors, denoted as $\vec{a}&rsquo;$ and $\vec{b}&rsquo;$:">
+<meta name="author" content="Theme PaperMod">
+<link rel="canonical" href="http://localhost:51400/post/4-constraints/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.2a3385d98a00167c2423d497e7f60843d438f87d516925cd0d1c4a6784881930.css" integrity="sha256-KjOF2YoAFnwkI9SX5/YIQ9Q4&#43;H1RaSXNDRxKZ4SIGTA=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:51400/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:51400/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:51400/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:51400/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:51400/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:51400/post/4-constraints/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            .list::-webkit-scrollbar-thumb {
+                border-color: var(--code-bg);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+            delimiters: [
+                {left: "$$", right: "$$", display: true},
+                {left: "$", right: "$", display: false}
+            ],
+            
+            throwOnError: false
+        });
+    });
+</script><meta property="og:url" content="http://localhost:51400/post/4-constraints/">
+  <meta property="og:site_name" content="Purple Blog">
+  <meta property="og:title" content="Understanding PLONK (Part 4): Arithmetic Constraints and Copy Constraints">
+  <meta property="og:description" content="Recap of Permutation Argument In the previous section, we discussed how the Prover proves that two vectors $\vec{a}$ and $\vec{b}$ of length $n$ satisfy a pre-defined (public) permutation relationship $\sigma(\cdot)$, i.e.,
+$$ a_i = b_{\sigma(i)}. $$
+The basic idea involves requesting a random challenge $\beta$ from the Verifier, combining the “original vectors” ($\vec{a}$ and $\vec{b}$) with their “position vectors” ($\vec{i}$ and $\sigma$), and generating two new vectors, denoted as $\vec{a}’$ and $\vec{b}’$:">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="post">
+    <meta property="article:published_time" content="2026-03-10T00:00:00+00:00">
+    <meta property="article:modified_time" content="2026-03-10T00:00:00+00:00">
+      <meta property="og:image" content="http://localhost:51400/images/papermod-cover.png">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="http://localhost:51400/images/papermod-cover.png">
+  <meta name="twitter:title" content="Understanding PLONK (Part 4): Arithmetic Constraints and Copy Constraints">
+  <meta name="twitter:description" content="Recap of Permutation Argument In the previous section, we discussed how the Prover proves that two vectors $\vec{a}$ and $\vec{b}$ of length $n$ satisfy a pre-defined (public) permutation relationship $\sigma(\cdot)$, i.e.,
+$$ a_i = b_{\sigma(i)}. $$
+The basic idea involves requesting a random challenge $\beta$ from the Verifier, combining the “original vectors” ($\vec{a}$ and $\vec{b}$) with their “position vectors” ($\vec{i}$ and $\sigma$), and generating two new vectors, denoted as $\vec{a}’$ and $\vec{b}’$:">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "http://localhost:51400/post/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Understanding PLONK (Part 4): Arithmetic Constraints and Copy Constraints",
+      "item": "http://localhost:51400/post/4-constraints/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Understanding PLONK (Part 4): Arithmetic Constraints and Copy Constraints",
+  "name": "Understanding PLONK (Part 4): Arithmetic Constraints and Copy Constraints",
+  "description": "Recap of Permutation Argument In the previous section, we discussed how the Prover proves that two vectors $\\vec{a}$ and $\\vec{b}$ of length $n$ satisfy a pre-defined (public) permutation relationship $\\sigma(\\cdot)$, i.e.,\n$$ a_i = b_{\\sigma(i)}. $$\nThe basic idea involves requesting a random challenge $\\beta$ from the Verifier, combining the \u0026ldquo;original vectors\u0026rdquo; ($\\vec{a}$ and $\\vec{b}$) with their \u0026ldquo;position vectors\u0026rdquo; ($\\vec{i}$ and $\\sigma$), and generating two new vectors, denoted as $\\vec{a}\u0026rsquo;$ and $\\vec{b}\u0026rsquo;$:\n",
+  "keywords": [
+    
+  ],
+  "articleBody": "Recap of Permutation Argument In the previous section, we discussed how the Prover proves that two vectors $\\vec{a}$ and $\\vec{b}$ of length $n$ satisfy a pre-defined (public) permutation relationship $\\sigma(\\cdot)$, i.e.,\n$$ a_i = b_{\\sigma(i)}. $$\nThe basic idea involves requesting a random challenge $\\beta$ from the Verifier, combining the “original vectors” ($\\vec{a}$ and $\\vec{b}$) with their “position vectors” ($\\vec{i}$ and $\\sigma$), and generating two new vectors, denoted as $\\vec{a}’$ and $\\vec{b}’$:\n$$ a’_i = a_i + \\beta \\cdot i, \\qquad b’_i = b_i + \\beta \\cdot \\sigma(i) $$\nThe second step involves requesting another random challenge $\\gamma$ from the Verifier to encode the multisets of $\\vec{a}’$ and $\\vec{b}’$ through a product, resulting in $A$ and $B$:\n$$ A = \\prod(a’_i + \\gamma), \\qquad B = \\prod(b’_i + \\gamma) $$\nThe third step asks the Prover to prove that $A/B = 1$, i.e.,\n$$ \\prod_i \\frac{(a’_i + \\gamma)}{(b’_i + \\gamma)} = 1 $$\nTo prove this product, we introduce an auxiliary vector $\\vec{z}$ that records the intermediate results of the product computation:\n$$ z_0 = 1, \\qquad z_{i+1} = z_i \\cdot \\frac{(a’_i + \\gamma)}{(b’_i + \\gamma)} $$\nSince $z_n = \\prod \\frac{a’_i + \\gamma}{b’_i + \\gamma} = 1$, and $\\omega^n = 1$, we can encode $\\vec{z}$ using $z(X)$ and transform the Permutation Argument into a relationship involving $z(X)$, $a(X)$, and $b(X)$.\nFinally, the Verifier sends a challenge $\\zeta$ and queries $z(\\zeta)$, $z(\\omega \\cdot \\zeta)$, $a(\\zeta)$, and $b(\\zeta)$. The Verifier then checks the relationships between these values.\nNote: At this stage, we are only proving the existence of Multiset Equality. This means that $\\vec{a}$ and $\\vec{b}$ must contain the same elements, with the same multiplicities, without considering their specific positions or order.\nCopy Constraints Within a Single Vector Copy constraints are conditions that require certain elements in a vector to be equal at multiple positions. Let’s start with a simple example:\n$$ \\vec{a} = (a_0, a_1, a_2, a_3) $$\nAssume we want the Prover to prove that $a_0 = a_2$. This can be achieved by swapping the positions of $a_0$ and $a_2$, forming a permutation relationship. If we use $(0, 1, 2, 3)$ to record the original positions of the elements, the new position vector after permutation is denoted as $\\sigma$, and the permuted vector is $\\vec{a}_\\sigma$:\n$$ \\sigma = (2, 1, 0, 3), \\quad \\vec{a}_\\sigma = (a_2, a_1, a_0, a_3). $$\nClearly, as long as the Prover can prove that the original vector and the permuted vector are identical ($\\vec{a} = \\vec{a}_\\sigma$), we can conclude that $a_0 = a_2$.\nThis method can be extended to prove that multiple elements in a vector are equal. For example, to prove that the first three elements of $\\vec{a}$ are equal, we construct a permutation by cyclically shifting these three elements to the right:\n$$ \\sigma = (2, 0, 1, 3), \\quad \\vec{a}_\\sigma = (a_2, a_0, a_1, a_3). $$\nFrom $\\vec{a} = \\vec{a}_\\sigma$, it is straightforward to conclude that $a_0 = a_1 = a_2$.\nCopy Constraints Across Multiple Vectors In the PLONK protocol, copy constraints often span multiple columns in the $W$ table. Since the protocol requires the Prover to encode each column into a polynomial, we need to extend the permutation argument to support equivalence between elements across multiple vectors.\nFor example, consider the $W$ table for the circuit below:\n$$ \\begin{array}{c|c|c|c|} i \u0026 w_a \u0026 w_b \u0026 w_c \\ \\hline 0 \u0026 0 \u0026 0 \u0026 {\\color{green}out} \\ 1 \u0026 {\\color{red}x_5} \u0026 {\\color{blue}x_6} \u0026 {\\color{green}out} \\ 2 \u0026 x_1 \u0026 x_2 \u0026 {\\color{red}x_5} \\ 3 \u0026 x_3 \u0026 x_4 \u0026 {\\color{blue}x_6} \\ \\end{array} $$\nwe need:\n$w_{a,1} = w_{c,2}$ $w_{b,1} = w_{c,3}$ $w_{c,0} = w_{c,1}$ To support cross-vector permutations, we introduce global unique identifiers for elements across vectors. For instance, the three columns of $W$ are assigned unique position identifiers:\n$$ \\begin{array}{c|c|c|c|} i \u0026 id_{a,i} \u0026 id_{b,i} \u0026 id_{c,i} \\ \\hline 0 \u0026 0 \u0026 4 \u0026 {\\color{green}8} \\ 1 \u0026 {\\color{red}5} \u0026 {\\color{blue}1} \u0026 {\\color{green}9} \\ 2 \u0026 2 \u0026 6 \u0026 {\\color{red}11} \\ 3 \u0026 3 \u0026 7 \u0026 {\\color{blue}10} \\ \\end{array} $$\nNote: $id_{x,i}$ is a globally unique identifier for each element, used to unify cross-vector permutation relationships. These identifiers are assigned sequentially, starting from $0$.\nThe permuted vectors $\\sigma_a$, $\\sigma_b$, and $\\sigma_c$ are:\n$$ \\begin{array}{c|c|c|c|} i \u0026 \\sigma_{a,i} \u0026 \\sigma_{b,i} \u0026 \\sigma_{c,i} \\ \\hline 0 \u0026 0 \u0026 4 \u0026 {\\color{green}9} \\ 1 \u0026 {\\color{red}11} \u0026 {\\color{blue}10} \u0026 {\\color{green}8} \\ 2 \u0026 2 \u0026 6 \u0026 {\\color{red}5} \\ 3 \u0026 3 \u0026 7 \u0026 {\\color{blue}1} \\ \\end{array} $$\nThe Prover combines vectors $(\\vec{w}_a, \\vec{id_a})$, $(\\vec{w}_b, \\vec{id_b})$, $(\\vec{w}_c, \\vec{id_c})$, and their permuted counterparts $(\\vec{w}’_a, \\sigma_a)$, $(\\vec{w}’_b, \\sigma_b)$, $(\\vec{w}’_c, \\sigma_c)$ using a random challenge $\\beta$ (provided by the Verifier). Then, using another random challenge $\\gamma$, the Prover computes the multisets $W$ and $W’$, denoted as $f_i$ and $g_i$:\n$$ \\begin{split} f_i \u0026= (w_{a,i}+\\beta\\cdot id_{a,i}+\\gamma)(w_{b,i}+\\beta\\cdot id_{b,i}+\\gamma)(w_{c,i}+\\beta\\cdot id_{c,i}+\\gamma) \\ g_i \u0026= (w’_{a,i}+\\beta\\cdot \\sigma_{a,i}+\\gamma)(w’_{b,i}+\\beta\\cdot \\sigma_{b,i}+\\gamma)(w’_{c,i}+\\beta\\cdot \\sigma_{c,i}+\\gamma) \\end{split} $$\nSince the copy constraint requires the permuted vectors to be equal to the original ones, we have $w_a = w’_a$, $w_b = w’_b$, and $w_c = w’_c$.\nIf we encode $\\vec{w}_a,\\vec{w}_b,\\vec{w}_c,\\vec{id}_a,\\vec{id}_b,\\vec{id}_c,\\sigma_a, \\sigma_b, \\sigma_c$ into polynomials, we will get $w_a(X),w_b(X), w_c(X), id_a(X),id_b(X),id_c(X),\\sigma_a(X),\\sigma_b(X),\\sigma_c(X)$. So $f(X)$, $g(X)$ will satisfy the following constraint relationships:\n$$ \\begin{aligned} f(X) \u0026= \\Big(w_a(X) + \\beta \\cdot id_a(X) + \\gamma\\Big)\\Big(w_b(X) + \\beta \\cdot id_b(X) + \\gamma\\Big)\\Big(w_c(X) + \\beta \\cdot id_c(X) + \\gamma\\Big), \\ g(X) \u0026= \\Big(w_a(X) + \\beta \\cdot \\sigma_a(X) + \\gamma\\Big)\\Big(w_b(X) + \\beta \\cdot \\sigma_b(X) + \\gamma\\Big)\\Big(w_c(X) + \\beta \\cdot \\sigma_c(X) + \\gamma\\Big). \\end{aligned} $$\nIf the two multisets are equal, i.e., $f(X)$ and $g(X)$ satisfy Multiset Equality, then:\n$$ \\prod_{X \\in H} f(X) = \\prod_{X \\in H} g(X) $$\nNote: If two multisets are equal, their product is invariant to the order of elements due to the commutative and associative properties of multiplication. For instance, if ${f_i} = {2,3,2}$, ${g_i} = {3,2,2}$, then $\\prod{f_i}=2 \\times 3 \\times 2 =12$; $\\prod{g_i}=3 \\times 2 \\times 2 =12$, so their products are the same.\nConstructing the Accumulator Vector If the equation above is slightly deformed, we can get:\n$$ \\prod_{X\\in H}\\frac{f(X)}{g(X)} = 1 $$\nWe define an auxiliary accumulator vector $\\vec{z}$ to represent the intermediate results of the product computation:\n$$ z_0 = 1, \\qquad z_{i+1} = z_i \\cdot \\frac{f_i}{g_i} $$\nWhere, the initial value of $z_0$ is $1$ and Prover computes $\\vec{z}$ as follows:\n$$ \\begin{array}{|c|c|c|} i \u0026 H_i \u0026 z_i \\ \\hline 0 \u0026 \\omega^0 = 1 \u0026 1 \\ 1 \u0026 \\omega^1 \u0026 1 \\cdot \\frac{f_0}{g_0} \\ 2 \u0026 \\omega^2 \u0026 \\frac{f_0}{g_0} \\cdot \\frac{f_1}{g_1} \\ 3 \u0026 \\omega^3 \u0026 \\frac{f_0 f_1}{g_0 g_1} \\cdot \\frac{f_2}{g_2} \\ \\vdots \u0026 \\vdots \u0026 \\vdots \\ n-1 \u0026 \\omega^{n-1} \u0026 \\frac{f_0 f_1 \\cdots f_{n-3}}{g_0 g_1 \\cdots g_{n-3}} \\cdot \\frac{f_{n-2}}{g_{n-2}} \\ n \u0026 \\omega^n = 1 \u0026 \\frac{f_0 f_1 \\cdots f_{n-1}}{g_0 g_1 \\cdots g_{n-1}} = 1 \\ \\end{array} $$\nNote: $H_i$ in the above table represents the point set on a certain finite field $\\mathbb{F}$, which are the “evaluation points” of polynomials $f(X)$ and $g(X)$. More specifically, the sampling points used in the discrete Fourier transform (DFT) over a finite field. These points are usually raised to the power of some $n$ unit root, that is, the value of $\\omega^i$, where $\\omega$ is an $n$ unit root. $H_i=\\omega^i$\nIn the table, $z_i$ is the recursive product calculated from the values ​​of $f(X)$ and $g(X)$ at point $H_i=\\omega^i$. For example:\n$z_1 = z_0 \\times \\frac{f_0}{g_0} = 1 \\times \\frac{f_0}{g_0}$; $z_2 = z_1 \\times \\frac{f_1}{g_1} = \\frac{f_0}{g_0} \\times \\frac{f_1}{g_1}$\nAnd so on until $z_n = \\frac{{f_0}{f_1} \\ldots {f_{n-1}}}{{g_0}{g_1} \\dots {g_{n-1}}}$\nFinally, $z_n =1$ in the table is verified by the cumulative relationship of all points on $H$.\nIf $\\vec{f}$ can be equal to $\\vec{g}$ by product multiplication, then the last row $z_{n}$ is exactly equal to $1$, that is:\n$$ z_n = z_0 = 1. $$\nSince $\\omega^{n} = 1$, which just allows us to completely encode $(z_0, z_1, z_2, \\ldots, z_{n-1})$ on the multiplicative subgroup $H$. Therefore, if it satisfies the following two polynomial constraints, we can derive $z_{n} = 1$ based on mathematical induction, which is the “copy constraint” we ultimately want:\n$$ z(\\omega^0) = 1, \\quad z(\\omega \\cdot X)g(X) = z(X)f(X). $$\nPermutation Relation $\\sigma$ Before constructing copy constraints, the permutation relation $\\sigma$ must be agreed upon and made public. The $W$ table contains all the inputs and outputs of arithmetic gates, but it does not describe whether the gates are connected by wires. The permutation relation $\\sigma$ serves to supplement this information by describing which arithmetic gates are connected.\nThus, for a circuit in an “unwired state,” it can be described using two tables: $(Q, \\sigma)$, where $Q$ consists of selector vectors, and $\\sigma$ consists of “permutation vectors.”\nBelow is the $Q$ table:\n$$ \\begin{array}{c|c|c|c|} i \u0026 q_L \u0026 q_R \u0026 q_M \u0026 q_C \u0026 q_O \\ \\hline 0 \u0026 0 \u0026 0 \u0026 0 \u0026 99 \u0026 1 \\ 1 \u0026 0 \u0026 0 \u0026 1 \u0026 0 \u0026 1 \\ 2 \u0026 1 \u0026 1 \u0026 0 \u0026 0 \u0026 1 \\ 3 \u0026 0 \u0026 0 \u0026 1 \u0026 0 \u0026 1 \\ \\end{array} $$\nBelow is the $S$ table, which describes the positions where permutations occur:\n$$ \\begin{array}{c|c|c|c|} i \u0026 \\sigma_{a,i} \u0026 \\sigma_{b,i} \u0026 \\sigma_{c,i} \\ \\hline 0 \u0026 0 \u0026 4 \u0026 [9] \\ 1 \u0026 \\boxed{11} \u0026 \\underline{10} \u0026 [8] \\ 2 \u0026 2 \u0026 6 \u0026 \\boxed{5} \\ 3 \u0026 3 \u0026 7 \u0026 \\underline{1} \\ \\end{array} $$\nHandling Public Inputs For the simple circuit example above, suppose we want to prove the existence of an assignment such that the output value out equals a specific public value, e.g., $out = 99$. The simplest way to achieve this is to use the $q_C$ column in the $Q$ table and add a constraint row where $q_L = q_R = q_M = 0$. This satisfies the following equation:\n$$ q_C(X) - q_O(X)w_c(X) = 0 $$\nThe Problem with Fixed Public Inputs The issue with this approach is that these public values (i.e., input and output values) are hardcoded as constants. If the public value changes, the polynomial $q_C(X)$ must be recalculated. If the $W$ table has a large number of rows, this recalculation process can lead to significant performance overhead.\nIntroducing Parameters for Public Inputs To address this, we can introduce a parameter in the table to distinguish constant columns in the circuit. This parameter should allow changes to the public input values without affecting other parts of the circuit. To achieve this, we add a new column specifically for storing public parameters, denoted as $\\phi$. With this addition, the arithmetic constraint becomes:\n$$ q_L(X)w_a(X) + q_R(X)w_b(X) + q_M(X)w_a(X)w_b(X) - q_O(X)w_c(X) + q_C(X) + \\phi(X) = 0 $$\nWe can also introduce public parameters by modifying the copy constraints.\n[!TODO]\nOptimizing Position Vectors When constructing the three $\\sigma$ vectors, we previously used natural numbers $(0, 1, 2, \\cdots)$. This approach requires the Verifier to construct three polynomials ${id_a}(X)$, ${id_b}(X)$, and ${id_c}(X)$ before the protocol begins, and to query the Oracle in the final step to obtain the evaluations of these polynomials at the challenge point $X = \\zeta$, i.e., $({id_a}(\\zeta), {id_b}(\\zeta), {id_c}(\\zeta))$.\nSimplifying $\\sigma$ Using Non-Natural Identifiers Instead of using sequential natural numbers $(0, 1, 2, \\cdots)$, the $\\sigma$ vectors can be simplified by assigning unique, non-overlapping values for identifiers. For instance, if we use $H = (1, \\omega, \\omega^2, \\cdots)$ (a multiplicative subgroup), the polynomials ${id_a}(X)$, ${id_b}(X)$, and ${id_c}(X)$ can be simplified as follows:\n$$ \\begin{aligned} \\vec{id}_a \u0026= (1, \\omega, \\omega^2, \\omega^3) \\ \\vec{id}_b \u0026= (k_1, k_1 \\omega, k_1 \\omega^2, k_1 \\omega^3) \\ \\vec{id}_c \u0026= (k_2, k_2 \\omega, k_2 \\omega^2, k_2 \\omega^3) \\end{aligned} $$\nwhere $k_i$ are distinct quadratic non-residues.\nNote:\nQuadratic Residue: Given an odd prime $p$, an integer $a$ is a quadratic residue modulo $p$ if there exists an integer $x$ such that: $x^2 \\equiv a \\pmod{p}$. In other words, $a$ is a quadratic residue if it is the square of some number modulo $p$.\nQuadratic Non-Residue: If no such $x$ exists, $a$ is a quadratic non-residue modulo $p$.\nFor $k_1$ and $k_2$, we select distinct values from the set of quadratic non-residues, ensuring $k_1 \\neq k_2$. For more details, refer to Plonk Course - Lecture 4 - Arithmetic Constraints and Copy Constraints.\nSimplified Polynomials Using the above identifiers, the polynomials become:\n$$ id_a(X) = X, \\quad id_b(X) = k_1 \\cdot X, \\quad id_c(X) = k_2 \\cdot X. $$\nThis drastically simplifies the construction of these polynomials, as well as their evaluation at $X = \\zeta$. The Verifier can directly compute these values without additional complexity.\nThis optimization skill was first proposed by Vitalik. The use of $k_1$ and $k_2$ is intended to generate cosets of $(1, \\omega, \\omega^2, \\omega^3)$ while ensuring that the cosets do not overlap. As mentioned earlier, $H = (1, \\omega, \\omega^2, \\omega^3)$ is a multiplicative subgroup of $\\mathbb{F}$. The cosets of $H$ are $H_1$ and $H_2$. If $H_1 = k_1 \\cdot H$ and $H_2 = k_2 \\cdot H$ have a non-empty intersection, then $H_1 = H_2$.\nThis statement can be proven as follows:\nIf they have an intersection, then $k_1 \\omega^i = k_2 \\omega^j$, which implies $k_1 = k_2 \\cdot \\omega^{j-i}$. Since $\\omega^{j-i} \\in H$, it follows that $k_1 \\in H_2$. Therefore, $\\forall i \\in [n], k_1 \\cdot \\omega^i \\in H_2$, which implies $H_1 \\subseteq H_2$. Similarly, it can be shown that $H_2 \\subseteq H_1$, so $H_1 = H_2$.\nNote:\nIn other words, we have two sets: $H_1 = k_1 \\cdot H$ and $H_2 = k_2 \\cdot H$. Suppose $H_1$ and $H_2$ share at least one element, such as $k_1 \\cdot \\omega^i = k_2 \\cdot \\omega^j$.\nWe can rewrite this equation as $k_1 = k_2 \\cdot \\omega^{j-i}$. Since $\\omega^{j-i}$ is an element of $H$, and $H_2 = k_2 \\cdot H$, it follows from $k_1 = k_2 \\cdot \\omega^{j-i}$ that $k_1$ is an element of $H_2$, i.e., $k_1 \\in H_2$.\nThe statement $\\forall i \\in [n], k_1 \\cdot \\omega^i \\in H_2$ means that for every $i$ in the set $[n]$ (the set of integers from 0 to $n-1$), $k_1 \\cdot \\omega^i$ is an element of $H_2$. This implies $H_1 \\subseteq H_2$ because:\n$H_1 = {k_1 \\cdot \\omega^0, k_1 \\cdot \\omega^1, \\cdots, k_1 \\cdot \\omega^{n-1}}$, which is the set obtained by multiplying $k_1$ with all powers of $\\omega$. Since $\\forall i \\in [n], k_1 \\cdot \\omega^i \\in H_2$, all elements of $H_1$ are contained in $H_2$. Thus, if every element of $H_1$ belongs to $H_2$, $H_1$ is a subset of $H_2$. Similarly, it can be shown that $H_2$ is a subset of $H_1$, and therefore, $H_1 = H_2$. If the number of columns in $\\sigma$ increases, we need to select multiple $k_1, k_2, k_3, \\ldots$ such that $(k_i / k_j)^n \\neq 1$ to generate disjoint cosets. A straightforward way to achieve this is to select $k_1, k_2, k_3, \\ldots = g^1, g^2, g^3, \\ldots$, where $g$ is the generator of the multiplicative subgroup $T$, and $|T| \\cdot 2^\\lambda = p-1$.\nProtocol Framework [] represents a commitment. The Verifier only knows the encrypted or hashed value $[z(X)]$, without knowing the actual content of $z(X)$ (this will be explained in the next section). $\\phi(X)$ represents public inputs and outputs, which are known to both the Verifier and Prover. During the verification process, the Verifier uses these public values to ensure the correctness of the Prover’s proof. preprocessing phase\nThe Prover and Verifier construct the commitments, including $[q_L(X)]$, $[q_R(X)]$, $[q_O(X)]$, $[q_M(X)]$, $[q_C(X)]$, $[{\\sigma_a}(X)]$, $[{\\sigma_b}(X)]$, $[{\\sigma_c}(X)]$\nStep 1:\nThe Prover constructs $[w_a(X)]$, $[w_b(X)]$, $[w_c(X)]$, and $\\phi(X)$ for each column of the $W$ table such that:\n$$ q_L(X)w_a(X)+q_R(X)w_b(X)+ q_M(X)w_a(X)w_b(X) - q_O(X)w_c(X)+q_C(X) + \\phi(X) = 0 $$\nStep 2:\nThe Verifier sends random challenges $\\beta$ and $\\gamma$.\nStep 3:\nThe Prover constructs $[z(X)]$ such that:\n$$ \\begin{split} L_0(X)(z(X)-1) \u0026= 0 \\ z(\\omega\\cdot X)g(X) - z(X)f(X) \u0026= 0 \\end{split} $$\nStep 4:\nThe Verifier sends another random challenge $\\alpha$.\nStep 5:\nThe Prover calculates $h(X)$ and constructs the quotient polynomial $[t(X)]$ such that:\n$$ \\begin{split} h(X) = \u0026\\ q_L(X)w_a(X)+q_R(X)w_b(X)+ q_M(X)w_a(X)w_b(X) - q_O(X)w_c(X)+q_C(X) + \\phi(X) \\ \u0026 + \\alpha(z(\\omega X)\\cdot g(X)-z(X)\\cdot f(X)) + \\alpha^2(L_0(X)\\cdot(z(X)-1)) \\end{split} $$\nWhere:\n$$ \\begin{split} f(X)\u0026=\\Big(w_a(X)+\\beta\\cdot {id_a}(X)+\\gamma\\Big)\\Big(w_b(X)+\\beta\\cdot {id_b}(X)+\\gamma\\Big)\\Big(w_c(X)+\\beta\\cdot {id_c}(X)+\\gamma\\Big)\\ g(X)\u0026=\\Big(w_a(X)+\\beta\\cdot {\\sigma_a}(X)+\\gamma\\Big)\\Big(w_b(X)+\\beta\\cdot {\\sigma_b}(X)+\\gamma\\Big)\\Big(w_c(X)+\\beta\\cdot {\\sigma_c}(X)+\\gamma\\Big)\\ \\end{split} $$\nThe quotient polynomial $t(X)$ is defined as: $t(X) = \\frac{h(X)}{z_H(X)}$\nStep 6:\nThe Verifier sends a final random challenge $\\zeta$ and queries the following values from the oracles:\n$\\bar{w}_a=w_a(\\zeta)$， $\\bar{w}_b=w_b(\\zeta)$， $\\bar{w}_c=w_c(\\zeta)$ $\\bar{q}_L=q_L(\\zeta)$， $\\bar{q}_R=q_R(\\zeta)$， $\\bar{q}_M=q_M(\\zeta)$， $\\bar{q}_O=q_O(\\zeta)$， $\\bar{q}_C=q_C(\\zeta)$ $\\bar{\\sigma}_a=\\sigma_a(\\zeta)$， $\\bar{\\sigma}_b=\\sigma_b(\\zeta)$， $\\bar{\\sigma}_c=\\sigma_c(\\zeta)$ $\\bar{z}_{(\\omega\\cdot\\zeta)}=z(\\omega\\cdot\\zeta)$， $\\bar{z}_{(\\zeta)}=z(\\zeta)$ $\\bar{t}=t(\\zeta)$ The Verifier also computes the following values:\n$\\bar{f}_{(\\zeta)} = (\\bar{w}_a + \\beta \\cdot \\zeta + \\gamma)(\\bar{w}_b + \\beta \\cdot k_1 \\cdot \\zeta + \\gamma)(\\bar{w}_c + \\beta \\cdot k_2 \\cdot \\zeta + \\gamma)$ $\\bar{g}_{(\\zeta)} = (\\bar{w}_a + \\beta \\cdot \\bar{\\sigma}_a + \\gamma)(\\bar{w}_b + \\beta \\cdot \\bar{\\sigma}_b + \\gamma)(\\bar{w}_c + \\beta \\cdot \\bar{\\sigma}_c + \\gamma)$ $L_0(\\zeta)$ $z_H(\\zeta)$ $\\phi(\\zeta)$ Verification Step\nThe Verifier checks the following equation:\n$$ \\begin{split} \u0026 \\bar{q}_L\\bar{w}_a+\\bar{q}_R\\bar{w}_b+ \\bar{q}_M\\bar{w}_a\\bar{w}_b - \\bar{q}_O\\bar{w}_c+\\bar{q}_C + \\phi(\\zeta) + \\alpha(\\bar{z}_{(\\omega\\cdot\\zeta)}\\cdot \\bar{g}_{(\\zeta)}-\\bar{z}_{(\\zeta)}\\cdot \\bar{f}_{(\\zeta)})+ \\alpha^2(L_0(\\zeta)\\cdot(\\bar{z}_{(\\zeta)}-1))\\overset{?}{=}\\bar{t}\\cdot z_H(\\zeta) \\end{split} $$\nIf the equation holds, the proof is accepted; otherwise, it is rejected.\n",
+  "wordCount" : "2821",
+  "inLanguage": "en",
+  "image": "http://localhost:51400/images/papermod-cover.png","datePublished": "2026-03-10T00:00:00Z",
+  "dateModified": "2026-03-10T00:00:00Z",
+  "author":{
+    "@type": "Person",
+    "name": "Theme PaperMod"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://localhost:51400/post/4-constraints/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Purple Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://localhost:51400/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:51400/" accesskey="h" title="Purple Blog (Alt + H)">Purple Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                    <ul class="lang-switch"><li>|</li>
+                        <li>
+                            <a href="http://localhost:51400/zh/" title="中文"
+                                aria-label=":cn:">🇨🇳</a>
+                        </li>
+                    </ul>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:51400/archives" title="Archive">
+                    <span>Archive</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:51400/search/" title="Search">
+                    <span>Search</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:51400/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:51400/%5B%E5%BE%85%E6%9B%B4%E6%96%B0%5D" title="Podcast">
+                    <span>Podcast</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="http://localhost:51400/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:51400/post/">Posts</a></div>
+    <h1 class="post-title entry-hint-parent">
+      Understanding PLONK (Part 4): Arithmetic Constraints and Copy Constraints
+    </h1>
+    <div class="post-meta"><span title='2026-03-10 00:00:00 +0000 UTC'>March 10, 2026</span>&nbsp;·&nbsp;<span>14 min</span>&nbsp;·&nbsp;<span>Theme PaperMod</span>&nbsp;|&nbsp;<span>
+    <a href="https://github.com/adityatelange/hugo-PaperMod/tree/exampleSite/content/post/4-Constraints/index.md" rel="noopener noreferrer edit" target="_blank">Suggest Changes</a>
+</span>
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#recap-of-permutation-argument" aria-label="Recap of Permutation Argument">Recap of Permutation Argument</a></li>
+                <li>
+                    <a href="#copy-constraints-within-a-single-vector" aria-label="Copy Constraints Within a Single Vector">Copy Constraints Within a Single Vector</a></li>
+                <li>
+                    <a href="#copy-constraints-across-multiple-vectors" aria-label="Copy Constraints Across Multiple Vectors">Copy Constraints Across Multiple Vectors</a><ul>
+                        
+                <li>
+                    <a href="#constructing-the-accumulator-vector" aria-label="Constructing the Accumulator Vector">Constructing the Accumulator Vector</a></li></ul>
+                </li>
+                <li>
+                    <a href="#permutation-relation-sigma" aria-label="Permutation Relation $\sigma$">Permutation Relation $\sigma$</a></li>
+                <li>
+                    <a href="#handling-public-inputs" aria-label="Handling Public Inputs">Handling Public Inputs</a><ul>
+                        
+                <li>
+                    <a href="#the-problem-with-fixed-public-inputs" aria-label="The Problem with Fixed Public Inputs">The Problem with Fixed Public Inputs</a></li>
+                <li>
+                    <a href="#introducing-parameters-for-public-inputs" aria-label="Introducing Parameters for Public Inputs">Introducing Parameters for Public Inputs</a></li></ul>
+                </li>
+                <li>
+                    <a href="#optimizing-position-vectors" aria-label="Optimizing Position Vectors">Optimizing Position Vectors</a><ul>
+                        
+                <li>
+                    <a href="#simplifying-sigma-using-non-natural-identifiers" aria-label="Simplifying $\sigma$ Using Non-Natural Identifiers">Simplifying $\sigma$ Using Non-Natural Identifiers</a></li>
+                <li>
+                    <a href="#simplified-polynomials" aria-label="Simplified Polynomials">Simplified Polynomials</a></li></ul>
+                </li>
+                <li>
+                    <a href="#protocol-framework" aria-label="Protocol Framework">Protocol Framework</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h2 id="recap-of-permutation-argument">Recap of Permutation Argument<a hidden class="anchor" aria-hidden="true" href="#recap-of-permutation-argument">#</a></h2>
+<p>In the previous section, we discussed how the Prover proves that two vectors $\vec{a}$ and $\vec{b}$ of length $n$ satisfy a pre-defined (public) permutation relationship $\sigma(\cdot)$, i.e.,</p>
+<p>$$
+a_i = b_{\sigma(i)}.
+$$</p>
+<p>The basic idea involves requesting a random challenge $\beta$ from the Verifier, combining the &ldquo;original vectors&rdquo; ($\vec{a}$ and $\vec{b}$) with their &ldquo;position vectors&rdquo; ($\vec{i}$ and $\sigma$), and generating two new vectors, denoted as $\vec{a}&rsquo;$ and $\vec{b}&rsquo;$:</p>
+<p>$$
+a&rsquo;_i = a_i + \beta \cdot i, \qquad b&rsquo;_i = b_i + \beta \cdot \sigma(i)
+$$</p>
+<p>The second step involves requesting another random challenge $\gamma$ from the Verifier to encode the multisets of $\vec{a}&rsquo;$ and $\vec{b}&rsquo;$ through a product, resulting in $A$ and $B$:</p>
+<p>$$
+A = \prod(a&rsquo;_i + \gamma), \qquad B = \prod(b&rsquo;_i + \gamma)
+$$</p>
+<p>The third step asks the Prover to prove that $A/B = 1$, i.e.,</p>
+<p>$$
+\prod_i \frac{(a&rsquo;_i + \gamma)}{(b&rsquo;_i + \gamma)} = 1
+$$</p>
+<p>To prove this product, we introduce an auxiliary vector $\vec{z}$ that records the intermediate results of the product computation:</p>
+<p>$$
+z_0 = 1, \qquad z_{i+1} = z_i \cdot \frac{(a&rsquo;_i + \gamma)}{(b&rsquo;_i + \gamma)}
+$$</p>
+<p>Since $z_n = \prod \frac{a&rsquo;_i + \gamma}{b&rsquo;_i + \gamma} = 1$, and $\omega^n = 1$, we can encode $\vec{z}$ using $z(X)$ and transform the Permutation Argument into a relationship involving $z(X)$, $a(X)$, and $b(X)$.</p>
+<p>Finally, the Verifier sends a challenge $\zeta$ and queries $z(\zeta)$, $z(\omega \cdot \zeta)$, $a(\zeta)$, and $b(\zeta)$. The Verifier then checks the relationships between these values.</p>
+<blockquote>
+<p><strong>Note</strong>: At this stage, we are only proving the existence of Multiset Equality. This means that $\vec{a}$ and $\vec{b}$ must contain the same elements, with the same multiplicities, without considering their specific positions or order.</p></blockquote>
+</br>
+<h2 id="copy-constraints-within-a-single-vector">Copy Constraints Within a Single Vector<a hidden class="anchor" aria-hidden="true" href="#copy-constraints-within-a-single-vector">#</a></h2>
+<p><strong>Copy constraints</strong> are conditions that require certain elements in a vector to be equal at multiple positions. Let’s start with a simple example:</p>
+<p>$$
+\vec{a} = (a_0, a_1, a_2, a_3)
+$$</p>
+<p>Assume we want the Prover to prove that $a_0 = a_2$. This can be achieved by swapping the positions of $a_0$ and $a_2$, forming a <strong>permutation relationship</strong>. If we use $(0, 1, 2, 3)$ to record the original positions of the elements, the new position vector after permutation is denoted as $\sigma$, and the permuted vector is $\vec{a}_\sigma$:</p>
+<p>$$
+\sigma = (2, 1, 0, 3), \quad \vec{a}_\sigma = (a_2, a_1, a_0, a_3).
+$$</p>
+<p>Clearly, as long as the Prover can prove that the original vector and the permuted vector are identical ($\vec{a} = \vec{a}_\sigma$), we can conclude that $a_0 = a_2$.</p>
+<p>This method can be extended to prove that multiple elements in a vector are equal. For example, to prove that the first three elements of $\vec{a}$ are equal, we construct a permutation by cyclically shifting these three elements to the right:</p>
+<p>$$
+\sigma = (2, 0, 1, 3), \quad \vec{a}_\sigma = (a_2, a_0, a_1, a_3).
+$$</p>
+<p>From $\vec{a} = \vec{a}_\sigma$, it is straightforward to conclude that $a_0 = a_1 = a_2$.</p>
+</br>
+<h2 id="copy-constraints-across-multiple-vectors">Copy Constraints Across Multiple Vectors<a hidden class="anchor" aria-hidden="true" href="#copy-constraints-across-multiple-vectors">#</a></h2>
+<p>In the PLONK protocol, copy constraints often span multiple columns in the $W$ table. Since the protocol requires the Prover to encode each column into a polynomial, we need to extend the permutation argument to support equivalence between elements across multiple vectors.</p>
+<figure>
+    <img loading="lazy" src="Example.case.png" width="40%"/> 
+</figure>
+
+<p>For example, consider the $W$ table for the circuit below:</p>
+<p>$$
+\begin{array}{c|c|c|c|}
+i &amp; w_a &amp; w_b &amp; w_c  \
+\hline
+0 &amp; 0 &amp; 0 &amp; {\color{green}out} \
+1 &amp; {\color{red}x_5} &amp; {\color{blue}x_6} &amp; {\color{green}out} \
+2 &amp; x_1 &amp; x_2 &amp; {\color{red}x_5} \
+3 &amp; x_3 &amp; x_4 &amp; {\color{blue}x_6} \
+\end{array}
+$$</p>
+<p>we need:</p>
+<ol>
+<li>$w_{a,1} = w_{c,2}$</li>
+<li>$w_{b,1} = w_{c,3}$</li>
+<li>$w_{c,0} = w_{c,1}$</li>
+</ol>
+<p>To support cross-vector permutations, we introduce <strong>global unique identifiers</strong> for elements across vectors. For instance, the three columns of $W$ are assigned unique position identifiers:</p>
+<p>$$
+\begin{array}{c|c|c|c|}
+i &amp; id_{a,i} &amp; id_{b,i} &amp; id_{c,i}  \
+\hline
+0 &amp; 0 &amp; 4 &amp; {\color{green}8} \
+1 &amp; {\color{red}5} &amp; {\color{blue}1} &amp; {\color{green}9} \
+2 &amp; 2 &amp; 6 &amp; {\color{red}11} \
+3 &amp; 3 &amp; 7 &amp; {\color{blue}10} \
+\end{array}
+$$</p>
+<blockquote>
+<p><strong>Note</strong>: $id_{x,i}$ is a globally unique identifier for each element, used to unify cross-vector permutation relationships. These identifiers are assigned sequentially, starting from $0$.</p></blockquote>
+<p>The permuted vectors $\sigma_a$, $\sigma_b$, and $\sigma_c$ are:</p>
+<p>$$
+\begin{array}{c|c|c|c|}
+i &amp; \sigma_{a,i} &amp; \sigma_{b,i} &amp; \sigma_{c,i}  \
+\hline
+0 &amp; 0 &amp; 4 &amp; {\color{green}9} \
+1 &amp; {\color{red}11} &amp; {\color{blue}10} &amp; {\color{green}8} \
+2 &amp; 2 &amp; 6 &amp; {\color{red}5} \
+3 &amp; 3 &amp; 7 &amp; {\color{blue}1} \
+\end{array}
+$$</p>
+<p>The Prover combines vectors $(\vec{w}_a, \vec{id_a})$, $(\vec{w}_b, \vec{id_b})$, $(\vec{w}_c, \vec{id_c})$, and their permuted counterparts $(\vec{w}&rsquo;_a, \sigma_a)$, $(\vec{w}&rsquo;_b, \sigma_b)$, $(\vec{w}&rsquo;_c, \sigma_c)$ using a random challenge $\beta$ (provided by the Verifier). Then, using another random challenge $\gamma$, the Prover computes the multisets $W$ and $W&rsquo;$, denoted as $f_i$ and $g_i$:</p>
+<p>$$
+\begin{split}
+f_i &amp;= (w_{a,i}+\beta\cdot id_{a,i}+\gamma)(w_{b,i}+\beta\cdot id_{b,i}+\gamma)(w_{c,i}+\beta\cdot id_{c,i}+\gamma) \
+g_i &amp;= (w&rsquo;_{a,i}+\beta\cdot \sigma_{a,i}+\gamma)(w&rsquo;_{b,i}+\beta\cdot \sigma_{b,i}+\gamma)(w&rsquo;_{c,i}+\beta\cdot \sigma_{c,i}+\gamma)
+\end{split}
+$$</p>
+<p>Since the copy constraint requires the permuted vectors to be equal to the original ones, we have $w_a = w&rsquo;_a$, $w_b = w&rsquo;_b$, and $w_c = w&rsquo;_c$.</p>
+<p>If we encode $\vec{w}_a,\vec{w}_b,\vec{w}_c,\vec{id}_a,\vec{id}_b,\vec{id}_c,\sigma_a, \sigma_b, \sigma_c$ into polynomials, we will get $w_a(X),w_b(X), w_c(X), id_a(X),id_b(X),id_c(X),\sigma_a(X),\sigma_b(X),\sigma_c(X)$. So $f(X)$, $g(X)$ will satisfy the following constraint relationships:</p>
+<p>$$
+\begin{aligned}
+f(X) &amp;= \Big(w_a(X) + \beta \cdot id_a(X) + \gamma\Big)\Big(w_b(X) + \beta \cdot id_b(X) + \gamma\Big)\Big(w_c(X) + \beta \cdot id_c(X) + \gamma\Big), \
+g(X) &amp;= \Big(w_a(X) + \beta \cdot \sigma_a(X) + \gamma\Big)\Big(w_b(X) + \beta \cdot \sigma_b(X) + \gamma\Big)\Big(w_c(X) + \beta \cdot \sigma_c(X) + \gamma\Big).
+\end{aligned}
+$$</p>
+<p>If the two multisets are equal, i.e., $f(X)$ and $g(X)$ satisfy Multiset Equality, then:</p>
+<p>$$
+\prod_{X \in H} f(X) = \prod_{X \in H} g(X)
+$$</p>
+<blockquote>
+<p><strong>Note</strong>: If two multisets are equal, their product is invariant to the order of elements due to the commutative and associative properties of multiplication. For instance, if ${f_i} = {2,3,2}$, ${g_i} = {3,2,2}$, then $\prod{f_i}=2 \times 3 \times 2 =12$; $\prod{g_i}=3 \times 2 \times 2 =12$, so their products are the same.</p></blockquote>
+</br>
+<h3 id="constructing-the-accumulator-vector">Constructing the Accumulator Vector<a hidden class="anchor" aria-hidden="true" href="#constructing-the-accumulator-vector">#</a></h3>
+<p>If the equation above is slightly deformed, we can get:</p>
+<p>$$
+\prod_{X\in H}\frac{f(X)}{g(X)} = 1
+$$</p>
+<p>We define an auxiliary <strong>accumulator vector</strong> $\vec{z}$ to represent the intermediate results of the product computation:</p>
+<p>$$
+z_0 = 1, \qquad z_{i+1} = z_i \cdot \frac{f_i}{g_i}
+$$</p>
+<p>Where, the initial value of $z_0$ is $1$ and Prover computes $\vec{z}$ as follows:</p>
+<p>$$
+\begin{array}{|c|c|c|}
+i &amp; H_i &amp; z_i \
+\hline
+0 &amp; \omega^0 = 1 &amp; 1 \
+1 &amp; \omega^1 &amp; 1 \cdot \frac{f_0}{g_0} \
+2 &amp; \omega^2 &amp; \frac{f_0}{g_0} \cdot \frac{f_1}{g_1} \
+3 &amp; \omega^3 &amp; \frac{f_0 f_1}{g_0 g_1} \cdot \frac{f_2}{g_2} \
+\vdots &amp; \vdots &amp; \vdots \
+n-1 &amp; \omega^{n-1} &amp; \frac{f_0 f_1 \cdots f_{n-3}}{g_0 g_1 \cdots g_{n-3}} \cdot \frac{f_{n-2}}{g_{n-2}} \
+n &amp; \omega^n = 1 &amp; \frac{f_0 f_1 \cdots f_{n-1}}{g_0 g_1 \cdots g_{n-1}} = 1 \
+\end{array}
+$$</p>
+<blockquote>
+<p>Note: $H_i$ in the above table represents the point set on a certain finite field $\mathbb{F}$, which are the &ldquo;evaluation points&rdquo; of polynomials $f(X)$ and $g(X)$. More specifically, the sampling points used in the discrete Fourier transform (DFT) over a finite field. These points are usually raised to the power of some $n$ unit root, that is, the value of $\omega^i$, where $\omega$ is an $n$ unit root. $H_i=\omega^i$</p></blockquote>
+<blockquote>
+<p>In the table, $z_i$ is the recursive product calculated from the values ​​of $f(X)$ and $g(X)$ at point $H_i=\omega^i$. For example:</p></blockquote>
+<blockquote>
+<p>$z_1 = z_0 \times \frac{f_0}{g_0} = 1 \times \frac{f_0}{g_0}$; $z_2 = z_1 \times \frac{f_1}{g_1} = \frac{f_0}{g_0} \times \frac{f_1}{g_1}$</p></blockquote>
+<blockquote>
+<p>And so on until $z_n = \frac{{f_0}{f_1} \ldots {f_{n-1}}}{{g_0}{g_1} \dots {g_{n-1}}}$</p></blockquote>
+<blockquote>
+<p>Finally, $z_n =1$ in the table is verified by the cumulative relationship of all points on $H$.</p></blockquote>
+<p>If $\vec{f}$ can be equal to $\vec{g}$ by product multiplication, then the last row $z_{n}$ is exactly equal to $1$, that is:</p>
+<p>$$
+z_n = z_0 = 1.
+$$</p>
+<p>Since $\omega^{n} = 1$, which just allows us to completely encode $(z_0, z_1, z_2, \ldots, z_{n-1})$ on the multiplicative subgroup $H$. Therefore, if it satisfies the following two polynomial constraints, we can derive $z_{n} = 1$ based on mathematical induction, which is the &ldquo;copy constraint&rdquo; we ultimately want:</p>
+<p>$$
+z(\omega^0) = 1, \quad z(\omega \cdot X)g(X) = z(X)f(X).
+$$</p>
+</br>
+<h2 id="permutation-relation-sigma">Permutation Relation $\sigma$<a hidden class="anchor" aria-hidden="true" href="#permutation-relation-sigma">#</a></h2>
+<p>Before constructing copy constraints, the permutation relation $\sigma$ must be agreed upon and made public. The $W$ table contains all the inputs and outputs of arithmetic gates, but it does not describe whether the gates are connected by wires. The permutation relation $\sigma$ serves to supplement this information by describing which arithmetic gates are connected.</p>
+<p>Thus, for a circuit in an &ldquo;unwired state,&rdquo; it can be described using two tables: $(Q, \sigma)$, where $Q$ consists of selector vectors, and $\sigma$ consists of &ldquo;permutation vectors.&rdquo;</p>
+<figure>
+    <img loading="lazy" src="Example.case.png" width="40%"/> 
+</figure>
+
+<p>Below is the $Q$ table:</p>
+<p>$$
+\begin{array}{c|c|c|c|}
+i &amp; q_L &amp; q_R &amp; q_M &amp; q_C &amp; q_O \
+\hline
+0 &amp; 0 &amp; 0 &amp; 0 &amp; 99 &amp; 1 \
+1 &amp; 0 &amp; 0 &amp; 1 &amp; 0 &amp; 1 \
+2 &amp; 1 &amp; 1 &amp; 0 &amp; 0 &amp; 1 \
+3 &amp; 0 &amp; 0 &amp; 1 &amp; 0 &amp; 1 \
+\end{array}
+$$</p>
+<p>Below is the $S$ table, which describes the positions where permutations occur:</p>
+<p>$$
+\begin{array}{c|c|c|c|}
+i &amp; \sigma_{a,i} &amp; \sigma_{b,i} &amp; \sigma_{c,i}  \
+\hline
+0 &amp; 0 &amp; 4 &amp; [9] \
+1 &amp; \boxed{11} &amp; \underline{10} &amp; [8] \
+2 &amp; 2 &amp; 6 &amp; \boxed{5} \
+3 &amp; 3 &amp; 7 &amp; \underline{1} \
+\end{array}
+$$</p>
+</br>
+<h2 id="handling-public-inputs">Handling Public Inputs<a hidden class="anchor" aria-hidden="true" href="#handling-public-inputs">#</a></h2>
+<p>For the simple circuit example above, suppose we want to prove the existence of an assignment such that the output value <code>out</code> equals a specific public value, e.g., $out = 99$. The simplest way to achieve this is to use the $q_C$ column in the $Q$ table and add a constraint row where $q_L = q_R = q_M = 0$. This satisfies the following equation:</p>
+<p>$$
+q_C(X) - q_O(X)w_c(X) = 0
+$$</p>
+<h3 id="the-problem-with-fixed-public-inputs">The Problem with Fixed Public Inputs<a hidden class="anchor" aria-hidden="true" href="#the-problem-with-fixed-public-inputs">#</a></h3>
+<p>The issue with this approach is that these public values (i.e., input and output values) are hardcoded as constants. If the public value changes, the polynomial $q_C(X)$ must be recalculated. If the $W$ table has a large number of rows, this recalculation process can lead to significant performance overhead.</p>
+<h3 id="introducing-parameters-for-public-inputs">Introducing Parameters for Public Inputs<a hidden class="anchor" aria-hidden="true" href="#introducing-parameters-for-public-inputs">#</a></h3>
+<p>To address this, we can introduce a parameter in the table to distinguish constant columns in the circuit. This parameter should allow changes to the public input values without affecting other parts of the circuit. To achieve this, we add a new column specifically for storing public parameters, denoted as $\phi$. With this addition, the arithmetic constraint becomes:</p>
+<p>$$
+q_L(X)w_a(X) + q_R(X)w_b(X) + q_M(X)w_a(X)w_b(X) - q_O(X)w_c(X) + q_C(X) + \phi(X) = 0
+$$</p>
+<p>We can also introduce public parameters by modifying the copy constraints.</p>
+<blockquote>
+<p>[!TODO]</p></blockquote>
+</br>
+<h2 id="optimizing-position-vectors">Optimizing Position Vectors<a hidden class="anchor" aria-hidden="true" href="#optimizing-position-vectors">#</a></h2>
+<p>When constructing the three $\sigma$ vectors, we previously used natural numbers $(0, 1, 2, \cdots)$. This approach requires the Verifier to construct three polynomials ${id_a}(X)$, ${id_b}(X)$, and ${id_c}(X)$ before the protocol begins, and to query the Oracle in the final step to obtain the evaluations of these polynomials at the challenge point $X = \zeta$, i.e., $({id_a}(\zeta), {id_b}(\zeta), {id_c}(\zeta))$.</p>
+<h3 id="simplifying-sigma-using-non-natural-identifiers">Simplifying $\sigma$ Using Non-Natural Identifiers<a hidden class="anchor" aria-hidden="true" href="#simplifying-sigma-using-non-natural-identifiers">#</a></h3>
+<p>Instead of using sequential natural numbers $(0, 1, 2, \cdots)$, the $\sigma$ vectors can be simplified by assigning unique, non-overlapping values for identifiers. For instance, if we use $H = (1, \omega, \omega^2, \cdots)$ (a multiplicative subgroup), the polynomials ${id_a}(X)$, ${id_b}(X)$, and ${id_c}(X)$ can be simplified as follows:</p>
+<p>$$
+\begin{aligned}
+\vec{id}_a &amp;= (1, \omega, \omega^2, \omega^3) \
+\vec{id}_b &amp;= (k_1, k_1 \omega, k_1 \omega^2, k_1 \omega^3) \
+\vec{id}_c &amp;= (k_2, k_2 \omega, k_2 \omega^2, k_2 \omega^3)
+\end{aligned}
+$$</p>
+<p>where $k_i$ are distinct <strong>quadratic non-residues</strong>.</p>
+<blockquote>
+<p><strong>Note:</strong></p></blockquote>
+<blockquote>
+<p>Quadratic Residue: Given an odd prime $p$, an integer $a$ is a quadratic residue modulo $p$ if there exists an integer $x$ such that: $x^2 \equiv a \pmod{p}$. In other words, $a$ is a quadratic residue if it is the square of some number modulo $p$.</p></blockquote>
+<blockquote>
+<p>Quadratic Non-Residue: If no such $x$ exists, $a$ is a quadratic non-residue modulo $p$.</p></blockquote>
+<blockquote>
+<p>For $k_1$ and $k_2$, we select distinct values from the set of quadratic non-residues, ensuring $k_1 \neq k_2$. For more details, refer to <a href="https://github.com/wenjin1997/awesome-zkp-learning/blob/main/courses/Plonk-GuoYu/lecture04/notes-plonk-lecture4-constraints.ipynb">Plonk Course - Lecture 4 - Arithmetic Constraints and Copy Constraints</a>.</p></blockquote>
+<h3 id="simplified-polynomials">Simplified Polynomials<a hidden class="anchor" aria-hidden="true" href="#simplified-polynomials">#</a></h3>
+<p>Using the above identifiers, the polynomials become:</p>
+<p>$$
+id_a(X) = X, \quad id_b(X) = k_1 \cdot X, \quad id_c(X) = k_2 \cdot X.
+$$</p>
+<p>This drastically simplifies the construction of these polynomials, as well as their evaluation at $X = \zeta$. The Verifier can directly compute these values without additional complexity.</p>
+<p>This optimization skill was first proposed by Vitalik. The use of $k_1$ and $k_2$ is intended to generate cosets of $(1, \omega, \omega^2, \omega^3)$ while ensuring that the cosets do not overlap. As mentioned earlier, $H = (1, \omega, \omega^2, \omega^3)$ is a multiplicative subgroup of $\mathbb{F}$. The cosets of $H$ are $H_1$ and $H_2$. If $H_1 = k_1 \cdot H$ and $H_2 = k_2 \cdot H$ have a non-empty intersection, then $H_1 = H_2$.</p>
+<p>This statement can be proven as follows:</p>
+<p>If they have an intersection, then $k_1 \omega^i = k_2 \omega^j$, which implies $k_1 = k_2 \cdot \omega^{j-i}$. Since $\omega^{j-i} \in H$, it follows that $k_1 \in H_2$. Therefore, $\forall i \in [n], k_1 \cdot \omega^i \in H_2$, which implies $H_1 \subseteq H_2$. Similarly, it can be shown that $H_2 \subseteq H_1$, so $H_1 = H_2$.</p>
+<blockquote>
+<p><strong>Note:</strong></p></blockquote>
+<blockquote>
+<p>In other words, we have two sets: $H_1 = k_1 \cdot H$ and $H_2 = k_2 \cdot H$. Suppose $H_1$ and $H_2$ share at least one element, such as $k_1 \cdot \omega^i = k_2 \cdot \omega^j$.</p></blockquote>
+<blockquote>
+<p>We can rewrite this equation as $k_1 = k_2 \cdot \omega^{j-i}$. Since $\omega^{j-i}$ is an element of $H$, and $H_2 = k_2 \cdot H$, it follows from $k_1 = k_2 \cdot \omega^{j-i}$ that $k_1$ is an element of $H_2$, i.e., $k_1 \in H_2$.</p></blockquote>
+<blockquote>
+<p>The statement $\forall i \in [n], k_1 \cdot \omega^i \in H_2$ means that for every $i$ in the set $[n]$ (the set of integers from 0 to $n-1$), $k_1 \cdot \omega^i$ is an element of $H_2$. This implies $H_1 \subseteq H_2$ because:</p>
+<ol>
+<li>$H_1 = {k_1 \cdot \omega^0, k_1 \cdot \omega^1, \cdots, k_1 \cdot \omega^{n-1}}$, which is the set obtained by multiplying $k_1$ with all powers of $\omega$.</li>
+<li>Since $\forall i \in [n], k_1 \cdot \omega^i \in H_2$, all elements of $H_1$ are contained in $H_2$.</li>
+<li>Thus, if every element of $H_1$ belongs to $H_2$, $H_1$ is a subset of $H_2$. Similarly, it can be shown that $H_2$ is a subset of $H_1$, and therefore, $H_1 = H_2$.</li>
+</ol></blockquote>
+<p>If the number of columns in $\sigma$ increases, we need to select multiple $k_1, k_2, k_3, \ldots$ such that $(k_i / k_j)^n \neq 1$ to generate disjoint cosets. A straightforward way to achieve this is to select $k_1, k_2, k_3, \ldots = g^1, g^2, g^3, \ldots$, where $g$ is the generator of the multiplicative subgroup $T$, and $|T| \cdot 2^\lambda = p-1$.</p>
+</br>
+<h2 id="protocol-framework">Protocol Framework<a hidden class="anchor" aria-hidden="true" href="#protocol-framework">#</a></h2>
+<blockquote>
+<ol>
+<li><code>[]</code> represents a <strong>commitment</strong>. The Verifier only knows the encrypted or hashed value $[z(X)]$, without knowing the actual content of $z(X)$ (this will be explained in the next section).</li>
+<li>$\phi(X)$ represents public inputs and outputs, which are known to both the Verifier and Prover. During the verification process, the Verifier uses these public values to ensure the correctness of the Prover&rsquo;s proof.</li>
+</ol></blockquote>
+<figure>
+    <img loading="lazy" src="framework.png" width="100%"/> 
+</figure>
+
+<p><strong>preprocessing phase</strong></p>
+<p>The Prover and Verifier construct the commitments, including $[q_L(X)]$, $[q_R(X)]$, $[q_O(X)]$, $[q_M(X)]$, $[q_C(X)]$, $[{\sigma_a}(X)]$, $[{\sigma_b}(X)]$, $[{\sigma_c}(X)]$</p>
+<p><strong>Step 1:</strong></p>
+<p>The Prover constructs $[w_a(X)]$, $[w_b(X)]$, $[w_c(X)]$, and $\phi(X)$ for each column of the $W$ table such that:</p>
+<p>$$
+q_L(X)w_a(X)+q_R(X)w_b(X)+ q_M(X)w_a(X)w_b(X) - q_O(X)w_c(X)+q_C(X) + \phi(X) = 0
+$$</p>
+<p><strong>Step 2:</strong></p>
+<p>The Verifier sends random challenges $\beta$ and $\gamma$.</p>
+<p><strong>Step 3:</strong></p>
+<p>The Prover constructs $[z(X)]$ such that:</p>
+<p>$$
+\begin{split}
+L_0(X)(z(X)-1) &amp;= 0 \
+z(\omega\cdot X)g(X) -  z(X)f(X) &amp;= 0
+\end{split}
+$$</p>
+<p><strong>Step 4:</strong></p>
+<p>The Verifier sends another random challenge $\alpha$.</p>
+<p><strong>Step 5:</strong></p>
+<p>The Prover calculates $h(X)$ and constructs the quotient polynomial $[t(X)]$ such that:</p>
+<p>$$
+\begin{split}
+h(X) = &amp;\ q_L(X)w_a(X)+q_R(X)w_b(X)+ q_M(X)w_a(X)w_b(X) - q_O(X)w_c(X)+q_C(X) + \phi(X) \
+&amp; + \alpha(z(\omega X)\cdot g(X)-z(X)\cdot f(X)) + \alpha^2(L_0(X)\cdot(z(X)-1))
+\end{split}
+$$</p>
+<p>Where:</p>
+<p>$$
+\begin{split}
+f(X)&amp;=\Big(w_a(X)+\beta\cdot {id_a}(X)+\gamma\Big)\Big(w_b(X)+\beta\cdot {id_b}(X)+\gamma\Big)\Big(w_c(X)+\beta\cdot {id_c}(X)+\gamma\Big)\
+g(X)&amp;=\Big(w_a(X)+\beta\cdot {\sigma_a}(X)+\gamma\Big)\Big(w_b(X)+\beta\cdot {\sigma_b}(X)+\gamma\Big)\Big(w_c(X)+\beta\cdot {\sigma_c}(X)+\gamma\Big)\
+\end{split}
+$$</p>
+<p>The quotient polynomial $t(X)$ is defined as: $t(X) = \frac{h(X)}{z_H(X)}$</p>
+<p><strong>Step 6:</strong></p>
+<p>The Verifier sends a final random challenge $\zeta$ and queries the following values from the oracles:</p>
+<ul>
+<li>$\bar{w}_a=w_a(\zeta)$， $\bar{w}_b=w_b(\zeta)$， $\bar{w}_c=w_c(\zeta)$</li>
+<li>$\bar{q}_L=q_L(\zeta)$， $\bar{q}_R=q_R(\zeta)$， $\bar{q}_M=q_M(\zeta)$，  $\bar{q}_O=q_O(\zeta)$， $\bar{q}_C=q_C(\zeta)$</li>
+<li>$\bar{\sigma}_a=\sigma_a(\zeta)$， $\bar{\sigma}_b=\sigma_b(\zeta)$， $\bar{\sigma}_c=\sigma_c(\zeta)$</li>
+<li>$\bar{z}_{(\omega\cdot\zeta)}=z(\omega\cdot\zeta)$， $\bar{z}_{(\zeta)}=z(\zeta)$</li>
+<li>$\bar{t}=t(\zeta)$</li>
+</ul>
+<p>The Verifier also computes the following values:</p>
+<ul>
+<li>$\bar{f}_{(\zeta)} = (\bar{w}_a + \beta \cdot \zeta + \gamma)(\bar{w}_b + \beta \cdot k_1 \cdot \zeta + \gamma)(\bar{w}_c + \beta \cdot k_2 \cdot \zeta + \gamma)$</li>
+<li>$\bar{g}_{(\zeta)} = (\bar{w}_a + \beta \cdot \bar{\sigma}_a + \gamma)(\bar{w}_b + \beta \cdot \bar{\sigma}_b + \gamma)(\bar{w}_c + \beta \cdot \bar{\sigma}_c + \gamma)$</li>
+<li>$L_0(\zeta)$</li>
+<li>$z_H(\zeta)$</li>
+<li>$\phi(\zeta)$</li>
+</ul>
+<p><strong>Verification Step</strong></p>
+<p>The Verifier checks the following equation:</p>
+<p>$$
+\begin{split}
+&amp; \bar{q}_L\bar{w}_a+\bar{q}_R\bar{w}_b+ \bar{q}_M\bar{w}_a\bar{w}_b - \bar{q}_O\bar{w}_c+\bar{q}_C + \phi(\zeta) + \alpha(\bar{z}_{(\omega\cdot\zeta)}\cdot \bar{g}_{(\zeta)}-\bar{z}_{(\zeta)}\cdot \bar{f}_{(\zeta)})+ \alpha^2(L_0(\zeta)\cdot(\bar{z}_{(\zeta)}-1))\overset{?}{=}\bar{t}\cdot z_H(\zeta)
+\end{split}
+$$</p>
+<p>If the equation holds, the proof is accepted; otherwise, it is rejected.</p>
+<figure>
+    <img loading="lazy" src="framework.png" width="100%"/> 
+</figure>
+
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+
+
+<ul class="share-buttons">
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share Understanding PLONK (Part 4): Arithmetic Constraints and Copy Constraints on x"
+            href="https://x.com/intent/tweet/?text=Understanding%20PLONK%20%28Part%204%29%3a%20Arithmetic%20Constraints%20and%20Copy%20Constraints&amp;url=http%3a%2f%2flocalhost%3a51400%2fpost%2f4-constraints%2f&amp;hashtags=">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M512 62.554 L 512 449.446 C 512 483.97 483.97 512 449.446 512 L 62.554 512 C 28.03 512 0 483.97 0 449.446 L 0 62.554 C 0 28.03 28.029 0 62.554 0 L 449.446 0 C 483.971 0 512 28.03 512 62.554 Z M 269.951 190.75 L 182.567 75.216 L 56 75.216 L 207.216 272.95 L 63.9 436.783 L 125.266 436.783 L 235.9 310.383 L 332.567 436.783 L 456 436.783 L 298.367 228.367 L 432.367 75.216 L 371.033 75.216 Z M 127.633 110 L 164.101 110 L 383.481 400.065 L 349.5 400.065 Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share Understanding PLONK (Part 4): Arithmetic Constraints and Copy Constraints on linkedin"
+            href="https://www.linkedin.com/shareArticle?mini=true&amp;url=http%3a%2f%2flocalhost%3a51400%2fpost%2f4-constraints%2f&amp;title=Understanding%20PLONK%20%28Part%204%29%3a%20Arithmetic%20Constraints%20and%20Copy%20Constraints&amp;summary=Understanding%20PLONK%20%28Part%204%29%3a%20Arithmetic%20Constraints%20and%20Copy%20Constraints&amp;source=http%3a%2f%2flocalhost%3a51400%2fpost%2f4-constraints%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share Understanding PLONK (Part 4): Arithmetic Constraints and Copy Constraints on reddit"
+            href="https://reddit.com/submit?url=http%3a%2f%2flocalhost%3a51400%2fpost%2f4-constraints%2f&title=Understanding%20PLONK%20%28Part%204%29%3a%20Arithmetic%20Constraints%20and%20Copy%20Constraints">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-3.446,265.638c0,-22.964 -18.616,-41.58 -41.58,-41.58c-11.211,0 -21.361,4.457 -28.841,11.666c-28.424,-20.508 -67.586,-33.757 -111.204,-35.278l18.941,-89.121l61.884,13.157c0.756,15.734 13.642,28.29 29.56,28.29c16.407,0 29.706,-13.299 29.706,-29.701c0,-16.403 -13.299,-29.702 -29.706,-29.702c-11.666,0 -21.657,6.792 -26.515,16.578l-69.105,-14.69c-1.922,-0.418 -3.939,-0.042 -5.585,1.036c-1.658,1.073 -2.811,2.761 -3.224,4.686l-21.152,99.438c-44.258,1.228 -84.046,14.494 -112.837,35.232c-7.468,-7.164 -17.589,-11.591 -28.757,-11.591c-22.965,0 -41.585,18.616 -41.585,41.58c0,16.896 10.095,31.41 24.568,37.918c-0.639,4.135 -0.99,8.328 -0.99,12.576c0,63.977 74.469,115.836 166.33,115.836c91.861,0 166.334,-51.859 166.334,-115.836c0,-4.218 -0.347,-8.387 -0.977,-12.493c14.564,-6.47 24.735,-21.034 24.735,-38.001Zm-119.474,108.193c-20.27,20.241 -59.115,21.816 -70.534,21.816c-11.428,0 -50.277,-1.575 -70.522,-21.82c-3.007,-3.008 -3.007,-7.882 0,-10.889c3.003,-2.999 7.882,-3.003 10.885,0c12.777,12.781 40.11,17.317 59.637,17.317c19.522,0 46.86,-4.536 59.657,-17.321c3.016,-2.999 7.886,-2.995 10.885,0.008c3.008,3.011 3.003,7.882 -0.008,10.889Zm-5.23,-48.781c-16.373,0 -29.701,-13.324 -29.701,-29.698c0,-16.381 13.328,-29.714 29.701,-29.714c16.378,0 29.706,13.333 29.706,29.714c0,16.374 -13.328,29.698 -29.706,29.698Zm-160.386,-29.702c0,-16.381 13.328,-29.71 29.714,-29.71c16.369,0 29.689,13.329 29.689,29.71c0,16.373 -13.32,29.693 -29.689,29.693c-16.386,0 -29.714,-13.32 -29.714,-29.693Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share Understanding PLONK (Part 4): Arithmetic Constraints and Copy Constraints on facebook"
+            href="https://facebook.com/sharer/sharer.php?u=http%3a%2f%2flocalhost%3a51400%2fpost%2f4-constraints%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share Understanding PLONK (Part 4): Arithmetic Constraints and Copy Constraints on whatsapp"
+            href="https://api.whatsapp.com/send?text=Understanding%20PLONK%20%28Part%204%29%3a%20Arithmetic%20Constraints%20and%20Copy%20Constraints%20-%20http%3a%2f%2flocalhost%3a51400%2fpost%2f4-constraints%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-58.673,127.703c-33.842,-33.881 -78.847,-52.548 -126.798,-52.568c-98.799,0 -179.21,80.405 -179.249,179.234c-0.013,31.593 8.241,62.428 23.927,89.612l-25.429,92.884l95.021,-24.925c26.181,14.28 55.659,21.807 85.658,21.816l0.074,0c98.789,0 179.206,-80.413 179.247,-179.243c0.018,-47.895 -18.61,-92.93 -52.451,-126.81Zm-126.797,275.782l-0.06,0c-26.734,-0.01 -52.954,-7.193 -75.828,-20.767l-5.441,-3.229l-56.386,14.792l15.05,-54.977l-3.542,-5.637c-14.913,-23.72 -22.791,-51.136 -22.779,-79.287c0.033,-82.142 66.867,-148.971 149.046,-148.971c39.793,0.014 77.199,15.531 105.329,43.692c28.128,28.16 43.609,65.592 43.594,105.4c-0.034,82.149 -66.866,148.983 -148.983,148.984Zm81.721,-111.581c-4.479,-2.242 -26.499,-13.075 -30.604,-14.571c-4.105,-1.495 -7.091,-2.241 -10.077,2.241c-2.986,4.483 -11.569,14.572 -14.182,17.562c-2.612,2.988 -5.225,3.364 -9.703,1.12c-4.479,-2.241 -18.91,-6.97 -36.017,-22.23c-13.314,-11.876 -22.304,-26.542 -24.916,-31.026c-2.612,-4.484 -0.279,-6.908 1.963,-9.14c2.016,-2.007 4.48,-5.232 6.719,-7.847c2.24,-2.615 2.986,-4.484 4.479,-7.472c1.493,-2.99 0.747,-5.604 -0.374,-7.846c-1.119,-2.241 -10.077,-24.288 -13.809,-33.256c-3.635,-8.733 -7.327,-7.55 -10.077,-7.688c-2.609,-0.13 -5.598,-0.158 -8.583,-0.158c-2.986,0 -7.839,1.121 -11.944,5.604c-4.105,4.484 -15.675,15.32 -15.675,37.364c0,22.046 16.048,43.342 18.287,46.332c2.24,2.99 31.582,48.227 76.511,67.627c10.685,4.615 19.028,7.371 25.533,9.434c10.728,3.41 20.492,2.929 28.209,1.775c8.605,-1.285 26.499,-10.833 30.231,-21.295c3.732,-10.464 3.732,-19.431 2.612,-21.298c-1.119,-1.869 -4.105,-2.99 -8.583,-5.232Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share Understanding PLONK (Part 4): Arithmetic Constraints and Copy Constraints on telegram"
+            href="https://telegram.me/share/url?text=Understanding%20PLONK%20%28Part%204%29%3a%20Arithmetic%20Constraints%20and%20Copy%20Constraints&amp;url=http%3a%2f%2flocalhost%3a51400%2fpost%2f4-constraints%2f">
+            <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share Understanding PLONK (Part 4): Arithmetic Constraints and Copy Constraints on ycombinator"
+            href="https://news.ycombinator.com/submitlink?t=Understanding%20PLONK%20%28Part%204%29%3a%20Arithmetic%20Constraints%20and%20Copy%20Constraints&u=http%3a%2f%2flocalhost%3a51400%2fpost%2f4-constraints%2f">
+            <svg version="1.1" xml:space="preserve" width="30px" height="30px" viewBox="0 0 512 512" fill="currentColor"
+                xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape">
+                <path
+                    d="M449.446 0C483.971 0 512 28.03 512 62.554L512 449.446C512 483.97 483.97 512 449.446 512L62.554 512C28.03 512 0 483.97 0 449.446L0 62.554C0 28.03 28.029 0 62.554 0L449.446 0ZM183.8767 87.9921H121.8427L230.6673 292.4508V424.0079H281.3328V292.4508L390.1575 87.9921H328.1233L256 238.2489z" />
+            </svg>
+        </a>
+    </li>
+</ul>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="http://localhost:51400/">Purple Blog</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>
