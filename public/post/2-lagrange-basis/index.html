@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=51400&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Understanding PLONK (Part 2): Lagrange-basis | Purple Blog</title>
+<meta name="keywords" content="">
+<meta name="description" content="Introduction
+In the previous article, we mentioned that to implement the protocol verification process, the Prover initially encodes each column of the $W$ table using polynomial coding and sends the encoded results to the Verifier for verification. Through further interaction, we can verify whether the equation
+$$
+q_{L}(X) \cdot w_{a}(X) &#43; q_{R}(X) \cdot w_{b}(X) &#43; q_{M}(X)\cdot(w_{a}(X)\cdot w_{b}(X)) &#43; q_{C}(X) -  q_{O}(X)\cdot w_{c}(X) \overset{?}{=} 0
+$$
+holds.
+This verifies the correctness of a circuit only when the Prover is honest. However, the Prover might misbehave. To prevent this and ensure the circuit&rsquo;s correctness and security while satisfying constraints, we need to verify the relationship between $(\sigma_a(X),\sigma_b(X),\sigma_c(X))$ and $(w_a(X),w_b(X),w_c(X))$.">
+<meta name="author" content="Theme PaperMod">
+<link rel="canonical" href="http://localhost:51400/post/2-lagrange-basis/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.2a3385d98a00167c2423d497e7f60843d438f87d516925cd0d1c4a6784881930.css" integrity="sha256-KjOF2YoAFnwkI9SX5/YIQ9Q4&#43;H1RaSXNDRxKZ4SIGTA=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:51400/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:51400/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:51400/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:51400/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:51400/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:51400/post/2-lagrange-basis/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            .list::-webkit-scrollbar-thumb {
+                border-color: var(--code-bg);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+            delimiters: [
+                {left: "$$", right: "$$", display: true},
+                {left: "$", right: "$", display: false}
+            ],
+            
+            throwOnError: false
+        });
+    });
+</script><meta property="og:url" content="http://localhost:51400/post/2-lagrange-basis/">
+  <meta property="og:site_name" content="Purple Blog">
+  <meta property="og:title" content="Understanding PLONK (Part 2): Lagrange-basis">
+  <meta property="og:description" content="Introduction In the previous article, we mentioned that to implement the protocol verification process, the Prover initially encodes each column of the $W$ table using polynomial coding and sends the encoded results to the Verifier for verification. Through further interaction, we can verify whether the equation
+$$ q_{L}(X) \cdot w_{a}(X) &#43; q_{R}(X) \cdot w_{b}(X) &#43; q_{M}(X)\cdot(w_{a}(X)\cdot w_{b}(X)) &#43; q_{C}(X) - q_{O}(X)\cdot w_{c}(X) \overset{?}{=} 0 $$
+holds.
+This verifies the correctness of a circuit only when the Prover is honest. However, the Prover might misbehave. To prevent this and ensure the circuit’s correctness and security while satisfying constraints, we need to verify the relationship between $(\sigma_a(X),\sigma_b(X),\sigma_c(X))$ and $(w_a(X),w_b(X),w_c(X))$.">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="post">
+    <meta property="article:published_time" content="2026-03-10T00:00:00+00:00">
+    <meta property="article:modified_time" content="2026-03-10T00:00:00+00:00">
+      <meta property="og:image" content="http://localhost:51400/images/papermod-cover.png">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="http://localhost:51400/images/papermod-cover.png">
+  <meta name="twitter:title" content="Understanding PLONK (Part 2): Lagrange-basis">
+  <meta name="twitter:description" content="Introduction In the previous article, we mentioned that to implement the protocol verification process, the Prover initially encodes each column of the $W$ table using polynomial coding and sends the encoded results to the Verifier for verification. Through further interaction, we can verify whether the equation
+$$ q_{L}(X) \cdot w_{a}(X) &#43; q_{R}(X) \cdot w_{b}(X) &#43; q_{M}(X)\cdot(w_{a}(X)\cdot w_{b}(X)) &#43; q_{C}(X) - q_{O}(X)\cdot w_{c}(X) \overset{?}{=} 0 $$
+holds.
+This verifies the correctness of a circuit only when the Prover is honest. However, the Prover might misbehave. To prevent this and ensure the circuit’s correctness and security while satisfying constraints, we need to verify the relationship between $(\sigma_a(X),\sigma_b(X),\sigma_c(X))$ and $(w_a(X),w_b(X),w_c(X))$.">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "http://localhost:51400/post/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Understanding PLONK (Part 2): Lagrange-basis",
+      "item": "http://localhost:51400/post/2-lagrange-basis/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Understanding PLONK (Part 2): Lagrange-basis",
+  "name": "Understanding PLONK (Part 2): Lagrange-basis",
+  "description": "Introduction In the previous article, we mentioned that to implement the protocol verification process, the Prover initially encodes each column of the $W$ table using polynomial coding and sends the encoded results to the Verifier for verification. Through further interaction, we can verify whether the equation\n$$ q_{L}(X) \\cdot w_{a}(X) + q_{R}(X) \\cdot w_{b}(X) + q_{M}(X)\\cdot(w_{a}(X)\\cdot w_{b}(X)) + q_{C}(X) - q_{O}(X)\\cdot w_{c}(X) \\overset{?}{=} 0 $$\nholds.\nThis verifies the correctness of a circuit only when the Prover is honest. However, the Prover might misbehave. To prevent this and ensure the circuit\u0026rsquo;s correctness and security while satisfying constraints, we need to verify the relationship between $(\\sigma_a(X),\\sigma_b(X),\\sigma_c(X))$ and $(w_a(X),w_b(X),w_c(X))$.\n",
+  "keywords": [
+    
+  ],
+  "articleBody": "Introduction In the previous article, we mentioned that to implement the protocol verification process, the Prover initially encodes each column of the $W$ table using polynomial coding and sends the encoded results to the Verifier for verification. Through further interaction, we can verify whether the equation\n$$ q_{L}(X) \\cdot w_{a}(X) + q_{R}(X) \\cdot w_{b}(X) + q_{M}(X)\\cdot(w_{a}(X)\\cdot w_{b}(X)) + q_{C}(X) - q_{O}(X)\\cdot w_{c}(X) \\overset{?}{=} 0 $$\nholds.\nThis verifies the correctness of a circuit only when the Prover is honest. However, the Prover might misbehave. To prevent this and ensure the circuit’s correctness and security while satisfying constraints, we need to verify the relationship between $(\\sigma_a(X),\\sigma_b(X),\\sigma_c(X))$ and $(w_a(X),w_b(X),w_c(X))$.\nWhere:\n$(\\sigma_a(X),\\sigma_b(X),\\sigma_c(X))$ are permutation polynomials used to describe copy constraints between variables at different positions in the circuit, ensuring consistency of variables (whether inputs or intermediate results) across different locations.\nLet’s review how permutation polynomials work as discussed in the previous section:\nAssume the circuit has three columns $w_a,w_b,w_c$, each row in these columns might represent a value of a variable. The permutation polynomials $\\sigma_a(X),\\sigma_b(X),\\sigma_c(X)$ describe the mapping relationships between variables in the columns, ensuring that the same variable has the same value in different positions.\nFor example, if variable $x$ appears in the third row of the first column and the fifth row of the second column, the permutation polynomial ensures these two positions have equal values.\nNow, $(w_a(X),w_b(X),w_c(X))$ are polynomials representing the input and output values for each gate in the circuit, defining specific assignments for each gate’s left input, right input, and output.\nSimply put, the verification process ultimately converts circuit correctness checks into a set of polynomial constraints involving addition and multiplication.\nWhy do this? It’s to improve efficiency and reduce costs.\nFirst,\nUsing the matrix $W$ table form “able 1-1” from “Plonkish Arithmetization” as an example, it follows the principle of vertical encoding, meaning each column can be represented by a polynomial to describe the calculation rules for the contents under that column.\nCurrently, there are only three columns, so even checking row by row doesn’t take much time. However, if the number of rows increases to 100, checking each row becomes labor-intensive, requiring significant computational power from the Verifier.\nTherefore, encoding the three columns with one or several polynomials can transform a 3×100 table into 3 polynomials. (This is similar to understanding Excel spreadsheet formulas.)\nSecondly, transforming into polynomials offers an inherent advantage. If the matrix $W$ table can be successfully represented by polynomials, the Verifier doesn’t need to verify all points in the domain to confirm the circuit’s correctness.\nSpecifically:\nAssume the circuit constraints can be represented as a 3×100 table, with each row representing a constraint. Using polynomial encoding, compress this 3×100 table into three polynomials $w_a(X),w_b(X),w_c(X)$. These polynomials can be constructed from the original points using methods like Lagrange interpolation. The Verifier only needs to check if these three polynomials satisfy the constraint at a random point $X=z$. Specifically, if the circuit needs to satisfy $w_a(X)⋅w_b(X)=w_c(X)$, the Verifier can check: $$ w_a(z)⋅w_b(z)=w_c(z) $$\nIf this equation holds at the random point $X=z$, it can be assumed with high probability that the contents of the 3×100 table hold across the entire domain.\nLet’s revisit the example to see the calculation process:\nUsing “Table 1-1” as an example, currently the table is only 3×3. The indices $i$ and their corresponding interpolation points are as follows:\nIndices: $i = 1,2,3$ Interpolation points: $w_a$: $x_5,x_1,x_3$ $w_b$: $x_6,x_2,x_4$ $w_c$: $out,x_5,x_6$ Next, we begin constructing the Lagrange basis functions:\nFor each $i$, the Lagrange basis function ${l_i}{(X)}$ is defined as:\n$$ {l_i}{(X)}=\\prod_{j\\neq i}^{} \\frac{X-j}{i-j} $$\nFor the interpolation points: $\\omega_i$, compute ${l_1}{(X)},{l_2}{(X)},{l_3}{(X)}$:\nNote that $\\omega$ and $w$ represent different meanings. When representing interpolation points, we usually use $\\omega_i$, especially in polynomial interpolation or FFT (Fast Fourier Transform) scenarios; $w$ typically denotes witness, which may refer to different parts or variables of the witness, provided by the prover and unrelated to interpolation nodes.\n${\\textstyle \\prod_{j\\ne i}^{}}$ calculates the product for all $j \\ne i$. For example,\nFor $i = 1$, $j$ takes 2 and 3, $$ {l_1}{(X)}=\\frac{(X-2)(X-3)}{(1-2)(1-3)} =\\frac{(X-2)(X-3)}{2} $$\nFor $i = 2$, $j$ takes 1 and 3, $$ {l_2}{(X)}=\\frac{(X-1)(X-3)}{(2-1)(2-3)} = -(X-1)(X-3) $$\nFor $i = 3$, $j$ takes 1 and 2, $$ {l_3}{(X)}=\\frac{(X-1)(X-2)}{(3-1)(3-2)} =\\frac{(X-1)(X-2)}{2} $$\nNext, using the content from “Table 1-1” and the Lagrange basis functions computed above for each $i$, we start constructing the interpolation polynomials $w_a(X)$, $w_b(X)$, $w_c(X)$:\nFor $w_a$:\n$$ w_a(X)=x_5 \\cdot l_1(X)+x_1 \\cdot l_2(X) +x_3 \\cdot l_3(X) $$\nSubstitute ${l_1}(X)$, ${l_2}(X)$, ${l_3}(X)$:\n$$ \\begin{split} w_a(X) \u0026 = x_5 \\cdot l_1(X)+x_1 \\cdot l_2(X) +x_3 \\cdot l_3(X) \u0026 \\ \u0026 = x_5 \\cdot \\frac{(X-2)(X-3)}{2} - x_1 \\cdot(X-1)(X-3)+x_3 \\cdot\\frac{(X-1)(X-2)}{2} \\end{split} $$\nFor $w_b$:\n$$ w_b(X)=x_6 \\cdot l_1(X)+x_2 \\cdot l_2(X) +x_4 \\cdot l_3(X) $$\nSubstitute ${l_1}(X)$, ${l_2}(X)$, ${l_3}(X)$:\n$$ \\begin{split} w_b(X) \u0026 = x_6 \\cdot l_1(X)+x_2 \\cdot l_2(X) +x_4 \\cdot l_3(X)\\ \u0026 = x_6 \\cdot \\frac{(X-2)(X-3)}{2} - x_2 \\cdot (X-1)(X-3) +x_4 \\cdot \\frac{(X-1)(X-2)}{2} \\end{split} $$\nFor $w_c$:\n$$ w_c(X)=out \\cdot l_1(X)+x_5 \\cdot l_2(X) +x_6 \\cdot l_3(X) $$\nSubstitute ${l_1}(X)$, ${l_2}(X)$, ${l_3}(X)$:\n$$ \\begin{split} w_c(X) \u0026 = out \\cdot l_1(X)+x_5 \\cdot l_2(X) +x_6 \\cdot l_3(X)\\ \u0026 = out \\cdot \\frac{(X-2)(X-3)}{2} - x_5 \\cdot (X-1)(X-3) +x_6 \\cdot \\frac{(X-1)(X-2)}{2} \\end{split} $$\nAfter constructing the interpolation polynomials, if you want to check whether the resulting $w_a(X)$, $w_b(X)$, $w_c(X)$ correspond to the values in the table, you can verify by substituting values of $X$. For example, for $w_c(X)$:\nWhen $X=1$, check if $w_c(1) \\overset{?}{=} out$: $$ \\begin{split} w_c(1) \u0026 = out \\cdot \\frac{(1-2)(1-3)}{2} - x_5 \\cdot (1-1)(1-3) +x_6 \\cdot \\frac{(1-1)(1-2)}{2} \\ \u0026 = out \\end{split} $$\nWhen $X=2$, check if $w_c(2) \\overset{?}{=} x_5$: $$ \\begin{split} w_c(2) \u0026 = out \\cdot \\frac{(2-2)(2-3)}{2} - x_5 \\cdot (2-1)(2-3) +x_6 \\cdot \\frac{(2-1)(2-2)}{2} \\ \u0026 = x_5 \\end{split} $$\nWhen $X=3$, check if $w_c(3) \\overset{?}{=} x_6$: $$ \\begin{split} w_c(3) \u0026 = out \\cdot \\frac{(3-2)(3-3)}{2} - x_5 \\cdot (3-1)(3-3) +x_6 \\cdot \\frac{(3-1)(3-2)}{2} \\ \u0026 = x_6 \\end{split} $$\nYou can similarly verify $w_a(X)$ and $w_b(X)$.\nIf verification passes, it confirms the calculations are correct, and the preliminary work is complete.\nIn summary, all the above essentially involves constructing interpolation polynomials $w_a(X)$ based on known relationships in “Table 1”. “Table 2” illustrates the substitution process, while “Table 3” shows the interpolation polynomials $w_a(X)$ constructed from the interpolation $i=\\{1,2,3\\}$.\nIn “Table 1”, the domain is $i\\in \\{1,2,3\\}$, which becomes clearer in “Table 2”. Once the interpolation polynomial $w_a(X)$ is constructed in “Table 3”, the range of values that the variable $X$ can take is no longer limited to the original $\\{1,2,3\\}$, and can be extended to the finite field $\\mathbb{F}$.\nWe constructed the Lagrange interpolation polynomial in “3” with the existing three interpolation points. With it, we can substitute unknown points for numerical computation to verify if $w_a(X)\\cdot w_b(X)=w_c(X)$. If a randomly selected $X$ from $\\mathbb{F}$ satisfies $w_a(X)\\cdot w_b(X)=w_c(X)$, and if $\\mathbb{F}$ is sufficiently large, it can prove with high probability that the Prover did not cheat. How is this ensured? This is where the Schwartz-Zippel lemma comes in.\nProbabilistic Check of Polynomials If you understood the introduction, the following content will be easy to grasp.\nIn many cryptographic protocols and verification processes of complex computations, circuits (Boolean or algebraic) are used to describe and implement computational logic. Verifying the correctness of these computations is crucial, but directly verifying each computation step is usually impractical due to high computational costs. The Schwartz-Zippel lemma offers an efficient probabilistic verification method.\nWhat is the Schwartz-Zippel lemma?\nBy introducing random challenge values, we can merge multiple conditions needing individual verification into a simplified verification step. This method leverages the theory of “random polynomial challenges”, meaning that by verifying a polynomial’s value at a random point, one can, with high probability, determine the equality of two polynomials over the entire domain.\nSpecifically, if there are two polynomials $f(X)$ and $g(X)$, both of degree not exceeding $d$, the Verifier only needs to provide a random challenge value $\\zeta \\in \\mathbb{F}$ and check if $f(\\zeta) = g(\\zeta)$. This can determine with high probability that $f(X) = g(X)$, with an error probability $\\leq \\frac{d}{|\\mathbb{F}|}$. As long as $\\mathbb{F}$ is large enough, the probability of a check failing can be ignored.\nThis principle is known as the Schwartz-Zippel lemma.\nSuppose you want to verify two vectors $\\vec{a} + \\vec{b} \\overset{?}{=} \\vec{c}$. To enable verification in one step, we first encode the three vectors into polynomials.\nHow to encode vectors into polynomials?\nOne straightforward method is to treat vectors as “coefficients” of polynomials:\nAssume:\n$$ \\begin{split} \\vec{a} = [a_0, a_1, \\ldots, a_{N-1}]\\ \\vec{b} = [b_0, b_1, \\ldots, b_{N-1}]\\ \\vec{c} = [c_0, c_1, \\ldots, c_{N-1}] \\end{split} $$\nThen,\n$$ \\begin{split} a(X) \u0026= a_0 + a_1X+a_2X^2 + \\cdots + a_{n-1}X^{n-1}\\ b(X) \u0026= b_0 + b_1X+b_2X^2 + \\cdots + b_{n-1}X^{n-1}\\ c(X) \u0026= c_0 + c_1X+c_2X^2 + \\cdots + c_{n-1}X^{n-1} \\end{split} $$\nClearly, if $a_i+ b_i = c_i$, then $a(X)+b(X)=c(X)$. Then, by challenging with a random number $\\zeta$, we verify the three polynomials’ values at $X=\\zeta$:\n$$ a(\\zeta)+b(\\zeta)\\overset{?}{=}c(\\zeta) $$\nIf the equation holds, then $\\vec{a} + \\vec{b}=\\vec{c}$.\nLagrange Interpolation and Evaluation Form However, if we need to verify $\\vec{a}\\circ\\vec{b} =\\vec{c}$, (where $\\circ$ denotes the Hadamard product, meaning component-wise multiplication of the vectors), using “coefficient encoding” becomes challenging. This is because $a(X)\\cdot b(X)$ will generate many cross terms, with coefficients coming from various terms of different powers of $a(X)$ and $b(X)$.\nLet’s calculate specifically, assume:\n$$ \\begin{split} a(X)=a_0 + a_1X+a_2X^2\\ b(X)=b_0 + b_1X+b_2X^2\\ c(X)=c_0 +c_1X+c_2X^2+c_3X^3+c_4X^4 \\end{split} $$\nThen\n$$ \\begin{align} a(X)\\cdot b(X) \u0026 = (a_0 + a_1X+a_2X^2)\\cdot(b_0 + b_1X+b_2X^2) \u0026 \\ \u0026 = a_0b_0+(a_0b_1+b_0a_1)X+(a_0b_2+a_1b_1+a_2b_0)X^2+\\cdots \\end{align} $$\nObserve that $a_i\\cdot b_i$ and $c_i$ terms do not correspond to the $X^i$ coefficient. For instance, $a_1\\cdot b_1$ contributes to the $X^2$ term, along with coefficients like $a_0b_2$ and $a_2b_0$. Meanwhile, $c_1$ is the coefficient of $X^1$.\nThus, we need another polynomial encoding scheme using the Lagrange Basis. If we want to construct a polynomial $a(X)$ such that it takes a specific set of values on $H=\\{w_0, w_1, \\ldots w_{N-1}\\}$, assuming this set of values is $\\vec{a}$, representing the polynomial $a(X)$ over a finite field $H$:\n$$ \\begin{split} a(w_0) \u0026= a_0 \\ a(w_1) \u0026= a_1 \\ \u0026\\vdots \\ a(w_{N-1}) \u0026= a_{N-1} \\ \\end{split} $$\nWhich means:\n$$ \\vec{a} = [a(w_0), a(w_1), \\ldots, a(w_{N-1})] = [a_0, a_1, \\ldots, a_{N-1}] $$\nConstructing the interpolation polynomial requires the basis function set: ${L_i(X)}_{i\\in[0,N-1]}$, where $L_i(w_i)=1$, and for $j\\neq i$, $L_i(w_j)=0$.\nNote: $w_i$ is an interpolation point, $w_i \\in {H}$.\nThen, the interpolation polynomial $a(X)$ can be expressed as a linear combination of the basis functions $L_i(X)$ and the corresponding value vector $\\vec{a}$:\n$$ a(X)=a_0\\cdot L_0(X) + a_1\\cdot L_1(X)+ a_2\\cdot L_2(X) + \\cdots + a_{N-1}\\cdot L_{N-1}(X) $$\nA more concrete example, suppose we want to construct an interpolation polynomial $a(X)$ such that it takes the values $\\vec{a}=(a_0,a_1,a_2)=(4,5,6)$ over the domain $H’=\\{1,2,3\\}$.\nThis means we want to construct a polynomial $h(X)$ such that $h(1)=4$, $h(2)=5$, $h(3)=6$; that is, we have three known interpolation points $(1,4),(2,5),(3,6)$, from which we build the interpolation polynomial $h(X)$. Here, because $H’= \\{1,2,3\\}$, i.e., $X\\in \\{1,2,3\\}$, $z_0=1, z_1=2, z_2=3$.\nNote:\n$z_i$ denotes the x-coordinate of the interpolation points, i.e., interpolation nodes; The definition of the Lagrange basis function $L_i{(X)}$ is related to the order of interpolation points, not the specific order in the sequence. Therefore, even if you change the order of nodes in the list, as long as the node values themselves remain unchanged, the form of $L_i(X)$ will not change. As long as the interpolation points and the corresponding function values are consistent during calculation, the specific values of interpolation points will not affect the correctness of Lagrange interpolation. The key is to ensure that each interpolation point $w_i$ correctly corresponds to the function value at that point, and the form and result of the interpolation polynomial depend on these correspondences. The Lagrange interpolation polynomial $h(X)$ can be expressed as:\n$h(X)={\\textstyle \\sum_{i=0}^{N-1}} h_iL_i(X)$\n1. Next, we calculate the Lagrange basis functions:\nWhen $i=0$, i.e., at the interpolation node $z_0=1$:\n$L_0(X)=\\frac{(X-2)(X-3)}{(1-2)(1-3)}=\\frac{(X-2)(X-3)}{2}$\nWhen $i=1$, i.e., at the interpolation node $z_1=2$:\n$L_1(X)=\\frac{(X-1)(X-3)}{(2-1)(2-3)}=-(X-1)(X-3)$\nWhen $i=2$, i.e., at the interpolation node $z_2=3$:\n$L_2(X)=\\frac{(X-1)(X-2)}{(3-1)(3-2)}=\\frac{(X-1)(X-2)}{2}$\n2. Constructing the interpolation polynomial $h(X)$:\nSince at $z_0=1$, $h(z_0)=a(1)=4$, at $z_1=2$, $h(z_1)=a(2)=5$, at $z_2=3$, $h(z_2)=a(3)=6$,\nWe can use this relationship to construct the interpolation polynomial $h(X)$:\n$$ \\begin{align} h(X) \u0026 = 4L_0(X)+5L_1(X)+6L_2(X) \u0026 \\ \u0026 = 4\\cdot \\frac{(X-2)(X-3)}{2}-5\\cdot (X-1)(X_3)+6\\cdot \\frac{(X-1)(X-2)}{2} \\ \u0026 = 2(X-2)(X-3)-5(X-1)(X-3)+3(X-1)(X-2)\\ \u0026 = X+3 \\end{align} $$\nIf $H$ is larger, for example, $H’’=\\{1,2,3,4\\}$, with $z’_i=\\{0,1,2,3\\}$, $\\vec{a’}=(4,5,6,7)$. We can construct $h(X) = 4\\cdot L_0{(X)}+ 5\\cdot L_1{(X)} + 6\\cdot L_2{(X)} + 7\\cdot L_3{(X)}$. This is not calculated here, but the point is:\nAs long as the interpolation points and corresponding function values are consistent during calculation, the specific values of interpolation points will not affect the correctness of Lagrange interpolation. When constructing interpolation polynomials, it is usually necessary to use all given interpolation points. This ensures that the polynomial accurately takes the corresponding value at each interpolation point. If only part of the interpolation points are used, the polynomial might not accurately pass through all points. 3. Verify the polynomial $h(X)$\nWe take $X=\\{1,2,3\\}$ and substitute it into the constructed interpolation polynomial $h(X)$ to see if the resulting values are as expected:\n$$ \\begin{align} a(1)=1+3=4\\ a(2)=2+3=5\\ a(3)=3+3=6 \\end{align} $$\nThe verification results are consistent with the value vector $\\vec{a}=(4,5,6)$. We constructed the polynomial $h(X)$ and verified its value at interpolation nodes is correct.\nIt seems that $L_i(X)$ acts like a selector, meaning:\nWhen $X=w_i$, only $L_i(w_i)=1$, while all other $L_i(w_j) = 0 (j\\neq i)$.\nNote: Both $i$ and $j$ are indices in the set of interpolation nodes. The indices $i$ and $j$ are used to identify different interpolation nodes, but only at $i$ does the interpolation node value equal 1, while at $j$, the interpolation node value is 0. This duality—having values at interpolation nodes either as 0 or 1—is the selective property of Lagrange basis functions.\nNow, returning to the step of constructing $a(X)$:\n$$ a(X)=a_0\\cdot L_0(X) + a_1\\cdot L_1(X)+ a_2\\cdot L_2(X) + \\cdots + a_{N-1}\\cdot L_{N-1}(X) $$\nUsing the same method, we can construct $b(X)$ and $c(X)$:\n$$ \\begin{split} b(X)=b_0\\cdot L_0(X) + b_1\\cdot L_1(X)+ b_2\\cdot L_2(X) + \\cdots + b_{N-1}\\cdot L_{N-1}(X) \\ c(X)=c_0\\cdot L_0(X) + c_1\\cdot L_1(X)+ c_2\\cdot L_2(X) + \\cdots + c_{N-1}\\cdot L_{N-1}(X) \\ \\end{split} $$\nIf $\\vec{a} \\circ \\vec{b} = \\vec{c}$ is true at the nodes, this means at each node $w_i$, $a(w_i) \\cdot b(w_i) = c(w_i)$. Since the interpolation polynomials match the given values at these nodes, and the polynomials’ form remains consistent between nodes, it follows that $a(X) \\cdot b(X) = c(X)$ will also hold over the given domain $H$.\nLet’s verify if $\\vec{a} \\circ \\vec{b} = \\vec{c}$, $a(X) \\cdot b(X) \\overset{?}{=} c(X), \\quad \\forall X\\in H$.\nThe specific calculation process is:\n$$ \\begin{split} \\vec{a} \\circ \\vec{b} \u0026 = \\vec{c}\\ [a_0, a_1, \\ldots, a_{N-1}] \\circ [b_0, b_1, \\ldots, b_{N-1}] \u0026 =[c_o,c_1, \\ldots,c_{N-1}]\\ [a_0 \\cdot b_0 , a_1\\cdot b_1 , a_2\\cdot b_2 \\ldots ,a_{N-1}\\cdot b_{N-1}]\u0026=[c_o,c_1,\\ldots,c_{N-1}] \\end{split} $$\nClearly, in the above equation, $a_0 \\cdot b_0=c_0$, $a_1 \\cdot b_1=c_1$, $\\ldots$, $a_{N-1} \\cdot b_{N-1} = c_{N-1}$.\nTherefore, $a_i \\cdot b_i =c_i$, which implies $a(w_i)\\cdot b(w_i) =c(w_i)$, $a(X)\\cdot b(X)=c(X), \\quad \\forall X\\in H$.\nWe’ve now translated the element-wise multiplication problem of two vectors into the relationship between three polynomials. The next question is how to perform a random challenge verification.\nWe realize that if the Verifier directly sends a random number $\\zeta$ to challenge the equation above, $\\zeta$ can only belong to $H$. If there exists only one $j$ such that $a_j\\cdot b_j\\neq c_j$, the probability of the Verifier’s challenge detecting this error is only $\\frac{1}{N}$. Thus the Verifier needs to challenge multiple times to reduce the probability of missing an error. However, this doesn’t meet our requirement; we hope to detect Prover’s cheating with a single challenge.\nWe can change the range of $X$ in the equation above by using the following equation:\n$$ a(X)\\cdot b(X) - c(X) = q(X)\\cdot z_H(X), \\quad\\forall X\\in \\mathbb{F} $$\nThis equation holds over the entire domain $\\mathbb{F}$. Why is this?\nFirst, consider the left-hand polynomial: $a(X)\\cdot b(X)-c(X)$, let’s define it as $f(X)$.\nWe can see that $f(X)$ equals zero over $X\\in H$, meaning $H$ is exactly the “root set” of $f(X)$. Therefore, $f(X)$ can be expressed as the product of the vanishing polynomial $z_H(X)$ and a quotient polynomial $q(X)$. We can use the known properties of $z_H(X)$ to simplify the problem handling. Thus, $f(X)$ can be factored as follows:\n$$ f(X)=(X-w_0)(X-w_1)(X-w_2)\\cdots(X-w_{N-1})\\cdot q(X) $$\nIn other words, $f(X)$ can be divided by the polynomial $z_H(X)=(X-w_0)(X-w_1)(X-w_2)\\cdots(X-w_{N-1})$, resulting in a quotient polynomial $q(X)$, representing the result of dividing $f(X)$ by $z_H(X)$. The vanishing polynomial $z_H(X)$ is also known as the Vanishing Polynomial, capturing all roots of $f(X)$.\nNote:\n$H = \\{w_0, w_1, \\ldots, w_{N-1}\\}$ is the set of interpolation nodes. The vanish polynomial $Z_H(X)$ is a polynomial whose roots are all nodes in the set $H$. The right $z_H(X)$ is a node polynomial, meaning this polynomial $z_H(X)$ has roots at all interpolation nodes $w_{i}$, i.e., for all $w_i\\in H$, $Z_H(w_i)=0$. This polynomial can be defined as: $z_H(X)=(X-w_0)(X-w_1)(X-w_2)\\cdots(X-w_{n-1})$. Definition of polynomial divisibility: Suppose there are two polynomials $A(X)$ and $B(X)$. If there exists a polynomial $Q(X)$ such that $A(X)=B(X)\\cdot Q(X)$, then we say polynomial $A(X)$ is divisible by $B(X)$, or $B(X)$ is a factor of $A(X)$. If we let the Prover calculate this $Q(X)$ and send it to the Verifier, and since $H$ is a known system parameter, the Verifier can compute $z_H(X)$ itself. Then the Verifier only needs a single random check to determine if $a(X)\\cdot b(X)-c(X)$ equals zero at $H$, based on the Schwartz-Zippel lemma.\nIf $P(X)=a(X)\\cdot b(X)-c(X)$ is a non-zero polynomial, assuming its degree is $d$, then the probability of a randomly chosen number yielding a result of zero $\\le \\frac{d}{|F|}$, where $F$ is the finite field. Provided $F$ is large enough, the probability of the result being 0 is negligible.\nIn simple terms, the probability that the polynomial equals 0 is already less than a very very small probability, roughly equivalent to it being impossible to randomly select that “lucky number” that coincidentally equals 0. We can then confidently conclude it’s the vanishing polynomial.\n$$ a(\\zeta)\\cdot b(\\zeta)-c(\\zeta) \\overset{?}{=} q(\\zeta)\\cdot z_H(\\zeta) $$\nMoreover, if we use Polynomial Commitment, the Verifier can let the Prover calculate the values of these polynomials at $X=\\zeta$ and generate a proof to confirm the correctness of the values. For the Verifier, it only needs to check this proof’s validity by randomly choosing a number, rather than calculating the polynomial values itself, thereby minimizing the Verifier’s workload.\nHowever, the Verifier’s calculation of $z_H(\\zeta)$ requires $O(n)$ computation, as it involves n multiplication operations.\nSupplement: In computational complexity, $O(n)$ indicates that as the input size $n$ increases, the algorithm’s running time or required resources (such as calculation steps) will increase linearly. In simple terms, if an algorithm is $O(n)$, doubling the input data will double the algorithm’s running time.\nCan the Verifier further reduce workload? The answer is yes, by choosing a special $H\\subset \\mathbb{F}$, specifically if $H$ is a well-structured set, enabling efficient computation of the vanishing polynomial $z_H(X)$ and its values using fast Fourier transform (FFT) algorithms.\nRoots of Unity If we choose roots of unity as $H$, the computation of $z_H(\\zeta)$ reduces to $O(\\log{n})$.\nFor any finite field $\\mathbb{F}_p=\\{0,1,\\ldots,p-1\\}$, where the order $p$ is a prime. Removing zero, the remaining elements form a multiplicative group $\\mathbb{F}_p^\\ast=\\{1,\\ldots,p-1\\}$ of order $p-1$. Since $p-1$ is even, its prime factorization includes several 2s, noted as $\\lambda$ 2s. Thus, $\\mathbb{F}_p^\\ast$ contains a multiplicative subgroup of order $2^\\lambda$. Let $N=2^{k}, k\\leq\\lambda$, then there must exist a multiplicative subgroup of order $N$, denoted as $H$. This subgroup necessarily has a generator, denoted as $\\omega$, with $\\omega^N=1$. This is akin to taking the $N$th root of 1, hence called a root of unity. However, there isn’t just one $\\omega$, as $\\omega^2,\\omega^3,\\ldots,\\omega^{N-1}$ all satisfy the property of roots of unity, i.e., $(\\omega^k)^N=1, k\\in(2,3,\\ldots,N-1)$. All these roots of unity generated by $\\omega$ form the multiplicative subgroup $H$:\n$$ H=(1,\\omega,\\omega^2,\\omega^3,\\ldots,\\omega^{N-1}) $$\nNote: $\\omega = e^{2\\pi i / N}$. This expression reveals some patterns.\nThese elements satisfy certain symmetries: for example, $\\omega^{\\frac{N}{2}} = e^{2\\pi i \\cdot \\frac{N/2}{N}} = e^{\\pi i} = -1$,\nFrom $\\omega^{\\frac{N}{2}} = -1$, we have $\\omega^{\\frac{N}{2} + 1} = \\omega \\cdot \\omega^{\\frac{N}{2}} = \\omega \\cdot (-1) = -\\omega$. Hence, $\\omega = -\\omega^{\\frac{N}{2} + 1}$.\nFor any exponent $i$, $\\omega^{\\frac{N}{2}} = -1$. Thus $\\omega^{\\frac{N}{2} + i} = \\omega^{\\frac{N}{2}} \\cdot \\omega^i = (-1) \\cdot \\omega^i = -\\omega^i$.\nMoreover, summing all the roots of unity yields zero:\n$$ \\sum_{i=0}^{N-1}\\omega^i=0 $$\nA simple example: we can find a subgroup of order 4 in $\\mathbb{F}_{13}$.\n$$ \\mathbb{F}_{13}=\\{0,1,2,3,4,5,6,7,8,9,10,11,12\\} $$\nThe generator of the multiplicative group is given as $g=2$. Since $13-1=3 \\times 2 \\times 2$, there exists a multiplicative subgroup of order 4 with generator $\\omega=5$:\nIf $g$ is a generator of $\\mathbb{F}_p^\\ast$, then $g^{p-1}=1$, and $\\mathbb{F}_p^\\ast = {g^0,g^1,\\ldots,g^{p-2}}$\n$$ H={\\omega^0=1,\\omega^1=5,\\omega^2=12,\\omega^3=8} $$\nAnd $\\omega^4=1=\\omega^0$.\nIn practical applications, we choose a larger finite field that can have a large powers-of-2 multiplicative subgroup. For example, the scalar field of the elliptic curve BN254 contains a multiplicative subgroup of order $2^{28}$, and BLS-12-381 contains a subgroup of order $2^{32}$.\nOn the multiplicative subgroup $H$, the following property holds:\n$$ z_H(X)=\\prod_{i=0}^{N-1}(X-\\omega^i)=X^N-1 $$\nWe can simply derive, assuming $N = 4$. Due to the symmetry of $\\omega^i$, $\\omega^4=1$ means $\\omega$ could be (1,i,-1,-i). This calculation process can be continuously simplified:\nHow to understand the symmetry of $\\omega^i$? $\\omega_i \\times \\omega^{N-i}=1$ (mutual inverses); $\\omega^N=1$ ensures they are periodic on the unit circle (repeat every $N$).\n$$ \\begin{split} \u0026(X-\\omega^0)(X-\\omega^1)(X-\\omega^2)(X-\\omega^3) \\ =\u0026 (X-1)(X-i)(X+1)(X+i) \\ =\u0026 (X^2-1)(X^2+1) \\ =\u0026 (X^4-1) \\ \\end{split} $$\nLagrange Basis For the Lagrange polynomial, $L_i(\\omega_i)=1$, and $L_i(\\omega_j)=0, (j\\neq i)$. Next, we give the construction of $L_i(X)$.\nTo construct $L_i(X)$, first construct the non-zero polynomial part. Since $L_i(\\omega_j)=1, j = i$, it must contain the polynomial factor $\\prod_{j,j\\neq i}(X-\\omega_j)$. However, this factor may not equal 1 at $X=\\omega_i$, i.e., $\\prod_{j, j\\neq i}(\\omega_i-\\omega_j)\\neq 1$. Then, we just need to divide this factor by this potentially non-1 value, thus $L_i(X)$ is defined as:\n$$ L_i(X) = \\frac{\\prod_{j\\in H\\backslash{i}}(X-\\omega_j)}{\\prod_{j\\in H\\backslash{i}}(\\omega_i-\\omega_j)} = \\prod_{j\\in H\\backslash{i}}^{} \\frac{X-\\omega_j}{\\omega_i-\\omega_j} $$\nIt is easy to find that $L_i(X)$ equals 1 at $X=\\omega_i$ and equals 0 at other locations $X=\\omega_j, j\\neq i$.\nFor any polynomial $f(X)$ of degree less than $N$, it can be uniquely expressed as:\n$$ f(X)=a_0\\cdot L_0(X)+a_1\\cdot L_1(X)+a_2\\cdot L_2(X)+ \\cdots + a_{N-1}\\cdot L_{N-1}(X) $$\nWe can represent $f(X)$ by its values on $H$ as $(a_0,a_1,a_2,\\ldots,a_{N-1})$. This is called the evaluation form of the polynomial, as different to the coefficient form.\nThe two forms can be converted on $H$ using the (Inverse) Fast Fourier Transform algorithm with a computational complexity of $O(N\\log{N})$.\nPolynomial Constraints Using the Lagrange basis, we can easily impose constraints on various vector calculations.\nFor example, if we want to constrain the first element of the vector $\\vec{a}=(h,a_1,a_2,\\ldots,a_{N-1})$ to be $h$, we can encode this vector to get $a(X)$ and impose the following constraint:\n$$ L_0(X)(a(X)-h) = 0, \\quad \\forall X\\in H $$\nThe verifier can challenge the following polynomial equation:\n$$ L_0(X)(a(X)-h) = q(X)\\cdot z_H(X) $$\nFor instance, if we want to constrain the first element of $\\vec{a}=(h_1,a_1,a_2,\\ldots,a_{N-2},h_2)$ to be $h_1$, and the last element to be $h_2$, with other elements arbitrary, then $a(X)$ should satisfy the following two constraints:\n$$ \\begin{split} L_0(X)\\cdot (a(X)-h_1) \u0026= 0, \\quad \\forall X\\in H\\ L_{N-1}(X)\\cdot(a(X)-h_2) \u0026= 0, \\quad \\forall X\\in H \\end{split} $$\nThrough a random challenge number ( $\\alpha$ ) given by the verifier, the above two constraints can be merged into one polynomial constraint:\n$$ L_0(X)\\cdot (a(X)-h_1) + \\alpha\\cdot L_{n-1}(X)\\cdot(a(X)-h_2) = 0, \\quad \\forall X\\in H $$\nNext, verifier only needs to challenge the following polynomial equation:\n$$ L_0(X)\\cdot (a(X)-h_1) + \\alpha\\cdot L_{n-1}(X)\\cdot(a(X)-h_2) = q(X)\\cdot z_H(X) $$\nIf we want to verify that two vectors $\\vec{a}$ and $\\vec{b}$ of equal length have the same elements except for the first, how to constrain them? Assuming $a(X)$ and $b(X)$ are the polynomial encodings of the two vectors, they should satisfy:\n$$ (X-\\omega^0)(a(X)-b(X))=0 $$\nWhen $X=\\omega^0$, the first factor on the left is 0, and when $X\\in H\\backslash{\\omega^0}$, the second factor is 0, meaning all values must be equal except the first element.\nIt can be seen that using Lagrange polynomials, we can flexibly constrain relationships between multiple vectors and combine multiple constraints together, allowing the verifier to verify multiple vector constraints with only a few random challenges.\nCoset In the multiplicative group of a prime finite field, for each multiplicative subgroup $H$, there are multiple cosets of the same length. These cosets share similar properties with $H$ and are also used in PlonK. Here, we introduce some of their properties.\nTaking $\\mathbb{F}_{13}$ as an example, choose $H=\\{1,5,12,8\\}$, and the generator of the multiplicative group is $g=2$. We can obtain the following two cosets:\n$$ \\begin{split} H_1 \u0026= g\\cdot H = {g, g\\omega, g\\omega^2, g\\omega^3} \u0026= (2,10,11,3) \\ H_2 \u0026= g^2\\cdot H = {g^2, g^2\\omega, g^2\\omega^2, g^2\\omega^3} \u0026= (4,7,9,6) \\ \\end{split} $$\nIt can be seen that $\\mathbb{F}^*_{13}=H\\cup H_1 \\cup H_2$, and they have no overlap. Their Vanishing Polynomials can be quickly calculated:\n$$ z_{H_1}(X)=X^N-g^N, \\quad z_{H_2}(X)=X^N-g^{2N} $$\nReferences Schwartz–Zippel lemma: https://en.wikipedia.org/wiki/Schwartz%E2%80%93Zippel_lemma\n",
+  "wordCount" : "4166",
+  "inLanguage": "en",
+  "image": "http://localhost:51400/images/papermod-cover.png","datePublished": "2026-03-10T00:00:00Z",
+  "dateModified": "2026-03-10T00:00:00Z",
+  "author":{
+    "@type": "Person",
+    "name": "Theme PaperMod"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://localhost:51400/post/2-lagrange-basis/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Purple Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://localhost:51400/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:51400/" accesskey="h" title="Purple Blog (Alt + H)">Purple Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                    <ul class="lang-switch"><li>|</li>
+                        <li>
+                            <a href="http://localhost:51400/zh/" title="中文"
+                                aria-label=":cn:">🇨🇳</a>
+                        </li>
+                    </ul>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:51400/archives" title="Archive">
+                    <span>Archive</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:51400/search/" title="Search">
+                    <span>Search</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:51400/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:51400/%5B%E5%BE%85%E6%9B%B4%E6%96%B0%5D" title="Podcast">
+                    <span>Podcast</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="http://localhost:51400/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:51400/post/">Posts</a></div>
+    <h1 class="post-title entry-hint-parent">
+      Understanding PLONK (Part 2): Lagrange-basis
+    </h1>
+    <div class="post-meta"><span title='2026-03-10 00:00:00 +0000 UTC'>March 10, 2026</span>&nbsp;·&nbsp;<span>20 min</span>&nbsp;·&nbsp;<span>Theme PaperMod</span>&nbsp;|&nbsp;<span>
+    <a href="https://github.com/adityatelange/hugo-PaperMod/tree/exampleSite/content/post/2-Lagrange-basis/index.md" rel="noopener noreferrer edit" target="_blank">Suggest Changes</a>
+</span>
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#introduction" aria-label="Introduction">Introduction</a></li>
+                <li>
+                    <a href="#probabilistic-check-of-polynomials" aria-label="Probabilistic Check of Polynomials">Probabilistic Check of Polynomials</a></li>
+                <li>
+                    <a href="#lagrange-interpolation-and-evaluation-form" aria-label="Lagrange Interpolation and Evaluation Form">Lagrange Interpolation and Evaluation Form</a><ul>
+                        
+                <li>
+                    <a href="#roots-of-unity" aria-label="Roots of Unity">Roots of Unity</a></li>
+                <li>
+                    <a href="#lagrange-basis" aria-label="Lagrange Basis">Lagrange Basis</a></li>
+                <li>
+                    <a href="#polynomial-constraints" aria-label="Polynomial Constraints">Polynomial Constraints</a></li>
+                <li>
+                    <a href="#coset" aria-label="Coset">Coset</a></li></ul>
+                </li>
+                <li>
+                    <a href="#references" aria-label="References">References</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h1 id="introduction">Introduction<a hidden class="anchor" aria-hidden="true" href="#introduction">#</a></h1>
+<p>In the previous article, we mentioned that to implement the protocol verification process, the Prover initially encodes each column of the $W$ table using polynomial coding and sends the encoded results to the Verifier for verification. Through further interaction, we can verify whether the equation</p>
+<p>$$
+q_{L}(X) \cdot w_{a}(X) + q_{R}(X) \cdot w_{b}(X) + q_{M}(X)\cdot(w_{a}(X)\cdot w_{b}(X)) + q_{C}(X) -  q_{O}(X)\cdot w_{c}(X) \overset{?}{=} 0
+$$</p>
+<p>holds.</p>
+<p>This verifies the correctness of a circuit only when the Prover is honest. However, the Prover might misbehave. <strong>To prevent this and ensure the circuit&rsquo;s correctness and security while satisfying constraints, we need to verify</strong> the relationship between $(\sigma_a(X),\sigma_b(X),\sigma_c(X))$ and $(w_a(X),w_b(X),w_c(X))$.</p>
+<p>Where:</p>
+<p>$(\sigma_a(X),\sigma_b(X),\sigma_c(X))$ are permutation polynomials used to describe copy constraints between variables at different positions in the circuit, ensuring consistency of variables (whether inputs or intermediate results) across different locations.</p>
+<p>Let&rsquo;s review how permutation polynomials work as discussed in the previous section:</p>
+<p>Assume the circuit has three columns $w_a,w_b,w_c$, each row in these columns might represent a value of a variable. The permutation polynomials $\sigma_a(X),\sigma_b(X),\sigma_c(X)$ describe the mapping relationships between variables in the columns, ensuring that the same variable has the same value in different positions.</p>
+<p>For example, if variable $x$ appears in the third row of the first column and the fifth row of the second column, the permutation polynomial ensures these two positions have equal values.</p>
+<p>Now, $(w_a(X),w_b(X),w_c(X))$ are polynomials representing the input and output values for each gate in the circuit, defining specific assignments for each gate&rsquo;s left input, right input, and output.</p>
+<p>Simply put, the verification process ultimately converts circuit correctness checks into a set of polynomial constraints involving addition and multiplication.</p>
+<p>Why do this? It&rsquo;s to <strong>improve efficiency and reduce costs</strong>.</p>
+<p>First,</p>
+<p>Using the matrix $W$ table form &ldquo;able 1-1&rdquo; from &ldquo;Plonkish Arithmetization&rdquo; as an example, it follows the principle of vertical encoding, meaning each column can be represented by a polynomial to describe the calculation rules for the contents under that column.</p>
+<p>Currently, there are only three columns, so even checking row by row doesn&rsquo;t take much time. However, if the number of rows increases to 100, checking each row becomes labor-intensive, requiring significant computational power from the Verifier.</p>
+<p>Therefore, encoding the three columns with one or several polynomials can transform a 3×100 table into 3 polynomials. (This is similar to understanding Excel spreadsheet formulas.)</p>
+<figure>
+    <img loading="lazy" src="W.png" width="50%"/> 
+</figure>
+
+<p>Secondly, transforming into polynomials offers an inherent advantage. If the matrix $W$ table can be successfully represented by polynomials, the Verifier doesn&rsquo;t need to verify all points in the domain to confirm the circuit&rsquo;s correctness.</p>
+</br>
+<p><strong>Specifically:</strong></p>
+<ol>
+<li>Assume the circuit constraints can be represented as a 3×100 table, with each row representing a constraint.</li>
+<li>Using polynomial encoding, compress this 3×100 table into three polynomials $w_a(X),w_b(X),w_c(X)$. These polynomials can be constructed from the original points using methods like Lagrange interpolation.</li>
+<li>The Verifier only needs to check if these three polynomials satisfy the constraint at a random point $X=z$. Specifically, if the circuit needs to satisfy $w_a(X)⋅w_b(X)=w_c(X)$, the Verifier can check:</li>
+</ol>
+<p>$$
+w_a(z)⋅w_b(z)=w_c(z)
+$$</p>
+<p>If this equation holds at the random point $X=z$, it can be assumed with high probability that the contents of the 3×100 table hold across the entire domain.</p>
+<p>Let&rsquo;s revisit the example to see the calculation process:</p>
+</br>
+<figure>
+    <img loading="lazy" src="W.png" width="50%"/> 
+</figure>
+
+<p>Using &ldquo;Table 1-1&rdquo; as an example, currently the table is only 3×3. The indices $i$ and their corresponding interpolation points are as follows:</p>
+<ul>
+<li>Indices: $i = 1,2,3$</li>
+<li>Interpolation points:
+<ul>
+<li>$w_a$: $x_5,x_1,x_3$</li>
+<li>$w_b$: $x_6,x_2,x_4$</li>
+<li>$w_c$: $out,x_5,x_6$</li>
+</ul>
+</li>
+</ul>
+<p>Next, we <strong>begin constructing the Lagrange basis functions</strong>:</p>
+<p>For each $i$, the Lagrange basis function ${l_i}{(X)}$ is defined as:</p>
+<p>$$
+{l_i}{(X)}=\prod_{j\neq i}^{} \frac{X-j}{i-j}
+$$</p>
+<p>For the interpolation points: $\omega_i$, compute ${l_1}{(X)},{l_2}{(X)},{l_3}{(X)}$:</p>
+<blockquote>
+<p>Note that $\omega$ and $w$ represent different meanings. When representing interpolation points, we usually use $\omega_i$, especially in polynomial interpolation or FFT (Fast Fourier Transform) scenarios; $w$ typically denotes witness, which may refer to different parts or variables of the witness, provided by the prover and unrelated to interpolation nodes.</p></blockquote>
+<p>${\textstyle \prod_{j\ne i}^{}}$ calculates the product for all $j \ne i$. For example,</p>
+<ul>
+<li>For $i = 1$, $j$ takes 2 and 3,</li>
+</ul>
+<p>$$
+{l_1}{(X)}=\frac{(X-2)(X-3)}{(1-2)(1-3)} =\frac{(X-2)(X-3)}{2}
+$$</p>
+<ul>
+<li>For $i = 2$, $j$ takes 1 and 3,</li>
+</ul>
+<p>$$
+{l_2}{(X)}=\frac{(X-1)(X-3)}{(2-1)(2-3)} = -(X-1)(X-3)
+$$</p>
+<ul>
+<li>For $i = 3$, $j$ takes 1 and 2,</li>
+</ul>
+<p>$$
+{l_3}{(X)}=\frac{(X-1)(X-2)}{(3-1)(3-2)} =\frac{(X-1)(X-2)}{2}
+$$</p>
+<p>Next, using the content from &ldquo;Table 1-1&rdquo; and the Lagrange basis functions computed above for each $i$, <strong>we start constructing the interpolation polynomials $w_a(X)$, $w_b(X)$, $w_c(X)$</strong>:</p>
+<p>For $w_a$:</p>
+<p>$$
+w_a(X)=x_5 \cdot l_1(X)+x_1 \cdot l_2(X) +x_3 \cdot l_3(X)
+$$</p>
+<p>Substitute ${l_1}(X)$, ${l_2}(X)$, ${l_3}(X)$:</p>
+<p>$$
+\begin{split}
+w_a(X) &amp; = x_5 \cdot l_1(X)+x_1 \cdot l_2(X) +x_3 \cdot l_3(X) &amp; \ &amp; = x_5 \cdot \frac{(X-2)(X-3)}{2} - x_1 \cdot(X-1)(X-3)+x_3 \cdot\frac{(X-1)(X-2)}{2}
+\end{split}
+$$</p>
+<p>For $w_b$:</p>
+<p>$$
+w_b(X)=x_6 \cdot l_1(X)+x_2 \cdot l_2(X) +x_4 \cdot l_3(X)
+$$</p>
+<p>Substitute ${l_1}(X)$, ${l_2}(X)$, ${l_3}(X)$:</p>
+<p>$$
+\begin{split}
+w_b(X) &amp; = x_6 \cdot l_1(X)+x_2 \cdot l_2(X) +x_4 \cdot l_3(X)\ &amp; = x_6 \cdot \frac{(X-2)(X-3)}{2} - x_2 \cdot (X-1)(X-3) +x_4 \cdot \frac{(X-1)(X-2)}{2}
+\end{split}
+$$</p>
+<p>For $w_c$:</p>
+<p>$$
+w_c(X)=out \cdot l_1(X)+x_5 \cdot l_2(X) +x_6 \cdot l_3(X)
+$$</p>
+<p>Substitute ${l_1}(X)$, ${l_2}(X)$, ${l_3}(X)$:</p>
+<p>$$
+\begin{split}
+w_c(X) &amp; = out \cdot l_1(X)+x_5 \cdot l_2(X) +x_6 \cdot l_3(X)\ &amp; = out \cdot \frac{(X-2)(X-3)}{2} - x_5 \cdot (X-1)(X-3) +x_6 \cdot \frac{(X-1)(X-2)}{2}
+\end{split}
+$$</p>
+<p>After constructing the interpolation polynomials, if you want to check whether the resulting $w_a(X)$, $w_b(X)$, $w_c(X)$ correspond to the values in the table, you can verify by substituting values of $X$. For example, for $w_c(X)$:</p>
+<ul>
+<li>When $X=1$, check if $w_c(1) \overset{?}{=} out$:</li>
+</ul>
+<p>$$
+\begin{split}
+w_c(1) &amp; = out \cdot \frac{(1-2)(1-3)}{2} - x_5 \cdot (1-1)(1-3) +x_6 \cdot \frac{(1-1)(1-2)}{2} \ &amp; = out
+\end{split}
+$$</p>
+<ul>
+<li>When $X=2$, check if $w_c(2) \overset{?}{=} x_5$:</li>
+</ul>
+<p>$$
+\begin{split}
+w_c(2) &amp; = out \cdot \frac{(2-2)(2-3)}{2} - x_5 \cdot (2-1)(2-3) +x_6 \cdot \frac{(2-1)(2-2)}{2} \ &amp; = x_5
+\end{split}
+$$</p>
+<ul>
+<li>When $X=3$, check if $w_c(3) \overset{?}{=} x_6$:</li>
+</ul>
+<p>$$
+\begin{split}
+w_c(3) &amp; = out \cdot \frac{(3-2)(3-3)}{2} - x_5 \cdot (3-1)(3-3) +x_6 \cdot \frac{(3-1)(3-2)}{2} \ &amp; = x_6
+\end{split}
+$$</p>
+<p>You can similarly verify $w_a(X)$ and $w_b(X)$.</p>
+<p>If verification passes, it confirms the calculations are correct, and the preliminary work is complete.</p>
+<p><strong>In summary</strong>, all the above essentially involves constructing interpolation polynomials $w_a(X)$ based on known relationships in &ldquo;Table 1&rdquo;. &ldquo;Table 2&rdquo; illustrates the substitution process, while &ldquo;Table 3&rdquo; shows the interpolation polynomials $w_a(X)$ constructed from the interpolation $i=\{1,2,3\}$.</p>
+<figure>
+    <img loading="lazy" src="process.png" width="100%"/> 
+</figure>
+
+<p>In &ldquo;Table 1&rdquo;, the domain is $i\in \{1,2,3\}$, which becomes clearer in &ldquo;Table 2&rdquo;. Once the interpolation polynomial $w_a(X)$ is constructed in &ldquo;Table 3&rdquo;, the range of values that the variable $X$ can take is no longer limited to the original $\{1,2,3\}$, and can be extended to the finite field $\mathbb{F}$.</p>
+<p>We constructed the Lagrange interpolation polynomial in &ldquo;3&rdquo; with the existing three interpolation points. With it, we can substitute unknown points for numerical computation to verify if $w_a(X)\cdot w_b(X)=w_c(X)$. If a randomly selected $X$ from $\mathbb{F}$ satisfies $w_a(X)\cdot w_b(X)=w_c(X)$, and if $\mathbb{F}$ is sufficiently large, it can prove with high probability that the Prover did not cheat. How is this ensured? This is where the Schwartz-Zippel lemma comes in.</p>
+</br>
+<h1 id="probabilistic-check-of-polynomials">Probabilistic Check of Polynomials<a hidden class="anchor" aria-hidden="true" href="#probabilistic-check-of-polynomials">#</a></h1>
+<p>If you understood the introduction, the following content will be easy to grasp.</p>
+<p>In many cryptographic protocols and verification processes of complex computations, circuits (Boolean or algebraic) are used to describe and implement computational logic. Verifying the correctness of these computations is crucial, but directly verifying each computation step is usually impractical due to high computational costs. The Schwartz-Zippel lemma offers an efficient probabilistic verification method.</p>
+<p><strong>What is the Schwartz-Zippel lemma?</strong></p>
+<p>By introducing random challenge values, we can merge multiple conditions needing individual verification into a simplified verification step. This method leverages the theory of &ldquo;random polynomial challenges&rdquo;, meaning that by verifying a polynomial&rsquo;s value at a random point, one can, with high probability, determine the equality of two polynomials over the entire domain.</p>
+<p>Specifically, if there are two polynomials $f(X)$ and $g(X)$, both of degree not exceeding $d$, the Verifier only needs to provide a random challenge value $\zeta \in \mathbb{F}$ and check if $f(\zeta) = g(\zeta)$. This can determine with high probability that $f(X) = g(X)$, with an error probability $\leq \frac{d}{|\mathbb{F}|}$. As long as $\mathbb{F}$ is large enough, the probability of a check failing can be ignored.</p>
+<p>This principle is known as the Schwartz-Zippel lemma.</p>
+<p>Suppose you want to verify two vectors $\vec{a} + \vec{b} \overset{?}{=} \vec{c}$. To enable verification in one step, we first encode the three vectors into polynomials.</p>
+<p><strong>How to encode vectors into polynomials?</strong></p>
+<p>One straightforward method is to treat vectors as &ldquo;coefficients&rdquo; of polynomials:</p>
+<p>Assume:</p>
+<p>$$
+\begin{split}
+\vec{a} = [a_0, a_1, \ldots, a_{N-1}]\
+\vec{b} = [b_0, b_1, \ldots, b_{N-1}]\
+\vec{c} = [c_0, c_1, \ldots, c_{N-1}]
+\end{split}
+$$</p>
+<p>Then,</p>
+<p>$$
+\begin{split}
+a(X) &amp;= a_0 + a_1X+a_2X^2 + \cdots + a_{n-1}X^{n-1}\
+b(X) &amp;= b_0 + b_1X+b_2X^2 + \cdots + b_{n-1}X^{n-1}\
+c(X) &amp;= c_0 + c_1X+c_2X^2 + \cdots + c_{n-1}X^{n-1}
+\end{split}
+$$</p>
+<p>Clearly, if $a_i+ b_i = c_i$, then $a(X)+b(X)=c(X)$. Then, by challenging with a random number $\zeta$, we verify the three polynomials&rsquo; values at $X=\zeta$:</p>
+<p>$$
+a(\zeta)+b(\zeta)\overset{?}{=}c(\zeta)
+$$</p>
+<p>If the equation holds, then $\vec{a} + \vec{b}=\vec{c}$.</p>
+</br>
+<h1 id="lagrange-interpolation-and-evaluation-form">Lagrange Interpolation and Evaluation Form<a hidden class="anchor" aria-hidden="true" href="#lagrange-interpolation-and-evaluation-form">#</a></h1>
+<p>However, if we need to verify $\vec{a}\circ\vec{b} =\vec{c}$, (where $\circ$ denotes the Hadamard product, meaning component-wise multiplication of the vectors), using &ldquo;coefficient encoding&rdquo; becomes challenging. This is because $a(X)\cdot b(X)$ will generate many cross terms, with coefficients coming from various terms of different powers of $a(X)$ and $b(X)$.</p>
+<p>Let&rsquo;s calculate specifically, assume:</p>
+<p>$$
+\begin{split}
+a(X)=a_0 + a_1X+a_2X^2\
+b(X)=b_0 + b_1X+b_2X^2\
+c(X)=c_0 +c_1X+c_2X^2+c_3X^3+c_4X^4
+\end{split}
+$$</p>
+<p>Then</p>
+<p>$$
+\begin{align}
+a(X)\cdot b(X) &amp; = (a_0 + a_1X+a_2X^2)\cdot(b_0 + b_1X+b_2X^2) &amp; \
+&amp; = a_0b_0+(a_0b_1+b_0a_1)X+(a_0b_2+a_1b_1+a_2b_0)X^2+\cdots
+\end{align}
+$$</p>
+<p>Observe that $a_i\cdot b_i$ and $c_i$ terms do not correspond to the $X^i$ coefficient. For instance, $a_1\cdot b_1$ contributes to the $X^2$ term, along with coefficients like $a_0b_2$ and $a_2b_0$. Meanwhile, $c_1$ is the coefficient of $X^1$.</p>
+<figure>
+    <img loading="lazy" src="realtionship.png" width="70%"/> 
+</figure>
+
+<p>Thus, <strong>we need another polynomial encoding scheme using the Lagrange Basis</strong>. If we want to construct a polynomial $a(X)$ such that it takes a specific set of values on $H=\{w_0, w_1, \ldots w_{N-1}\}$, assuming this set of values is $\vec{a}$, representing the polynomial $a(X)$ over a finite field $H$:</p>
+<p>$$
+\begin{split}
+a(w_0) &amp;= a_0 \
+a(w_1) &amp;= a_1 \
+&amp;\vdots \
+a(w_{N-1}) &amp;= a_{N-1} \
+\end{split}
+$$</p>
+<p>Which means:</p>
+<p>$$
+\vec{a} = [a(w_0), a(w_1), \ldots, a(w_{N-1})] = [a_0, a_1, \ldots, a_{N-1}]
+$$</p>
+<p>Constructing the interpolation polynomial requires the basis function set: ${L_i(X)}_{i\in[0,N-1]}$, where $L_i(w_i)=1$, and for $j\neq i$, $L_i(w_j)=0$.</p>
+<blockquote>
+<p>Note: $w_i$ is an interpolation point, $w_i \in {H}$.</p></blockquote>
+<p>Then, <strong>the interpolation polynomial $a(X)$ can be expressed as a linear combination of the basis functions $L_i(X)$ and the corresponding value vector $\vec{a}$</strong>:</p>
+<p>$$
+a(X)=a_0\cdot L_0(X) + a_1\cdot L_1(X)+ a_2\cdot L_2(X) + \cdots + a_{N-1}\cdot L_{N-1}(X)
+$$</p>
+<hr>
+<p><strong>A more concrete example</strong>, suppose we want to construct an interpolation polynomial $a(X)$ such that it takes the values $\vec{a}=(a_0,a_1,a_2)=(4,5,6)$ over the domain $H&rsquo;=\{1,2,3\}$.</p>
+<p>This means we want to construct a polynomial $h(X)$ such that $h(1)=4$, $h(2)=5$, $h(3)=6$; that is, we have three known interpolation points $(1,4),(2,5),(3,6)$, from which we build the interpolation polynomial $h(X)$. Here, because $H&rsquo;= \{1,2,3\}$, i.e., $X\in \{1,2,3\}$, $z_0=1, z_1=2, z_2=3$.</p>
+<blockquote>
+<p>Note:</p>
+<ol>
+<li>$z_i$ denotes the x-coordinate of the interpolation points, i.e., interpolation nodes;</li>
+<li>The definition of the Lagrange basis function $L_i{(X)}$ is related to the order of interpolation points, not the specific order in the sequence. Therefore, even if you change the order of nodes in the list, as long as the node values themselves remain unchanged, the form of $L_i(X)$ will not change.</li>
+<li>As long as the interpolation points and the corresponding function values are consistent during calculation, the specific values of interpolation points will not affect the correctness of Lagrange interpolation. The key is to ensure that each interpolation point $w_i$ correctly corresponds to the function value at that point, and the form and result of the interpolation polynomial depend on these correspondences.</li>
+</ol></blockquote>
+<p>The Lagrange interpolation polynomial $h(X)$ can be expressed as:</p>
+<p>$h(X)={\textstyle \sum_{i=0}^{N-1}} h_iL_i(X)$</p>
+<p><strong>1. Next, we calculate the Lagrange basis functions</strong>:</p>
+<p>When $i=0$, i.e., at the interpolation node $z_0=1$:</p>
+<p>$L_0(X)=\frac{(X-2)(X-3)}{(1-2)(1-3)}=\frac{(X-2)(X-3)}{2}$</p>
+<p>When $i=1$, i.e., at the interpolation node $z_1=2$:</p>
+<p>$L_1(X)=\frac{(X-1)(X-3)}{(2-1)(2-3)}=-(X-1)(X-3)$</p>
+<p>When $i=2$, i.e., at the interpolation node $z_2=3$:</p>
+<p>$L_2(X)=\frac{(X-1)(X-2)}{(3-1)(3-2)}=\frac{(X-1)(X-2)}{2}$</p>
+<p><strong>2. Constructing the interpolation polynomial $h(X)$</strong>:</p>
+<p>Since at $z_0=1$, $h(z_0)=a(1)=4$,
+at $z_1=2$, $h(z_1)=a(2)=5$,
+at $z_2=3$, $h(z_2)=a(3)=6$,</p>
+<p>We can use this relationship to construct the interpolation polynomial $h(X)$:</p>
+<p>$$
+\begin{align}
+h(X) &amp; = 4L_0(X)+5L_1(X)+6L_2(X) &amp; \
+&amp; = 4\cdot \frac{(X-2)(X-3)}{2}-5\cdot (X-1)(X_3)+6\cdot \frac{(X-1)(X-2)}{2} \
+&amp; = 2(X-2)(X-3)-5(X-1)(X-3)+3(X-1)(X-2)\
+&amp; = X+3
+\end{align}
+$$</p>
+<blockquote>
+<p>If $H$ is larger, for example, $H&rsquo;&rsquo;=\{1,2,3,4\}$, with $z&rsquo;_i=\{0,1,2,3\}$, $\vec{a&rsquo;}=(4,5,6,7)$. We can construct $h(X) = 4\cdot L_0{(X)}+ 5\cdot L_1{(X)} + 6\cdot L_2{(X)} + 7\cdot L_3{(X)}$. This is not calculated here, but the point is:</p>
+<ol>
+<li>As long as the interpolation points and corresponding function values are consistent during calculation, the specific values of interpolation points will not affect the correctness of Lagrange interpolation.</li>
+<li>When constructing interpolation polynomials, it is usually necessary to use all given interpolation points. This ensures that the polynomial accurately takes the corresponding value at each interpolation point. If only part of the interpolation points are used, the polynomial might not accurately pass through all points.</li>
+</ol></blockquote>
+<p><strong>3. Verify the polynomial $h(X)$</strong></p>
+<p>We take $X=\{1,2,3\}$ and substitute it into the constructed interpolation polynomial $h(X)$ to see if the resulting values are as expected:</p>
+<p>$$
+\begin{align}
+a(1)=1+3=4\
+a(2)=2+3=5\
+a(3)=3+3=6
+\end{align}
+$$</p>
+<p>The verification results are consistent with the value vector $\vec{a}=(4,5,6)$. We constructed the polynomial $h(X)$ and verified its value at interpolation nodes is correct.</p>
+<hr>
+<p>It seems that $L_i(X)$ acts like a selector, meaning:</p>
+<p>When $X=w_i$, only $L_i(w_i)=1$, while all other $L_i(w_j) = 0 (j\neq i)$.</p>
+<blockquote>
+<p>Note: Both $i$ and $j$ are indices in the set of interpolation nodes. The indices $i$ and $j$ are used to identify different interpolation nodes, but only at $i$ does the interpolation node value equal 1, while at $j$, the interpolation node value is 0. This duality—having values at interpolation nodes either as 0 or 1—is the selective property of Lagrange basis functions.</p></blockquote>
+<p>Now, returning to the step of constructing $a(X)$:</p>
+<p>$$
+a(X)=a_0\cdot L_0(X) + a_1\cdot L_1(X)+ a_2\cdot L_2(X) + \cdots + a_{N-1}\cdot L_{N-1}(X)
+$$</p>
+<p>Using the same method, we can construct $b(X)$ and $c(X)$:</p>
+<p>$$
+\begin{split}
+b(X)=b_0\cdot L_0(X) + b_1\cdot L_1(X)+ b_2\cdot L_2(X) + \cdots + b_{N-1}\cdot L_{N-1}(X) \
+c(X)=c_0\cdot L_0(X) + c_1\cdot L_1(X)+ c_2\cdot L_2(X) + \cdots + c_{N-1}\cdot L_{N-1}(X) \
+\end{split}
+$$</p>
+<p>If $\vec{a} \circ \vec{b} = \vec{c}$ is true at the nodes, this means at each node $w_i$, $a(w_i) \cdot b(w_i) = c(w_i)$. Since the interpolation polynomials match the given values at these nodes, and the polynomials&rsquo; form remains consistent between nodes, it follows that $a(X) \cdot b(X) = c(X)$ will also hold over the given domain $H$.</p>
+<p>Let&rsquo;s verify if $\vec{a} \circ \vec{b} = \vec{c}$, $a(X) \cdot b(X) \overset{?}{=} c(X), \quad \forall X\in H$.</p>
+<p>The specific calculation process is:</p>
+<p>$$
+\begin{split}
+\vec{a} \circ \vec{b} &amp; = \vec{c}\
+[a_0, a_1, \ldots, a_{N-1}] \circ [b_0, b_1, \ldots, b_{N-1}] &amp; =[c_o,c_1, \ldots,c_{N-1}]\
+[a_0 \cdot b_0 , a_1\cdot b_1 , a_2\cdot b_2 \ldots ,a_{N-1}\cdot b_{N-1}]&amp;=[c_o,c_1,\ldots,c_{N-1}]
+\end{split}
+$$</p>
+<p>Clearly, in the above equation, $a_0 \cdot b_0=c_0$, $a_1 \cdot b_1=c_1$, $\ldots$, $a_{N-1} \cdot b_{N-1} = c_{N-1}$.</p>
+<p>Therefore, $a_i \cdot b_i =c_i$, which implies $a(w_i)\cdot b(w_i) =c(w_i)$, $a(X)\cdot b(X)=c(X), \quad \forall X\in H$.</p>
+<p>We&rsquo;ve now translated the element-wise multiplication problem of two vectors into the relationship between three polynomials. <strong>The next question is how to perform a random challenge verification</strong>.</p>
+<p>We realize that if the Verifier directly sends a random number $\zeta$ to challenge the equation above, $\zeta$ can only belong to $H$. If there exists only one $j$ such that $a_j\cdot b_j\neq c_j$, the probability of the Verifier&rsquo;s challenge detecting this error is only $\frac{1}{N}$. Thus the Verifier needs to challenge multiple times to reduce the probability of missing an error. However, this doesn&rsquo;t meet our requirement; we hope to detect Prover&rsquo;s cheating with a single challenge.</p>
+<p>We can change the range of $X$ in the equation above by using the following equation:</p>
+<p>$$
+a(X)\cdot b(X) - c(X) = q(X)\cdot z_H(X), \quad\forall X\in \mathbb{F}
+$$</p>
+<p>This equation holds over the entire domain $\mathbb{F}$. Why is this?</p>
+<p>First, consider the left-hand polynomial: $a(X)\cdot b(X)-c(X)$, let&rsquo;s define it as $f(X)$.</p>
+<p>We can see that $f(X)$ equals zero over $X\in H$, meaning $H$ is exactly the &ldquo;root set&rdquo; of $f(X)$. Therefore, $f(X)$ can be expressed as the product of the vanishing polynomial $z_H(X)$ and a quotient polynomial $q(X)$. We can use the known properties of $z_H(X)$ to simplify the problem handling. Thus, $f(X)$ can be factored as follows:</p>
+<p>$$
+f(X)=(X-w_0)(X-w_1)(X-w_2)\cdots(X-w_{N-1})\cdot q(X)
+$$</p>
+<p>In other words, $f(X)$ can be divided by the polynomial $z_H(X)=(X-w_0)(X-w_1)(X-w_2)\cdots(X-w_{N-1})$, resulting in a quotient polynomial $q(X)$, representing the result of dividing $f(X)$ by $z_H(X)$. The vanishing polynomial $z_H(X)$ is also known as the Vanishing Polynomial, capturing all roots of $f(X)$.</p>
+<blockquote>
+<p>Note:</p>
+<ol>
+<li>$H = \{w_0, w_1, \ldots, w_{N-1}\}$ is the set of interpolation nodes. The vanish polynomial $Z_H(X)$ is a polynomial whose roots are all nodes in the set $H$.</li>
+<li>The right $z_H(X)$ is a node polynomial, meaning this polynomial $z_H(X)$ has roots at all interpolation nodes $w_{i}$, i.e., for all $w_i\in H$, $Z_H(w_i)=0$. This polynomial can be defined as: $z_H(X)=(X-w_0)(X-w_1)(X-w_2)\cdots(X-w_{n-1})$.</li>
+<li>Definition of polynomial divisibility: Suppose there are two polynomials $A(X)$ and $B(X)$. If there exists a polynomial $Q(X)$ such that $A(X)=B(X)\cdot Q(X)$, then we say polynomial $A(X)$ is divisible by $B(X)$, or $B(X)$ is a factor of $A(X)$.</li>
+</ol></blockquote>
+<p>If we let the Prover calculate this $Q(X)$ and send it to the Verifier, and since $H$ is a known system parameter, the Verifier can compute $z_H(X)$ itself. Then the Verifier only needs a single random check to determine if $a(X)\cdot b(X)-c(X)$ equals zero at $H$, based on the Schwartz-Zippel lemma.</p>
+<blockquote>
+<p>If $P(X)=a(X)\cdot b(X)-c(X)$ is a non-zero polynomial, assuming its degree is $d$, then the probability of a randomly chosen number yielding a result of zero $\le \frac{d}{|F|}$, where $F$ is the finite field. Provided $F$ is large enough, the probability of the result being 0 is negligible.</p></blockquote>
+<p>In simple terms, the probability that the polynomial equals 0 is already less than a very very small probability, roughly equivalent to it being impossible to randomly select that &ldquo;lucky number&rdquo; that coincidentally equals 0. We can then confidently conclude it&rsquo;s the vanishing polynomial.</p>
+<p>$$
+a(\zeta)\cdot b(\zeta)-c(\zeta) \overset{?}{=} q(\zeta)\cdot z_H(\zeta)
+$$</p>
+<p>Moreover, if we use Polynomial Commitment, the Verifier can let the Prover calculate the values of these polynomials at $X=\zeta$ and generate a proof to confirm the correctness of the values. For the Verifier, it only needs to check this proof&rsquo;s validity by randomly choosing a number, rather than calculating the polynomial values itself, thereby minimizing the Verifier&rsquo;s workload.</p>
+<p>However, the Verifier&rsquo;s calculation of $z_H(\zeta)$ requires $O(n)$ computation, as it involves n multiplication operations.</p>
+<blockquote>
+<p>Supplement: In computational complexity, $O(n)$ indicates that as the input size $n$ increases, the algorithm&rsquo;s running time or required resources (such as calculation steps) will increase linearly. In simple terms, if an algorithm is $O(n)$, doubling the input data will double the algorithm&rsquo;s running time.</p></blockquote>
+<p>Can the Verifier further reduce workload? The answer is yes, by choosing a special $H\subset \mathbb{F}$, specifically if $H$ is a well-structured set, enabling efficient computation of the vanishing polynomial $z_H(X)$ and its values using fast Fourier transform (FFT) algorithms.</p>
+</br>
+<h2 id="roots-of-unity">Roots of Unity<a hidden class="anchor" aria-hidden="true" href="#roots-of-unity">#</a></h2>
+<p>If we choose roots of unity as $H$, the computation of $z_H(\zeta)$ reduces to $O(\log{n})$.</p>
+<p>For any finite field $\mathbb{F}_p=\{0,1,\ldots,p-1\}$, where the order $p$ is a prime. Removing zero, the remaining elements form a multiplicative group $\mathbb{F}_p^\ast=\{1,\ldots,p-1\}$ of order $p-1$. Since $p-1$ is even, its prime factorization includes several 2s, noted as $\lambda$ 2s. Thus, $\mathbb{F}_p^\ast$ contains a multiplicative subgroup of order $2^\lambda$. Let $N=2^{k}, k\leq\lambda$, then there must exist a multiplicative subgroup of order $N$, denoted as $H$. This subgroup necessarily has a generator, denoted as $\omega$, with $\omega^N=1$. This is akin to taking the $N$th root of 1, hence called a root of unity. However, there isn&rsquo;t just one $\omega$, as $\omega^2,\omega^3,\ldots,\omega^{N-1}$ all satisfy the property of roots of unity, i.e., $(\omega^k)^N=1, k\in(2,3,\ldots,N-1)$. All these roots of unity generated by $\omega$ form the multiplicative subgroup $H$:</p>
+<p>$$
+H=(1,\omega,\omega^2,\omega^3,\ldots,\omega^{N-1})
+$$</p>
+<blockquote>
+<p>Note: $\omega = e^{2\pi i / N}$. This expression reveals some patterns.</p></blockquote>
+<p>These elements satisfy certain symmetries: for example, $\omega^{\frac{N}{2}} = e^{2\pi i \cdot \frac{N/2}{N}} = e^{\pi i} = -1$,</p>
+<p>From $\omega^{\frac{N}{2}} = -1$, we have $\omega^{\frac{N}{2} + 1} = \omega \cdot \omega^{\frac{N}{2}} = \omega \cdot (-1) = -\omega$. Hence, $\omega = -\omega^{\frac{N}{2} + 1}$.</p>
+<p>For any exponent $i$, $\omega^{\frac{N}{2}} = -1$. Thus $\omega^{\frac{N}{2} + i} = \omega^{\frac{N}{2}} \cdot \omega^i = (-1) \cdot \omega^i = -\omega^i$.</p>
+<p>Moreover, summing all the roots of unity yields zero:</p>
+<p>$$
+\sum_{i=0}^{N-1}\omega^i=0
+$$</p>
+<p>A simple example: we can find a subgroup of order 4 in $\mathbb{F}_{13}$.</p>
+<p>$$
+\mathbb{F}_{13}=\{0,1,2,3,4,5,6,7,8,9,10,11,12\}
+$$</p>
+<p>The generator of the multiplicative group is given as $g=2$. Since $13-1=3 \times 2 \times 2$, there exists a multiplicative subgroup of order 4 with generator $\omega=5$:</p>
+<blockquote>
+<p>If $g$ is a generator of $\mathbb{F}_p^\ast$, then $g^{p-1}=1$, and $\mathbb{F}_p^\ast = {g^0,g^1,\ldots,g^{p-2}}$</p></blockquote>
+<p>$$
+H={\omega^0=1,\omega^1=5,\omega^2=12,\omega^3=8}
+$$</p>
+<p>And $\omega^4=1=\omega^0$.</p>
+<p>In practical applications, we choose a larger finite field that can have a large powers-of-2 multiplicative subgroup. For example, the scalar field of the elliptic curve <code>BN254</code> contains a multiplicative subgroup of order $2^{28}$, and <code>BLS-12-381</code> contains a subgroup of order $2^{32}$.</p>
+<p>On the multiplicative subgroup $H$, the following property holds:</p>
+<p>$$
+z_H(X)=\prod_{i=0}^{N-1}(X-\omega^i)=X^N-1
+$$</p>
+<p>We can simply derive, assuming $N = 4$. Due to the symmetry of $\omega^i$, $\omega^4=1$ means $\omega$ could be (1,i,-1,-i). This calculation process can be continuously simplified:</p>
+<blockquote>
+<p>How to understand the symmetry of $\omega^i$?
+$\omega_i \times \omega^{N-i}=1$ (mutual inverses); $\omega^N=1$ ensures they are periodic on the unit circle (repeat every $N$).</p></blockquote>
+<p>$$
+\begin{split}
+&amp;(X-\omega^0)(X-\omega^1)(X-\omega^2)(X-\omega^3) \
+=&amp; (X-1)(X-i)(X+1)(X+i)  \
+=&amp; (X^2-1)(X^2+1) \
+=&amp; (X^4-1) \
+\end{split}
+$$</p>
+</br>
+<h2 id="lagrange-basis">Lagrange Basis<a hidden class="anchor" aria-hidden="true" href="#lagrange-basis">#</a></h2>
+<p>For the Lagrange polynomial, $L_i(\omega_i)=1$, and $L_i(\omega_j)=0, (j\neq i)$. Next, we give the construction of $L_i(X)$.</p>
+<p>To construct $L_i(X)$, first construct the non-zero polynomial part. Since $L_i(\omega_j)=1, j = i$, it must contain the polynomial factor $\prod_{j,j\neq i}(X-\omega_j)$. However, this factor may not equal 1 at $X=\omega_i$, i.e., $\prod_{j, j\neq i}(\omega_i-\omega_j)\neq 1$. Then, we just need to divide this factor by this potentially non-1 value, thus $L_i(X)$ is defined as:</p>
+<p>$$
+L_i(X) = \frac{\prod_{j\in H\backslash{i}}(X-\omega_j)}{\prod_{j\in H\backslash{i}}(\omega_i-\omega_j)} = \prod_{j\in H\backslash{i}}^{} \frac{X-\omega_j}{\omega_i-\omega_j}
+$$</p>
+<p>It is easy to find that $L_i(X)$ equals 1 at $X=\omega_i$ and equals 0 at other locations $X=\omega_j, j\neq i$.</p>
+<p>For any polynomial $f(X)$ of degree less than $N$, it can be uniquely expressed as:</p>
+<p>$$
+f(X)=a_0\cdot L_0(X)+a_1\cdot L_1(X)+a_2\cdot L_2(X)+ \cdots + a_{N-1}\cdot L_{N-1}(X)
+$$</p>
+<p>We can represent $f(X)$ by its values on $H$ as $(a_0,a_1,a_2,\ldots,a_{N-1})$. This is called the evaluation form of the polynomial, as different to the coefficient form.</p>
+<p>The two forms can be converted on $H$ using the (Inverse) Fast Fourier Transform algorithm with a computational complexity of $O(N\log{N})$.</p>
+</br>
+<h2 id="polynomial-constraints">Polynomial Constraints<a hidden class="anchor" aria-hidden="true" href="#polynomial-constraints">#</a></h2>
+<p>Using the Lagrange basis, we can easily impose constraints on various vector calculations.</p>
+<p>For example, if we want to constrain the first element of the vector $\vec{a}=(h,a_1,a_2,\ldots,a_{N-1})$ to be $h$, we can encode this vector to get $a(X)$ and impose the following constraint:</p>
+<p>$$
+L_0(X)(a(X)-h) = 0, \quad \forall X\in H
+$$</p>
+<p>The verifier can challenge the following polynomial equation:</p>
+<p>$$
+L_0(X)(a(X)-h) = q(X)\cdot z_H(X)
+$$</p>
+<p>For instance, if we want to constrain the first element of $\vec{a}=(h_1,a_1,a_2,\ldots,a_{N-2},h_2)$ to be $h_1$, and the last element to be $h_2$, with other elements arbitrary, then $a(X)$ should satisfy the following two constraints:</p>
+<p>$$
+\begin{split}
+L_0(X)\cdot (a(X)-h_1) &amp;= 0, \quad \forall X\in H\
+L_{N-1}(X)\cdot(a(X)-h_2) &amp;= 0, \quad \forall X\in H
+\end{split}
+$$</p>
+<p>Through a random challenge number ( $\alpha$ ) given by the verifier, the above two constraints can be merged into one polynomial constraint:</p>
+<p>$$
+L_0(X)\cdot (a(X)-h_1) + \alpha\cdot L_{n-1}(X)\cdot(a(X)-h_2) = 0, \quad \forall X\in H
+$$</p>
+<p>Next, verifier only needs to challenge the following polynomial equation:</p>
+<p>$$
+L_0(X)\cdot (a(X)-h_1) + \alpha\cdot L_{n-1}(X)\cdot(a(X)-h_2) = q(X)\cdot z_H(X)
+$$</p>
+<p>If we want to verify that two vectors $\vec{a}$ and $\vec{b}$ of equal length have the same elements except for the first, how to constrain them? Assuming $a(X)$ and $b(X)$ are the polynomial encodings of the two vectors, they should satisfy:</p>
+<p>$$
+(X-\omega^0)(a(X)-b(X))=0
+$$</p>
+<p>When $X=\omega^0$, the first factor on the left is 0, and when $X\in H\backslash{\omega^0}$, the second factor is 0, meaning all values must be equal except the first element.</p>
+<p>It can be seen that using Lagrange polynomials, we can flexibly constrain relationships between multiple vectors and combine multiple constraints together, allowing the verifier to verify multiple vector constraints with only a few random challenges.</p>
+</br>
+<h2 id="coset">Coset<a hidden class="anchor" aria-hidden="true" href="#coset">#</a></h2>
+<p>In the multiplicative group of a prime finite field, for each multiplicative subgroup $H$, there are multiple cosets of the same length. These cosets share similar properties with $H$ and are also used in PlonK. Here, we introduce some of their properties.</p>
+<p>Taking $\mathbb{F}_{13}$ as an example, choose $H=\{1,5,12,8\}$, and the generator of the multiplicative group is $g=2$. We can obtain the following two cosets:</p>
+<p>$$
+\begin{split}
+H_1 &amp;= g\cdot H  = {g, g\omega, g\omega^2, g\omega^3} &amp;= (2,10,11,3) \
+H_2 &amp;= g^2\cdot H = {g^2, g^2\omega, g^2\omega^2, g^2\omega^3} &amp;= (4,7,9,6) \
+\end{split}
+$$</p>
+<p>It can be seen that $\mathbb{F}^*_{13}=H\cup H_1 \cup H_2$, and they have no overlap. Their Vanishing Polynomials can be quickly calculated:</p>
+<p>$$
+z_{H_1}(X)=X^N-g^N, \quad z_{H_2}(X)=X^N-g^{2N}
+$$</p>
+<h1 id="references">References<a hidden class="anchor" aria-hidden="true" href="#references">#</a></h1>
+<p>Schwartz–Zippel lemma: <a href="https://en.wikipedia.org/wiki/Schwartz%E2%80%93Zippel_lemma">https://en.wikipedia.org/wiki/Schwartz%E2%80%93Zippel_lemma</a></p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+
+
+<ul class="share-buttons">
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share Understanding PLONK (Part 2): Lagrange-basis on x"
+            href="https://x.com/intent/tweet/?text=Understanding%20PLONK%20%28Part%202%29%3a%20Lagrange-basis&amp;url=http%3a%2f%2flocalhost%3a51400%2fpost%2f2-lagrange-basis%2f&amp;hashtags=">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M512 62.554 L 512 449.446 C 512 483.97 483.97 512 449.446 512 L 62.554 512 C 28.03 512 0 483.97 0 449.446 L 0 62.554 C 0 28.03 28.029 0 62.554 0 L 449.446 0 C 483.971 0 512 28.03 512 62.554 Z M 269.951 190.75 L 182.567 75.216 L 56 75.216 L 207.216 272.95 L 63.9 436.783 L 125.266 436.783 L 235.9 310.383 L 332.567 436.783 L 456 436.783 L 298.367 228.367 L 432.367 75.216 L 371.033 75.216 Z M 127.633 110 L 164.101 110 L 383.481 400.065 L 349.5 400.065 Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share Understanding PLONK (Part 2): Lagrange-basis on linkedin"
+            href="https://www.linkedin.com/shareArticle?mini=true&amp;url=http%3a%2f%2flocalhost%3a51400%2fpost%2f2-lagrange-basis%2f&amp;title=Understanding%20PLONK%20%28Part%202%29%3a%20Lagrange-basis&amp;summary=Understanding%20PLONK%20%28Part%202%29%3a%20Lagrange-basis&amp;source=http%3a%2f%2flocalhost%3a51400%2fpost%2f2-lagrange-basis%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share Understanding PLONK (Part 2): Lagrange-basis on reddit"
+            href="https://reddit.com/submit?url=http%3a%2f%2flocalhost%3a51400%2fpost%2f2-lagrange-basis%2f&title=Understanding%20PLONK%20%28Part%202%29%3a%20Lagrange-basis">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-3.446,265.638c0,-22.964 -18.616,-41.58 -41.58,-41.58c-11.211,0 -21.361,4.457 -28.841,11.666c-28.424,-20.508 -67.586,-33.757 -111.204,-35.278l18.941,-89.121l61.884,13.157c0.756,15.734 13.642,28.29 29.56,28.29c16.407,0 29.706,-13.299 29.706,-29.701c0,-16.403 -13.299,-29.702 -29.706,-29.702c-11.666,0 -21.657,6.792 -26.515,16.578l-69.105,-14.69c-1.922,-0.418 -3.939,-0.042 -5.585,1.036c-1.658,1.073 -2.811,2.761 -3.224,4.686l-21.152,99.438c-44.258,1.228 -84.046,14.494 -112.837,35.232c-7.468,-7.164 -17.589,-11.591 -28.757,-11.591c-22.965,0 -41.585,18.616 -41.585,41.58c0,16.896 10.095,31.41 24.568,37.918c-0.639,4.135 -0.99,8.328 -0.99,12.576c0,63.977 74.469,115.836 166.33,115.836c91.861,0 166.334,-51.859 166.334,-115.836c0,-4.218 -0.347,-8.387 -0.977,-12.493c14.564,-6.47 24.735,-21.034 24.735,-38.001Zm-119.474,108.193c-20.27,20.241 -59.115,21.816 -70.534,21.816c-11.428,0 -50.277,-1.575 -70.522,-21.82c-3.007,-3.008 -3.007,-7.882 0,-10.889c3.003,-2.999 7.882,-3.003 10.885,0c12.777,12.781 40.11,17.317 59.637,17.317c19.522,0 46.86,-4.536 59.657,-17.321c3.016,-2.999 7.886,-2.995 10.885,0.008c3.008,3.011 3.003,7.882 -0.008,10.889Zm-5.23,-48.781c-16.373,0 -29.701,-13.324 -29.701,-29.698c0,-16.381 13.328,-29.714 29.701,-29.714c16.378,0 29.706,13.333 29.706,29.714c0,16.374 -13.328,29.698 -29.706,29.698Zm-160.386,-29.702c0,-16.381 13.328,-29.71 29.714,-29.71c16.369,0 29.689,13.329 29.689,29.71c0,16.373 -13.32,29.693 -29.689,29.693c-16.386,0 -29.714,-13.32 -29.714,-29.693Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share Understanding PLONK (Part 2): Lagrange-basis on facebook"
+            href="https://facebook.com/sharer/sharer.php?u=http%3a%2f%2flocalhost%3a51400%2fpost%2f2-lagrange-basis%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share Understanding PLONK (Part 2): Lagrange-basis on whatsapp"
+            href="https://api.whatsapp.com/send?text=Understanding%20PLONK%20%28Part%202%29%3a%20Lagrange-basis%20-%20http%3a%2f%2flocalhost%3a51400%2fpost%2f2-lagrange-basis%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-58.673,127.703c-33.842,-33.881 -78.847,-52.548 -126.798,-52.568c-98.799,0 -179.21,80.405 -179.249,179.234c-0.013,31.593 8.241,62.428 23.927,89.612l-25.429,92.884l95.021,-24.925c26.181,14.28 55.659,21.807 85.658,21.816l0.074,0c98.789,0 179.206,-80.413 179.247,-179.243c0.018,-47.895 -18.61,-92.93 -52.451,-126.81Zm-126.797,275.782l-0.06,0c-26.734,-0.01 -52.954,-7.193 -75.828,-20.767l-5.441,-3.229l-56.386,14.792l15.05,-54.977l-3.542,-5.637c-14.913,-23.72 -22.791,-51.136 -22.779,-79.287c0.033,-82.142 66.867,-148.971 149.046,-148.971c39.793,0.014 77.199,15.531 105.329,43.692c28.128,28.16 43.609,65.592 43.594,105.4c-0.034,82.149 -66.866,148.983 -148.983,148.984Zm81.721,-111.581c-4.479,-2.242 -26.499,-13.075 -30.604,-14.571c-4.105,-1.495 -7.091,-2.241 -10.077,2.241c-2.986,4.483 -11.569,14.572 -14.182,17.562c-2.612,2.988 -5.225,3.364 -9.703,1.12c-4.479,-2.241 -18.91,-6.97 -36.017,-22.23c-13.314,-11.876 -22.304,-26.542 -24.916,-31.026c-2.612,-4.484 -0.279,-6.908 1.963,-9.14c2.016,-2.007 4.48,-5.232 6.719,-7.847c2.24,-2.615 2.986,-4.484 4.479,-7.472c1.493,-2.99 0.747,-5.604 -0.374,-7.846c-1.119,-2.241 -10.077,-24.288 -13.809,-33.256c-3.635,-8.733 -7.327,-7.55 -10.077,-7.688c-2.609,-0.13 -5.598,-0.158 -8.583,-0.158c-2.986,0 -7.839,1.121 -11.944,5.604c-4.105,4.484 -15.675,15.32 -15.675,37.364c0,22.046 16.048,43.342 18.287,46.332c2.24,2.99 31.582,48.227 76.511,67.627c10.685,4.615 19.028,7.371 25.533,9.434c10.728,3.41 20.492,2.929 28.209,1.775c8.605,-1.285 26.499,-10.833 30.231,-21.295c3.732,-10.464 3.732,-19.431 2.612,-21.298c-1.119,-1.869 -4.105,-2.99 -8.583,-5.232Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share Understanding PLONK (Part 2): Lagrange-basis on telegram"
+            href="https://telegram.me/share/url?text=Understanding%20PLONK%20%28Part%202%29%3a%20Lagrange-basis&amp;url=http%3a%2f%2flocalhost%3a51400%2fpost%2f2-lagrange-basis%2f">
+            <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share Understanding PLONK (Part 2): Lagrange-basis on ycombinator"
+            href="https://news.ycombinator.com/submitlink?t=Understanding%20PLONK%20%28Part%202%29%3a%20Lagrange-basis&u=http%3a%2f%2flocalhost%3a51400%2fpost%2f2-lagrange-basis%2f">
+            <svg version="1.1" xml:space="preserve" width="30px" height="30px" viewBox="0 0 512 512" fill="currentColor"
+                xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape">
+                <path
+                    d="M449.446 0C483.971 0 512 28.03 512 62.554L512 449.446C512 483.97 483.97 512 449.446 512L62.554 512C28.03 512 0 483.97 0 449.446L0 62.554C0 28.03 28.029 0 62.554 0L449.446 0ZM183.8767 87.9921H121.8427L230.6673 292.4508V424.0079H281.3328V292.4508L390.1575 87.9921H328.1233L256 238.2489z" />
+            </svg>
+        </a>
+    </li>
+</ul>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="http://localhost:51400/">Purple Blog</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

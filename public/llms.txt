@@ -1,0 +1,8 @@
+# Purple Blog
+
+## Posts
+- [Understanding PLONK (Part 1): Plonkish Arithmetization](http://localhost:1313/posts/1-arithmetization/)
+- [Understanding PLONK (Part 2): Lagrange-basis](http://localhost:1313/posts/2-lagrange-basis/)
+- [Understanding PLONK (Part 3): Permutation Argument](http://localhost:1313/posts/3-permutation/)
+- [Understanding PLONK (Part 4): Arithmetic Constraints and Copy Constraints](http://localhost:1313/posts/4-constraints/)
+- [Understanding Plonk (Part 5): Polynomial Commitments](http://localhost:1313/posts/5-polycom/)

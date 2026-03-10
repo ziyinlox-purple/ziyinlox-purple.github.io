@@ -1,0 +1,193 @@
+baseURL = 'https://example.org/'
+languageCode = 'en-us'
+title = 'Purple Blog'
+theme = "PaperMod"
+
+enableInlineShortcodes = true
+enableRobotsTXT = true
+buildDrafts = false
+buildFuture = false
+buildExpired = false
+enableEmoji = true
+pygmentsUseClasses = true
+mainSections = ["posts", "papermod"]
+
+[minify]
+  disableXML = true
+  # minifyOutput = true
+
+[pagination]
+  disableAliases = false
+  pagerSize = 5
+
+# -------------------------------------------------------------------
+# 多语言配置
+# -------------------------------------------------------------------
+
+[languages.en]
+  languageName = "English"
+  weight = 1
+  [languages.en.taxonomies]
+    category = "categories"
+    tag = "tags"
+    series = "series"
+
+  [[languages.en.menu.main]]
+    name = "Archive"
+    url = "archives"
+    weight = 5
+  [[languages.en.menu.main]]
+    name = "Search"
+    url = "search/"
+    weight = 10
+  [[languages.en.menu.main]]
+    name = "Tags"
+    url = "tags/"
+    weight = 10
+  [[languages.en.menu.main]]
+    name = "Podcast"
+    url = "[待更新]"
+
+[languages.zh]
+  languageName = ":cn:"
+  weight = 2
+  title = "Purple's Website"
+  [languages.zh.taxonomies]
+    category = "categories"
+    tag = "tags"
+    series = "series"
+
+  [[languages.zh.menu.main]]
+    name = "归档"
+    url = "archives/"
+    weight = 5
+  [[languages.zh.menu.main]]
+    name = "搜索"
+    url = "search/"
+    weight = 10
+  [[languages.zh.menu.main]]
+    name = "标签"
+    url = "tags/"
+    weight = 10
+  [[languages.zh.menu.main]]
+    name = "NullLink"
+    url = "#"
+
+  [languages.zh.params]
+    languageAltTitle = "中文"
+    [languages.zh.params.profileMode]
+      enabled = true
+      title = "Purple"
+      imageUrl = "https://raw.githubusercontent.com/googlefonts/noto-emoji/master/svg/emoji_u1f9d1_1f3fb_200d_1f4bb.svg"
+      imageTitle = "ProfileMode image"
+      subtitle = "🤘 Rebel | 🤔 Curious | 🧑‍🍳 Foodie | ⚖️ Logical"
+      [[languages.zh.params.profileMode.buttons]]
+        name = "博客"
+        url = "posts"
+      [[languages.zh.params.profileMode.buttons]]
+        name = "播客"
+        url = "待更新"
+
+
+# -------------------------------------------------------------------
+# 输出格式配置
+# -------------------------------------------------------------------
+
+[outputFormats.llms]
+  mediaType = "text/plain"
+  baseName = "llms"
+  isPlainText = true
+  notAlternative = true
+
+[outputs]
+  home = ["HTML", "RSS", "JSON", "llms"]
+
+# -------------------------------------------------------------------
+# 全局参数配置 (重点检查区域)
+# -------------------------------------------------------------------
+
+[params]
+  env = "production"
+  description = "Theme PaperMod - https://github.com/adityatelange/hugo-PaperMod"
+  author = "Theme PaperMod"
+  defaultTheme = "auto"
+  ShowShareButtons = true
+  ShowReadingTime = true
+  displayFullLangName = true
+  ShowPostNavLinks = true
+  ShowBreadCrumbs = true
+  ShowCodeCopyButtons = true
+  ShowRssButtonInSectionTermList = true
+  ShowAllPagesInArchive = true
+  ShowPageNums = true
+  ShowToc = true
+  math = true
+  images = ["images/papermod-cover.png"]
+
+  [params.profileMode]
+    enabled = false
+    title = "PaperMod"
+    imageUrl = "#"
+    imageTitle = "my image"
+    [[params.profileMode.buttons]]
+      name = "Archives"
+      url = "archives"
+    [[params.profileMode.buttons]]
+      name = "Tags"
+      url = "tags"
+
+  [params.homeInfoParams]
+    Title = "Hi there 👋"
+    Content = """ Here is Purple. I'm a rebel girl & foodie pivoting to tech, just for fun.
+
+    🍵 Tea enthusiast | 🌍 Cross-culture comm | 👩🏻‍🍳 Foodie & DIY lover 
+    ✍️ Travel Storyteller | 🧑‍🎨 Graphic Designer
+    
+    - Welcome to my blog！Let’s chat about tech, tea, and everything in between. 
+
+"""
+
+  [[params.socialIcons]]
+    name = "github"
+    title = "find me on Github"
+    url = "https://github.com/ziyinlox-purple"
+  [[params.socialIcons]]
+    name = "X"
+    title = "find me on X/Twitter"
+    url = "https://x.com/ziyinlox"
+  [[params.socialIcons]]
+    name = "KoFi"
+    title = "Buy me a Ko-Fi :)"
+    url = "https://ko-fi.com/adityatelange"
+  [[params.socialIcons]]
+    name = "Email"
+    title = "Contact me"
+    url = "mailto:zpurple623@gmail.com"
+
+  [params.editPost]
+    URL = "https://github.com/adityatelange/hugo-PaperMod/tree/exampleSite/content"
+    Text = "Suggest Changes"
+    appendFilePath = true
+
+  [params.assets]
+    disableHLJS = true
+    # 这里记得加入你之前的自定义路径
+    customCSS = ["css/custom.css"]
+
+# -------------------------------------------------------------------
+# 渲染器配置
+# -------------------------------------------------------------------
+
+[markup]
+  [markup.goldmark.renderer]
+    unsafe = true
+  [markup.highlight]
+    noClasses = false
+    style = "monokai"
+
+[services]
+  [services.instagram]
+    disableInlineCSS = true
+  [services.x]
+    disableInlineCSS = true
+
