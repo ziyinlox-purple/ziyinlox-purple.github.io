@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>//localhost:1313/</loc>
+  </url><url>
+    <loc>//localhost:1313/posts/1-arithmetization/</loc>
+  </url><url>
+    <loc>//localhost:1313/posts/2-lagrange-basis/</loc>
+  </url><url>
+    <loc>//localhost:1313/posts/3-permutation/</loc>
+  </url><url>
+    <loc>//localhost:1313/posts/4-constraints/</loc>
+  </url><url>
+    <loc>//localhost:1313/posts/5-polycom/</loc>
+  </url><url>
+    <loc>//localhost:1313/categories/</loc>
+  </url><url>
+    <loc>//localhost:1313/posts/</loc>
+  </url><url>
+    <loc>//localhost:1313/tags/</loc>
+  </url>
+</urlset>
