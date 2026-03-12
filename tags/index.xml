@@ -11,7 +11,7 @@
     </image>
     <generator>Hugo</generator>
     <language>en</language>
-    <lastBuildDate>Tue, 10 Mar 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 12 Mar 2026 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://ziyinlox-purple.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Cryptography</title>
@@ -32,6 +32,34 @@
       <link>https://ziyinlox-purple.github.io/tags/zero-knowledge/</link>
       <pubDate>Tue, 10 Mar 2026 00:00:00 +0000</pubDate>
       <guid>https://ziyinlox-purple.github.io/tags/zero-knowledge/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Da Nang</title>
+      <link>https://ziyinlox-purple.github.io/tags/da-nang/</link>
+      <pubDate>Sun, 25 Feb 2024 00:00:00 +0000</pubDate>
+      <guid>https://ziyinlox-purple.github.io/tags/da-nang/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Digital Nomad</title>
+      <link>https://ziyinlox-purple.github.io/tags/digital-nomad/</link>
+      <pubDate>Sun, 25 Feb 2024 00:00:00 +0000</pubDate>
+      <guid>https://ziyinlox-purple.github.io/tags/digital-nomad/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Tips</title>
+      <link>https://ziyinlox-purple.github.io/tags/tips/</link>
+      <pubDate>Sun, 25 Feb 2024 00:00:00 +0000</pubDate>
+      <guid>https://ziyinlox-purple.github.io/tags/tips/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Vietnam</title>
+      <link>https://ziyinlox-purple.github.io/tags/vietnam/</link>
+      <pubDate>Sun, 25 Feb 2024 00:00:00 +0000</pubDate>
+      <guid>https://ziyinlox-purple.github.io/tags/vietnam/</guid>
       <description></description>
     </item>
   </channel>

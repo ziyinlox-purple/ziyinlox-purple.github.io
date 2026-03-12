@@ -6,3 +6,4 @@
 - [Understanding PLONK (Part 3): Permutation Argument](https://ziyinlox-purple.github.io/posts/3-permutation/)
 - [Understanding PLONK (Part 4): Arithmetic Constraints and Copy Constraints](https://ziyinlox-purple.github.io/posts/4-constraints/)
 - [Understanding Plonk (Part 5): Polynomial Commitments](https://ziyinlox-purple.github.io/posts/5-polycom/)
+- [Da Nang Tết Survival Guide: How I Learned the Hard Way to Avoid Becoming a 'Sitting Duck'](https://ziyinlox-purple.github.io/posts/da-nang/)

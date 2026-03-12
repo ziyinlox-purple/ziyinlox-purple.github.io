@@ -11,7 +11,7 @@
     </image>
     <generator>Hugo</generator>
     <language>en</language>
-    <lastBuildDate>Tue, 10 Mar 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 12 Mar 2026 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://ziyinlox-purple.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Understanding PLONK (Part 1): Plonkish Arithmetization</title>
@@ -73,6 +73,13 @@ $$&lt;/p&gt;
 &lt;li&gt;&lt;strong&gt;Binding&lt;/strong&gt;: It is computationally infeasible to find some $x&amp;rsquo; \neq x$ such that $c = commit(x&amp;rsquo;)$.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;The simplest commitment mechanism is a hash function. Note that such a hash function must provide cryptographic security, such as SHA256 or Keccak. Besides hash functions, there are also schemes like Pedersen commitments.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Da Nang Tết Survival Guide: How I Learned the Hard Way to Avoid Becoming a &#39;Sitting Duck&#39;</title>
+      <link>https://ziyinlox-purple.github.io/posts/da-nang/</link>
+      <pubDate>Sun, 25 Feb 2024 00:00:00 +0000</pubDate>
+      <guid>https://ziyinlox-purple.github.io/posts/da-nang/</guid>
+      <description>The Lunar New Year in Da Nang felt like a high-stakes trial. Despite the physical toll of illness and anxiety, my soul found healing in conversations that transcended borders.</description>
     </item>
   </channel>
 </rss>
