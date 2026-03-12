@@ -3,7 +3,7 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>http://localhost:1313/categories/</loc>
-    <lastmod>2026-03-10T00:00:00+00:00</lastmod>
+    <lastmod>2026-03-12T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="zh"
@@ -22,10 +22,10 @@
     <lastmod>2026-03-10T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/posts/</loc>
-    <lastmod>2026-03-10T00:00:00+00:00</lastmod>
+    <lastmod>2026-03-12T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/</loc>
-    <lastmod>2026-03-10T00:00:00+00:00</lastmod>
+    <lastmod>2026-03-12T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="zh"
@@ -38,7 +38,7 @@
                 />
   </url><url>
     <loc>http://localhost:1313/tags/</loc>
-    <lastmod>2026-03-10T00:00:00+00:00</lastmod>
+    <lastmod>2026-03-12T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="zh"
@@ -70,6 +70,24 @@
   </url><url>
     <loc>http://localhost:1313/tags/zero-knowledge/</loc>
     <lastmod>2026-03-10T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/da-nang/</loc>
+    <lastmod>2026-03-12T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/digital-nomad/</loc>
+    <lastmod>2026-03-12T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/tips/</loc>
+    <lastmod>2026-03-12T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/categories/travel/</loc>
+    <lastmod>2026-03-12T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/vietnam/</loc>
+    <lastmod>2026-03-12T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/da-nang/</loc>
+    <lastmod>2026-03-12T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/series/</loc>
     <xhtml:link

@@ -119,6 +119,7 @@ mainSections = ["posts", "papermod"]
   ShowCodeCopyButtons = true
   ShowRssButtonInSectionTermList = true
   ShowAllPagesInArchive = true
+  showLanguageButtons = true
   ShowPageNums = true
   ShowToc = true
   math = true
