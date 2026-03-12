@@ -6,9 +6,9 @@ tags: [ "Vietnam", "Da Nang", "Digital Nomad", "Tips"]
 categories: ["Travel"]
 description: "The Lunar New Year in Da Nang felt like a high-stakes trial. Despite the physical toll of illness and anxiety, my soul found healing in conversations that transcended borders."
 summary: "This post covers practical lessons in avoiding tourist traps and navigating holiday chaos in Da Nang. It's more than just a travelogue; it's a hard-earned survival guide for traveling in Southeast Asia during Tết."
-cover:
-    image: "coconut_stall.jpg" 
-    alt: "Da Nang Seascape"
+#cover:
+#    image: "coconut_stall.jpg" 
+#    alt: "Da Nang Seascape"
 ---
 
 # Introduction
