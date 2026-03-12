@@ -1,0 +1,28 @@
+/* 这里的修改会影响整个网站 */
+:root {
+    /* 1. 主文字颜色（比如文章正文） */
+    --content: #733b73; 
+    
+    /* 2. 标题颜色 */
+    --primary: #534f9c;
+    
+    /* 3. 副标题或辅助文字颜色 */
+    --secondary: #c49beb;
+
+    /* 整个网页的背景色 */
+    --theme: #f5f5f5;
+    /* 每一个卡片/文章块的背景色 */
+    --entry: #ffffff;
+    /* 链接的颜色 */
+    --tertiary: #53aaa4;
+}
+
+/* 如果你想单独修改深色模式下的颜色 */
+.dark {
+    --content: #ecf0f1;
+    --primary: #5E84E2;
+    --secondary: #F5F4ED;
+    --theme: #1d1e20;
+    --entry: #2e2e33;
+    --tertiary: #a29bfe;
+}

@@ -156,10 +156,6 @@ mainSections = ["posts", "papermod"]
     title = "find me on X/Twitter"
     url = "https://x.com/ziyinlox"
   [[params.socialIcons]]
-    name = "KoFi"
-    title = "Buy me a Ko-Fi :)"
-    url = "https://ko-fi.com/adityatelange"
-  [[params.socialIcons]]
     name = "Email"
     title = "Contact me"
     url = "mailto:zpurple623@gmail.com"
