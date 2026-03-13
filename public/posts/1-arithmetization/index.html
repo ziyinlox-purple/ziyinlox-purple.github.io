@@ -11,16 +11,16 @@
 Arithmetization refers to the process of converting computations into mathematical objects and then proving them using zero-knowledge proofs.
 Plonkish Arithmetization is a unique arithmetization method specific to the Plonk proof system. Before the advent of Plonkish, the dominant circuit representation was R1CS, which was widely adopted by systems like Pinocchio, Groth16, and Bulletproofs. In 2019, the Plonk scheme introduced a seemingly retro style of circuit encoding. However, since Plonk pushed polynomial encoding to its limits, it is no longer confined to arithmetic circuits with just &ldquo;addition gates&rdquo; and &ldquo;multiplication gates&rdquo;; it can also support more flexible custom gates and lookup gates.">
 <meta name="author" content="Theme PaperMod">
-<link rel="canonical" href="http://localhost:1313/posts/1-arithmetization/">
+<link rel="canonical" href="//localhost:1313/posts/1-arithmetization/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.63e702e79be86d2030e6875a0dd6bf7c1b6c56601c0cde43f146d0a09f2e556d.css" integrity="sha256-Y&#43;cC55vobSAw5odaDda/fBtsVmAcDN5D8UbQoJ8uVW0=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
-<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<link rel="icon" href="//localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="//localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="//localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="//localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="//localhost:1313/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/1-arithmetization/">
+<link rel="alternate" hreflang="en" href="//localhost:1313/posts/1-arithmetization/">
 <noscript>
     <style>
         #theme-toggle,
@@ -86,7 +86,7 @@ Plonkish Arithmetization is a unique arithmetization method specific to the Plon
             throwOnError: false
         });
     });
-</script><meta property="og:url" content="http://localhost:1313/posts/1-arithmetization/">
+</script><meta property="og:url" content="//localhost:1313/posts/1-arithmetization/">
   <meta property="og:site_name" content="Purple Blog">
   <meta property="og:title" content="Understanding PLONK (Part 1): Plonkish Arithmetization">
   <meta property="og:description" content="Introduction Arithmetization refers to the process of converting computations into mathematical objects and then proving them using zero-knowledge proofs.
@@ -99,10 +99,10 @@ Plonkish Arithmetization is a unique arithmetization method specific to the Plon
     <meta property="article:tag" content="Zero Knowledge">
     <meta property="article:tag" content="Cryptography">
     <meta property="article:tag" content="Math">
-      <meta property="og:image" content="http://localhost:1313/images/papermod-cover.png">
+      <meta property="og:image" content="//localhost:1313/images/papermod-cover.png">
 
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:image" content="http://localhost:1313/images/papermod-cover.png">
+  <meta name="twitter:image" content="//localhost:1313/images/papermod-cover.png">
   <meta name="twitter:title" content="Understanding PLONK (Part 1): Plonkish Arithmetization">
   <meta name="twitter:description" content="Introduction Arithmetization refers to the process of converting computations into mathematical objects and then proving them using zero-knowledge proofs.
 Plonkish Arithmetization is a unique arithmetization method specific to the Plonk proof system. Before the advent of Plonkish, the dominant circuit representation was R1CS, which was widely adopted by systems like Pinocchio, Groth16, and Bulletproofs. In 2019, the Plonk scheme introduced a seemingly retro style of circuit encoding. However, since Plonk pushed polynomial encoding to its limits, it is no longer confined to arithmetic circuits with just “addition gates” and “multiplication gates”; it can also support more flexible custom gates and lookup gates.">
@@ -117,13 +117,13 @@ Plonkish Arithmetization is a unique arithmetization method specific to the Plon
       "@type": "ListItem",
       "position":  1 ,
       "name": "Posts",
-      "item": "http://localhost:1313/posts/"
+      "item": "//localhost:1313/posts/"
     }, 
     {
       "@type": "ListItem",
       "position":  2 ,
       "name": "Understanding PLONK (Part 1): Plonkish Arithmetization",
-      "item": "http://localhost:1313/posts/1-arithmetization/"
+      "item": "//localhost:1313/posts/1-arithmetization/"
     }
   ]
 }
@@ -141,7 +141,7 @@ Plonkish Arithmetization is a unique arithmetization method specific to the Plon
   "articleBody": "Introduction Arithmetization refers to the process of converting computations into mathematical objects and then proving them using zero-knowledge proofs.\nPlonkish Arithmetization is a unique arithmetization method specific to the Plonk proof system. Before the advent of Plonkish, the dominant circuit representation was R1CS, which was widely adopted by systems like Pinocchio, Groth16, and Bulletproofs. In 2019, the Plonk scheme introduced a seemingly retro style of circuit encoding. However, since Plonk pushed polynomial encoding to its limits, it is no longer confined to arithmetic circuits with just “addition gates” and “multiplication gates”; it can also support more flexible custom gates and lookup gates.\nIn this article, we’ll dive straight into the topic, first gaining an understanding of the Plonkish arithmetization scheme, exploring the components of a circuit and the underlying logic of its operations. Finally, we’ll compare the differences between Plonkish and R1CS arithmetization(as an appendix), allowing you to appreciate their distinctions and gain a deeper understanding of the significance of Plonkish encoding.\nPlonkish Arithmetic Gates Let’s begin by understanding the basic structure of a circuit and examine the components of an empty circuit in a static state. Below is an example circuit:\nIn the image above, “Circuit 1” consists of several parts: arithmetic gates, left and right input wires, output wires, and wire.\nWe’ve labeled three arithmetic gates as #1, #2, and #3, where:\n#1 is a multiplication gate with inputs $x_5$ (left input) and $x_6$ (right input), and the output is $out$. #2 is an addition gate with inputs $x_1$ (left input) and $x_2$ (right input), and the output is $x_5$. #3 is another multiplication gate with inputs $x_3$ (left input) and $x_4$ (right input), and the output is $x_6$. Note: Both $x_5$ and $x_6$ serve as inputs to gate #1 and outputs for gates #2 and #3, respectively.\nBeyond the visible components, there are also implicit mathematical relationships that must hold for the circuit to function correctly. These are the constraint relations that the circuit must satisfy:\n$$ \\begin{array}{c} x_1+ x_2 = x_5\\ x_3\\cdot x_4=x_6\\ x_5\\cdot x_6=out \\end{array} $$\nWith these concrete constraints, we can convert the relationships into a matrix form, which can be represented in a table format to facilitate subsequent calculations.\nSo, how exactly do we do this?\nFirst, we define a matrix $W\\in\\mathbb{F}^{n\\times 3}$ (don’t worry about what $\\mathbb{F}$ is for now, just know it operates within a certain range; $n$ represents the number of arithmetic gates, corresponding to rows, and 3 represents the number of polynomial variables, corresponding to columns). Using this matrix, the constraint relations can be expressed as:\n$$ \\begin{array}{c|c|c|c} \\text{i} \u0026 w_a \u0026 w_b \u0026 w_c \\\\ \\hline \\text{1} \u0026 x_5 \u0026 x_6 \u0026 \\text{out} \\\\ \\text{2} \u0026 x_1 \u0026 x_2 \u0026 x_5 \\\\ \\text{3} \u0026 x_3 \u0026 x_4 \u0026 x_6 \\end{array} $$\nNote: Here, $i$ represents the index of each gate in the circuit, starting from 1 and increasing row by row. It is used to identify the position of each gate in the circuit.\nIn Plonkish, if the Prover wants to prove to the Verifier that they know a secret, they need to use a fixed constraint equation to verify whether the constraints of the circuit are satisfied. As long as the fixed constraint equation holds, the correctness of the circuit can be verified without revealing any secret information. The fixed constraint equation is as follows:\n$$ q_L \\circ w_a + q_R \\circ w_b + q_M\\circ(w_a\\cdot w_b) + q_C - q_O\\circ w_c \\overset{?}{=} 0 $$\nNote: Typically, all constraints are moved to one side of the equation. For example, in an arithmetic circuit, we often need to verify an equation in the form: Left input + Right input + Multiplication term + Constant = Output. To express this, we move everything to the left side of the equation and set it equal to zero: Left input + Right input + Multiplication term + Constant − Output = 0, which helps simplify the construction and verification process of the proof system. For example, when constructing the constraint matrix $Q$, the coefficients of the selector vectors can be easily determined by this fixed arithmetic relationship, without adjusting signs. You can refer to the matrix $Q\\in\\mathbb{F}^{n\\times5}$ below for an example.\nIn the fixed constraint equation above:\n$q_L$, $q_R$, $q_M$, $q_C$, and $q_O$ are selector vectors used to select specific variables or operations: $q_L$: left input selector $q_R$: right input selector $q_M$: multiplication selector $q_C$: constant selector $q_O$: output selector $w_a$, $w_b$, and $w_c$ are variables (or values on the wires) in the circuit: $w_a$: left input wire of each gate $w_b$: right input wire of each gate $w_c$: output wire of each gate $\\circ$ denotes element-wise multiplication, also known as the Hadamard product. $\\cdot$ denotes regular multiplication. To verify the circuit, we need to construct the constraint matrix $Q$ based on the existing relationships.\nHow do we construct the constraint matrix $Q$?\nStep one: move all constraints to one side of the equation, so:\nGate #1: The original constraint $x_3\\cdot x_4 = x_6$ becomes $x_3\\cdot x_4 - x_6=0$. Gate #2: The constraint $x_1 + x_2 =x_5$ becomes $x_1 + x_2 - x_5=0$. Gate #3: The constraint $x_5 \\cdot x_6 = out$ becomes $x_5 \\cdot x_6 - out=0$. Why move everything to one side of the equation?\nIt standardizes all constraint equations into the form $f(x) = 0$, simplifying the process of handling and verifying these equations. It clarifies the role and coefficients of each selector polynomial, avoiding confusion with signs. During verification, the uniform equation form simplifies the process of checking and verifying polynomials. Simple, right? Now, let’s move on to the next step.\nStep two: based on the fixed constraint equation and the three transformed equations, determine the coefficients for the selector polynomials. We’ll likely use 0, 1, and -1 (where a coefficient of 0 represents an “off” state, and 1 or -1 represents an “on” state).\nFor gate #1:\nSince $x_3\\cdot x_4 - x_6=0$ must satisfy $q_L \\circ w_a + q_R \\circ w_b + q_M\\circ(w_a\\cdot w_b) + q_C - q_O\\circ w_c = 0$, its left input selector $q_L=0$, right input selector $q_R=0$, multiplication selector $q_M=1$, constant selector $q_C=0$, and output selector $q_O=1$.\nWe can determine the values of the selectors based on the constraint relationships, and we can also verify whether a constraint is enforced by checking the specific values of the selectors. The process works both ways.\nWe can verify the chosen selector values by plugging them into the fixed constraint equation $q_L \\circ w_a + q_R \\circ w_b + q_M\\circ(w_a\\cdot w_b) + q_C - q_O\\circ w_c = 0$. For example, substituting the selector values for gate #1, the calculation looks like this:\n$$ \\begin{split} 0 \\circ w_a + 0 \\circ w_b + 1 \\circ(w_a\\cdot w_b) + 0 - 1\\circ w_c \u0026 = 0\\\\ 1 \\circ(w_a\\cdot w_b) + 0 - 1\\circ w_c \u0026 = 0 \\end{split} $$\n$\\circ$ specifically denotes the Hadamard product. Any matrix multiplied element-wise by the zero matrix results in zero.\nSubstituting the corresponding selector values (0 or 1, or -1) into the equation:\n$$ \\begin{split} 0 \\circ w_a + 0 \\circ w_b + 1 \\circ(w_a\\cdot w_b) + 0 - 1\\circ w_c \u0026 = 0\\\\ 1 \\circ(w_a\\cdot w_b) + 0 - 1\\circ w_c \u0026 = 0\\\\ 1\\circ(w_a\\cdot w_b) \u0026 = 1\\circ w_c\\\\ x_5 \\cdot x_6 \u0026 = out \\end{split} $$\nSee! The final result $x_5 \\cdot x_6 = out$ is consistent with the constraint relationship in the original circuit when substituting the selector values into the fixed equation.\nBy now, you should be able to apply what you’ve learned. We recommend you follow the steps above to derive the rest of the content:\nFor gate #2: The constraint is $x_1+x_2-x_5=0$, so $q_L=1$, $q_R=1$, $q_M=0$, $q_C=0$, and $q_O=1$. For gate #3: The constraint is $x_5 \\cdot x_6 = out$, so $q_L=0$, $q_R=0$, $q_M=1$, $q_C=0$, and $q_O=1$. If you look closely, you’ll notice that for a multiplication gate, like $x_5 \\cdot x_6 = out$, both the addition selectors are “off” (selector coefficients are 0). For an addition gate, like $x_1+x_2-x_5=0$, the selectors on the right side are either 1 or -1, and they must be “on”, rather than “off.”\nNow, let’s organize the data into a table, just like we did with $W$. We represent the constraint matrix $Q\\in\\mathbb{F}^{n\\times5}$ (where $n$ is the number of arithmetic gates, corresponding to rows, and 5 represents the number of selector polynomials, corresponding to columns).\nHere’s the key part!\nNow that we have the constraint matrices $Q$ and $W$, we can verify whether the calculations from these two matrices satisfy the initial equation:\n$$ q_L \\circ w_a + q_R \\circ w_b + q_M \\circ (w_a \\cdot w_b) + q_C - q_O \\circ w_c = 0 $$\nSubstituting the given constraints into the above fixed equation and expanding it, we get the following:\n$$ \\left[ \\begin{array}{c} 0\\ 1 \\ 0\\ \\end{array} \\right] \\circ \\left[ \\begin{array}{c} x_5 \\ x_1 \\ x_3\\ \\end{array} \\right] + \\left[ \\begin{array}{c} 0\\ 1 \\ 0\\ \\end{array} \\right] \\circ \\left[ \\begin{array}{c} x_6 \\ x_2 \\ x_4\\ \\end{array} \\right] + \\left[ \\begin{array}{c} 1\\ 0 \\ 1\\ \\end{array} \\right] \\circ \\left[ \\begin{array}{c} x_5\\cdot x_6 \\ x_1\\cdot x_2 \\ x_3\\cdot x_4\\ \\end{array} \\right]=\\left[ \\begin{array}{c} 1\\ 1 \\ 1\\ \\end{array} \\right] \\circ \\left[ \\begin{array}{c} out \\ x_5 \\ x_6\\ \\end{array} \\right] $$\nHere’s the step-by-step simplification:\n$$ \\left[ \\begin{array}{c} 0 \\ x_1 \\ 0\\ \\end{array} \\right] + \\left[ \\begin{array}{c} 0 \\ x_2 \\ 0\\ \\end{array} \\right] + \\left[ \\begin{array}{c} x_5\\cdot x_6 \\ 0 \\ x_3\\cdot x_4\\ \\end{array} \\right]=\\left[ \\begin{array}{c} out \\ x_5 \\ x_6\\ \\end{array} \\right] $$\nAfter further simplification:\n$$ \\left[ \\begin{array}{c} x_5\\cdot x_6 \\ x_1+x_2 \\ x_3\\cdot x_4\\ \\end{array} \\right]=\\left[ \\begin{array}{c} out \\ x_5 \\ x_6\\ \\end{array} \\right] $$\nBy comparing the simplified result with the initial constraints, you can see that we have already reached the result—the proof is complete. The simplified result matches the original constraints, and the final result corresponds to the operations of the three gates.\nHowever, the content of the $Q$ matrix alone is not sufficient to fully describe the example circuit above; we need additional elements.\nCopy Constraints Let’s compare the two circuits below. They yield identical $Q$ matrices, but their circuit structures are completely different.\nThe difference between the two circuits is whether $x_5$ and $x_6$ are connected to gate #1.\nReferring to the circuit comparison diagram and matrix $W$, if the Prover directly fills the circuit values into matrix $W$, an honest Prover will input the same value in positions $(w_a,1)$ (first row, first column) and $(w_c,2)$ (second row, third column). However, a malicious Prover could input different values. If the malicious Prover also inputs different values in $(w_b,1)$ and $(w_c,3)$, they are effectively proving the circuit on the right rather than the agreed-upon circuit on the left.\nTo prevent a malicious Prover from cheating, we need to introduce additional constraints, forcing an equivalence between variables, like $x_5 = x_7$ and $x_6 = x_8$ in the right-hand circuit, as shown below. This is equivalent to requiring the Prover to input identical values for the same variable in multiple places in the table.\nThis introduces a new type of constraint—Copy Constraints. In Plonk, permutation proofs are used to ensure that multiple positions in matrix $W$ satisfy these copy constraints. Let’s use the same circuit example to explain the basic idea.\nImagine we arrange all the positions in the $W$ table into a vector:\n$$ \\vec{\\sigma_0}=(\\boxed{(w_a,1)}, (w_a,2), (w_a,3), \\underline{(w_b,1)}, (w_b,2), (w_b,3), (w_c,1), \\boxed{(w_c,2)}, \\underline{(w_c,3)}) $$\nWe then swap the positions that should be equal. For example, in the circuit above, we require $(w_a,1) = (w_c,2)$ and $(w_b,1) = (w_c,3)$. After swapping, we get the following vector:\n$$ \\vec\\sigma=(\\boxed{(w_c,2)}, (w_a,2), (w_a,3), \\underline{(w_c,3)}, (w_b,2), (w_b,3), (w_c,1), \\boxed{(w_a,1)}, \\underline{(w_b,1)}) $$\nWe then require the Prover to prove that the $W$ matrix remains the same after this permutation. The equality of values at swapped positions ensures that the Prover cannot cheat.\nHere’s another example: when the values in three (or more) positions in a vector must be equal, we can simply cyclically shift these positions (left or right) and prove that the shifted vector is identical to the original.\nFor instance:\n$$ A = (b_1, b_2, \\underline{a_1}, b_3, \\underline{a_2}, b_4, \\underline{a_3}) $$\nTo prove that $a_1 = a_2 = a_3$, we only need to prove:\n$$ A’ = (b_1, b_2, \\underline{a_3}, b_3, \\underline{a_1}, b_2, \\underline{a_2}) \\overset{?}{=} A $$\nIn the permuted $\\vec{A’}$, $a_1$, $a_2$, and $a_3$ are shifted to the right: $a_1$ moves to the position of $a_2$, $a_2$ moves to the position of $a_3$, and $a_3$ moves to the position of $a_1$.\nIf $\\vec{A’} = \\vec{A}$, then all corresponding positions in $\\vec{A’}$ and $\\vec{A}$ should have equal values, giving us: $a_1 = a_3$, $a_2 = a_1$, and $a_3 = a_2$, which implies $a_1 = a_2 = a_3$. This method can be applied to any number of equality constraints. (For how to prove vector equality, refer to Section 3).\nHow do we describe the swapping operations in the circuit value table? We only need to record $\\vec{\\sigma}$, which tracks the mapping of the swapped positions. In other words, it shows which variable is swapped to which new position. We just need to record $\\vec{\\sigma}$, then we can descirbe the process. Also, $\\vec{\\sigma}$ can be written in table form:\nLet’s explain what the Matrix $T\\in\\mathbb{F}^{n\\times3}$ above means:\nInitial order ($i$ column):\nThe element in row 1 was initially in position 1. The element in row 2 was initially in position 2. The element in row 3 was initially in position 3. $σ_a$ column:\n$w_c$ was initially in position 1 and was swapped to position 2. $w_a$ was initially in position 2 and remained in position 2. $w_a$ was initially in position 3 and remained in position 3. $σ_b$ column:\n$w_c$ was initially in position 1 and was swapped to position 3. $w_b$ was initially in position 2 and remained in position 2. $w_b$ was initially in position 3 and remained in position 3. $σ_c$ column:\n$w_c$ was initially in position 1 and remained there. $w_a$ was initially in position 2 and was swapped to position 1. $w_b$ was initially in position 3 and was swapped to position 1. If you don’t understand, I hope this figure blow will help you to feel the change of position:\nTo summarize, the position matrix $T\\in\\mathbb{F}^{n\\times3}$ reflects the mapping relationship. The specific position changes can be seen in the figure above. With this method, you don’t need to record how each variable is swapped, but only need to record the mapping relationship after the swap, which can simplify the description of complex swap operations.\nAs mentioned earlier, constructing only the constraint matrix $Q$ and the assignment matrix $W$ is not enough to fully describe the example circuit in the picture 「example: Circuit 1」. However, now that we’ve included the permutation vector $\\vec\\sigma$, together they can jointly describe and verify the circuit. The entire circuit can be described as $(Q, \\sigma)$, and the circuit’s values are represented by $W$.\n$$ \\mathsf{Plonkish}_0 \\triangleq (Q, \\sigma; W) $$\nCircuit Verification Protocol Framework Now that we have the description of the circuit’s structure and values, we can outline the Plonk protocol framework.\nThe protocol’s computational process is as follows:\nFirst, the Prover and Verifier agree on a common circuit — $(Q, \\sigma)$. Assume the circuit’s public output is $out = 99$, and $(x_1, x_2, x_3, x_4)$ are secret inputs.\nThe Prover fills in the $W$ matrix (which the Verifier cannot see):\n$$ \\begin{array}{c|c|c|c|} i \u0026 w_a \u0026 w_b \u0026 w_c \\\\ \\hline 1 \u0026 \\boxed{x_5} \u0026 \\underline{x_6} \u0026 [out] \\\\ 2 \u0026 x_1 \u0026 x_2 \u0026 \\boxed{x_5} \\\\ 3 \u0026 x_3 \u0026 x_4 \u0026 \\underline{x_6} \\\\ 4 \u0026 0 \u0026 0 \u0026 [out] \\\\ \\end{array} $$\nThe additional fourth row introduces an extra arithmetic constraint to ensure $out = 99$, emphasizing that the value of $out$ appears in the $Q$ matrix.\nThe agreed-upon $Q$ matrix between the Prover and Verifier is:\n$$ \\begin{array}{c|c|c|c|} i \u0026 q_L \u0026 q_R \u0026 q_M \u0026 q_C \u0026 q_O \\\\ \\hline 1 \u0026 0 \u0026 0 \u0026 1 \u0026 0 \u0026 1 \\\\ 2 \u0026 1 \u0026 1 \u0026 0 \u0026 0 \u0026 1 \\\\ 3 \u0026 0 \u0026 0 \u0026 1 \u0026 0 \u0026 1 \\\\ 4 \u0026 0 \u0026 0 \u0026 0 \u0026 99 \u0026 1 \\\\ \\end{array} $$\nIn the fourth row, the constraint $out = 99$ is enforced by substituting $(q_L = 0, q_R = 0, q_M = 0, q_C = 99, q_O = 1)$ into the arithmetic constraint equation, yielding $99 - w_c = 0$, which means $(W_c, 4) = 99$ (indicating that the value at $(q_c, 4)$ in the $Q$ matrix is $99$).\n$$ q_L \\circ w_a + q_R \\circ w_b + q_M \\circ (w_a \\cdot w_b) + q_C - q_O \\circ w_c = 0 $$\nTo ensure that $w_c$ in the first row of the $W$ matrix also equals $99$ (ensuring that the output $out$ is correctly reflected in all relevant positions), we need to add an additional copy constraint into the $\\sigma$ vector, ensuring that the value of $out$ at position $w_{(c,1)}$ is swapped with the value of $out$ at $w_{(c,4)}$:\n$$ \\begin{array}{c|c|c|c|} i \u0026 \\sigma_a \u0026 \\sigma_b \u0026 \\sigma_c \\\\ \\hline 1 \u0026 \\boxed{w_{(c,2)}} \u0026 \\underline{w_{(c,3)}} \u0026 [{w_{(c,4)}}] \\\\ 2 \u0026 {w_{(a,2)}} \u0026 {w_{(b,2)}} \u0026 \\boxed{w_{(a,1)}} \\\\ 3 \u0026 {w_{(a,3)}} \u0026 {w_{(b,3)}} \u0026 \\underline{w_{(b,1)}} \\\\ 4 \u0026 {w_{(a,4)}} \u0026 {w_{(b,4)}} \u0026 [{w_{(c,1)}}]\\\\ \\end{array} $$\nIf the Prover is honest, the following arithmetic constraint equation holds for each $i \\in (1, 2, 3, 4)$:\n$$ q_{L,i} \\circ w_{(a,i)} + q_{R,i} \\circ w_{(b,i)} + q_{M,i}\\circ(w_{(a,i)}\\cdot w_{(b,i)}) + q_{C,i} - q_{O,i}\\circ w_{(c,i)} = 0 $$\nThe general idea of the verification protocol is as follows:\nProtocol start: The Prover honestly fills in the $W$ table, encoding each column of the $W$ table and applying polynomial encoding. The encoded result is then sent to the Verifier. Verification phase: The Verifier and Prover interact further to check whether the following equation holds: $$ q_{L}(X) \\cdot w_{a}(X) + q_{R}(X) \\cdot w_{b}(X) + q_{M}(X) \\cdot (w_{a}(X) \\cdot w_{b}(X)) + q_{C}(X) - q_{O}(X) \\cdot w_{c}(X) \\overset{?}{=} 0 $$\n$$ q_{L,i} \\circ w_{a,i} + q_{R,i} \\circ w_{b,i} + q_{M,i} \\circ (w_{a,i} \\cdot w_{b,i}) + q_{C,i} - q_{O,i} \\circ w_{c,i} = 0 $$\nand\n$$ q_L(X) \\cdot w_a(X) + q_R(X) \\cdot w_b(X) + q_M(X) \\cdot (w_a(X) \\cdot w_b(X)) + q_C(X) - q_O(X) \\cdot w_c(X) = 0 $$\nThese two equations essentially represent the same idea. Here’s how they compare:\nIndex vs. Polynomial notation: The first equation uses the index $i$ to represent specific points, meaning it applies to constraints at specific positions. The second equation uses $(X)$ to represent polynomials, meaning it applies to the constraints over the entire domain. Variables and coefficients: $q_{L,i}, q_{R,i}, q_{M,i}, q_{C,i}, q_{O,i}$ correspond to $q_L(X), q_R(X), q_M(X), q_C(X), q_O(X)$. These represent the same constraint coefficients, but one is in terms of specific values, and the other is in polynomial form. Similarly, $w_{a,i}, w_{b,i}, w_{c,i}$ correspond to $w_a(X), w_b(X), w_c(X)$. These represent the same input values, but one is in specific values, and the other is in polynomial form. Operators: The first equation uses \" $\\circ$ \" to denote multiplication. The second equation uses \" $\\cdot$ \" to denote multiplication. This method allows the Verifier to ensure that all computations in the circuit are correct, thereby verifying the entire computational process.\nHowever, verifying only the equation:\n$$ q_{L}(X) \\cdot w_{a}(X) + q_{R}(X) \\cdot w_{b}(X) + q_{M}(X) \\cdot (w_{a}(X) \\cdot w_{b}(X)) + q_{C}(X) - q_{O}(X) \\cdot w_{c}(X) \\overset{?}{=} 0 $$\nis not sufficient. We also need to verify the relationship between $(\\sigma_a(X), \\sigma_b(X), \\sigma_c(X))$ and $(w_a(X), w_b(X), w_c(X))$.\nAs for how the Verifier uses polynomials to verify the circuit operations and ensure the relationship between $(\\sigma_a(X), \\sigma_b(X), \\sigma_c(X))$ and $(w_a(X), w_b(X), w_c(X))$, this will be covered in later sections.\n",
   "wordCount" : "3289",
   "inLanguage": "en",
-  "image": "http://localhost:1313/images/papermod-cover.png","datePublished": "2026-03-10T00:00:00Z",
+  "image": "//localhost:1313/images/papermod-cover.png","datePublished": "2026-03-10T00:00:00Z",
   "dateModified": "2026-03-10T00:00:00Z",
   "author":{
     "@type": "Person",
@@ -149,14 +149,14 @@ Plonkish Arithmetization is a unique arithmetization method specific to the Plon
   },
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "http://localhost:1313/posts/1-arithmetization/"
+    "@id": "//localhost:1313/posts/1-arithmetization/"
   },
   "publisher": {
     "@type": "Organization",
     "name": "Purple Blog",
     "logo": {
       "@type": "ImageObject",
-      "url": "http://localhost:1313/favicon.ico"
+      "url": "//localhost:1313/favicon.ico"
     }
   }
 }
@@ -166,7 +166,7 @@ Plonkish Arithmetization is a unique arithmetization method specific to the Plon
     <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="Purple Blog (Alt + H)">Purple Blog</a>
+            <a href="//localhost:1313/" accesskey="h" title="Purple Blog (Alt + H)">Purple Blog</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -190,7 +190,7 @@ Plonkish Arithmetization is a unique arithmetization method specific to the Plon
                 </button>
                     <ul class="lang-switch"><li>|</li>
                         <li>
-                            <a href="http://localhost:1313/zh/" title="中文"
+                            <a href="//localhost:1313/zh/" title="中文"
                                 aria-label=":cn:">🇨🇳</a>
                         </li>
                     </ul>
@@ -198,22 +198,22 @@ Plonkish Arithmetization is a unique arithmetization method specific to the Plon
         </div>
         <ul id="menu">
             <li>
-                <a href="http://localhost:1313/archives" title="Archive">
+                <a href="//localhost:1313/archives" title="Archive">
                     <span>Archive</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/search/" title="Search">
+                <a href="//localhost:1313/search/" title="Search">
                     <span>Search</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/tags/" title="Tags">
+                <a href="//localhost:1313/tags/" title="Tags">
                     <span>Tags</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/%5B%E5%BE%85%E6%9B%B4%E6%96%B0%5D" title="Podcast">
+                <a href="//localhost:1313/%5B%E5%BE%85%E6%9B%B4%E6%96%B0%5D" title="Podcast">
                     <span>Podcast</span>
                 </a>
             </li>
@@ -224,12 +224,12 @@ Plonkish Arithmetization is a unique arithmetization method specific to the Plon
 
 <article class="post-single">
   <header class="post-header">
-    <div class="breadcrumbs"><a href="http://localhost:1313/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:1313/posts/">Posts</a></div>
+    <div class="breadcrumbs"><a href="//localhost:1313/">Home</a>&nbsp;»&nbsp;<a href="//localhost:1313/posts/">Posts</a></div>
     <h1 class="post-title entry-hint-parent">
       Understanding PLONK (Part 1): Plonkish Arithmetization
     </h1>
     <div class="post-meta"><span title='2026-03-10 00:00:00 +0000 UTC'>March 10, 2026</span>&nbsp;·&nbsp;<span>16 min</span>&nbsp;·&nbsp;<span>Theme PaperMod</span>&nbsp;|&nbsp;<span>
-    <a href="https://github.com/adityatelange/hugo-PaperMod/tree/exampleSite/content/posts/1-Arithmetization/index.md" rel="noopener noreferrer edit" target="_blank">Suggest Changes</a>
+    <a href="https://github.com/adityatelange/hugo-PaperMod/tree/exampleSite/content/posts/1-Arithmetization/index.en.md" rel="noopener noreferrer edit" target="_blank">Suggest Changes</a>
 </span>
 
 </div>
@@ -694,12 +694,12 @@ $$</p>
 
   <footer class="post-footer">
     <ul class="post-tags">
-      <li><a href="http://localhost:1313/tags/zero-knowledge/">Zero Knowledge</a></li>
-      <li><a href="http://localhost:1313/tags/cryptography/">Cryptography</a></li>
-      <li><a href="http://localhost:1313/tags/math/">Math</a></li>
+      <li><a href="//localhost:1313/tags/zero-knowledge/">Zero Knowledge</a></li>
+      <li><a href="//localhost:1313/tags/cryptography/">Cryptography</a></li>
+      <li><a href="//localhost:1313/tags/math/">Math</a></li>
     </ul>
 <nav class="paginav">
-  <a class="next" href="http://localhost:1313/posts/2-lagrange-basis/">
+  <a class="next" href="//localhost:1313/posts/2-lagrange-basis/">
     <span class="title">Next »</span>
     <br>
     <span>Understanding PLONK (Part 2): Lagrange-basis</span>
@@ -710,7 +710,7 @@ $$</p>
 <ul class="share-buttons">
     <li>
         <a target="_blank" rel="noopener noreferrer" aria-label="share Understanding PLONK (Part 1): Plonkish Arithmetization on x"
-            href="https://x.com/intent/tweet/?text=Understanding%20PLONK%20%28Part%201%29%3a%20Plonkish%20Arithmetization&amp;url=http%3a%2f%2flocalhost%3a1313%2fposts%2f1-arithmetization%2f&amp;hashtags=ZeroKnowledge%2cCryptography%2cMath">
+            href="https://x.com/intent/tweet/?text=Understanding%20PLONK%20%28Part%201%29%3a%20Plonkish%20Arithmetization&amp;url=%2f%2flocalhost%3a1313%2fposts%2f1-arithmetization%2f&amp;hashtags=ZeroKnowledge%2cCryptography%2cMath">
             <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
                 <path
                     d="M512 62.554 L 512 449.446 C 512 483.97 483.97 512 449.446 512 L 62.554 512 C 28.03 512 0 483.97 0 449.446 L 0 62.554 C 0 28.03 28.029 0 62.554 0 L 449.446 0 C 483.971 0 512 28.03 512 62.554 Z M 269.951 190.75 L 182.567 75.216 L 56 75.216 L 207.216 272.95 L 63.9 436.783 L 125.266 436.783 L 235.9 310.383 L 332.567 436.783 L 456 436.783 L 298.367 228.367 L 432.367 75.216 L 371.033 75.216 Z M 127.633 110 L 164.101 110 L 383.481 400.065 L 349.5 400.065 Z" />
@@ -719,7 +719,7 @@ $$</p>
     </li>
     <li>
         <a target="_blank" rel="noopener noreferrer" aria-label="share Understanding PLONK (Part 1): Plonkish Arithmetization on linkedin"
-            href="https://www.linkedin.com/shareArticle?mini=true&amp;url=http%3a%2f%2flocalhost%3a1313%2fposts%2f1-arithmetization%2f&amp;title=Understanding%20PLONK%20%28Part%201%29%3a%20Plonkish%20Arithmetization&amp;summary=Understanding%20PLONK%20%28Part%201%29%3a%20Plonkish%20Arithmetization&amp;source=http%3a%2f%2flocalhost%3a1313%2fposts%2f1-arithmetization%2f">
+            href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2f%2flocalhost%3a1313%2fposts%2f1-arithmetization%2f&amp;title=Understanding%20PLONK%20%28Part%201%29%3a%20Plonkish%20Arithmetization&amp;summary=Understanding%20PLONK%20%28Part%201%29%3a%20Plonkish%20Arithmetization&amp;source=%2f%2flocalhost%3a1313%2fposts%2f1-arithmetization%2f">
             <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
                 <path
                     d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
@@ -728,7 +728,7 @@ $$</p>
     </li>
     <li>
         <a target="_blank" rel="noopener noreferrer" aria-label="share Understanding PLONK (Part 1): Plonkish Arithmetization on reddit"
-            href="https://reddit.com/submit?url=http%3a%2f%2flocalhost%3a1313%2fposts%2f1-arithmetization%2f&title=Understanding%20PLONK%20%28Part%201%29%3a%20Plonkish%20Arithmetization">
+            href="https://reddit.com/submit?url=%2f%2flocalhost%3a1313%2fposts%2f1-arithmetization%2f&title=Understanding%20PLONK%20%28Part%201%29%3a%20Plonkish%20Arithmetization">
             <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
                 <path
                     d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-3.446,265.638c0,-22.964 -18.616,-41.58 -41.58,-41.58c-11.211,0 -21.361,4.457 -28.841,11.666c-28.424,-20.508 -67.586,-33.757 -111.204,-35.278l18.941,-89.121l61.884,13.157c0.756,15.734 13.642,28.29 29.56,28.29c16.407,0 29.706,-13.299 29.706,-29.701c0,-16.403 -13.299,-29.702 -29.706,-29.702c-11.666,0 -21.657,6.792 -26.515,16.578l-69.105,-14.69c-1.922,-0.418 -3.939,-0.042 -5.585,1.036c-1.658,1.073 -2.811,2.761 -3.224,4.686l-21.152,99.438c-44.258,1.228 -84.046,14.494 -112.837,35.232c-7.468,-7.164 -17.589,-11.591 -28.757,-11.591c-22.965,0 -41.585,18.616 -41.585,41.58c0,16.896 10.095,31.41 24.568,37.918c-0.639,4.135 -0.99,8.328 -0.99,12.576c0,63.977 74.469,115.836 166.33,115.836c91.861,0 166.334,-51.859 166.334,-115.836c0,-4.218 -0.347,-8.387 -0.977,-12.493c14.564,-6.47 24.735,-21.034 24.735,-38.001Zm-119.474,108.193c-20.27,20.241 -59.115,21.816 -70.534,21.816c-11.428,0 -50.277,-1.575 -70.522,-21.82c-3.007,-3.008 -3.007,-7.882 0,-10.889c3.003,-2.999 7.882,-3.003 10.885,0c12.777,12.781 40.11,17.317 59.637,17.317c19.522,0 46.86,-4.536 59.657,-17.321c3.016,-2.999 7.886,-2.995 10.885,0.008c3.008,3.011 3.003,7.882 -0.008,10.889Zm-5.23,-48.781c-16.373,0 -29.701,-13.324 -29.701,-29.698c0,-16.381 13.328,-29.714 29.701,-29.714c16.378,0 29.706,13.333 29.706,29.714c0,16.374 -13.328,29.698 -29.706,29.698Zm-160.386,-29.702c0,-16.381 13.328,-29.71 29.714,-29.71c16.369,0 29.689,13.329 29.689,29.71c0,16.373 -13.32,29.693 -29.689,29.693c-16.386,0 -29.714,-13.32 -29.714,-29.693Z" />
@@ -737,7 +737,7 @@ $$</p>
     </li>
     <li>
         <a target="_blank" rel="noopener noreferrer" aria-label="share Understanding PLONK (Part 1): Plonkish Arithmetization on facebook"
-            href="https://facebook.com/sharer/sharer.php?u=http%3a%2f%2flocalhost%3a1313%2fposts%2f1-arithmetization%2f">
+            href="https://facebook.com/sharer/sharer.php?u=%2f%2flocalhost%3a1313%2fposts%2f1-arithmetization%2f">
             <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
                 <path
                     d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
@@ -746,7 +746,7 @@ $$</p>
     </li>
     <li>
         <a target="_blank" rel="noopener noreferrer" aria-label="share Understanding PLONK (Part 1): Plonkish Arithmetization on whatsapp"
-            href="https://api.whatsapp.com/send?text=Understanding%20PLONK%20%28Part%201%29%3a%20Plonkish%20Arithmetization%20-%20http%3a%2f%2flocalhost%3a1313%2fposts%2f1-arithmetization%2f">
+            href="https://api.whatsapp.com/send?text=Understanding%20PLONK%20%28Part%201%29%3a%20Plonkish%20Arithmetization%20-%20%2f%2flocalhost%3a1313%2fposts%2f1-arithmetization%2f">
             <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
                 <path
                     d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-58.673,127.703c-33.842,-33.881 -78.847,-52.548 -126.798,-52.568c-98.799,0 -179.21,80.405 -179.249,179.234c-0.013,31.593 8.241,62.428 23.927,89.612l-25.429,92.884l95.021,-24.925c26.181,14.28 55.659,21.807 85.658,21.816l0.074,0c98.789,0 179.206,-80.413 179.247,-179.243c0.018,-47.895 -18.61,-92.93 -52.451,-126.81Zm-126.797,275.782l-0.06,0c-26.734,-0.01 -52.954,-7.193 -75.828,-20.767l-5.441,-3.229l-56.386,14.792l15.05,-54.977l-3.542,-5.637c-14.913,-23.72 -22.791,-51.136 -22.779,-79.287c0.033,-82.142 66.867,-148.971 149.046,-148.971c39.793,0.014 77.199,15.531 105.329,43.692c28.128,28.16 43.609,65.592 43.594,105.4c-0.034,82.149 -66.866,148.983 -148.983,148.984Zm81.721,-111.581c-4.479,-2.242 -26.499,-13.075 -30.604,-14.571c-4.105,-1.495 -7.091,-2.241 -10.077,2.241c-2.986,4.483 -11.569,14.572 -14.182,17.562c-2.612,2.988 -5.225,3.364 -9.703,1.12c-4.479,-2.241 -18.91,-6.97 -36.017,-22.23c-13.314,-11.876 -22.304,-26.542 -24.916,-31.026c-2.612,-4.484 -0.279,-6.908 1.963,-9.14c2.016,-2.007 4.48,-5.232 6.719,-7.847c2.24,-2.615 2.986,-4.484 4.479,-7.472c1.493,-2.99 0.747,-5.604 -0.374,-7.846c-1.119,-2.241 -10.077,-24.288 -13.809,-33.256c-3.635,-8.733 -7.327,-7.55 -10.077,-7.688c-2.609,-0.13 -5.598,-0.158 -8.583,-0.158c-2.986,0 -7.839,1.121 -11.944,5.604c-4.105,4.484 -15.675,15.32 -15.675,37.364c0,22.046 16.048,43.342 18.287,46.332c2.24,2.99 31.582,48.227 76.511,67.627c10.685,4.615 19.028,7.371 25.533,9.434c10.728,3.41 20.492,2.929 28.209,1.775c8.605,-1.285 26.499,-10.833 30.231,-21.295c3.732,-10.464 3.732,-19.431 2.612,-21.298c-1.119,-1.869 -4.105,-2.99 -8.583,-5.232Z" />
@@ -755,7 +755,7 @@ $$</p>
     </li>
     <li>
         <a target="_blank" rel="noopener noreferrer" aria-label="share Understanding PLONK (Part 1): Plonkish Arithmetization on telegram"
-            href="https://telegram.me/share/url?text=Understanding%20PLONK%20%28Part%201%29%3a%20Plonkish%20Arithmetization&amp;url=http%3a%2f%2flocalhost%3a1313%2fposts%2f1-arithmetization%2f">
+            href="https://telegram.me/share/url?text=Understanding%20PLONK%20%28Part%201%29%3a%20Plonkish%20Arithmetization&amp;url=%2f%2flocalhost%3a1313%2fposts%2f1-arithmetization%2f">
             <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28" height="30px" width="30px" fill="currentColor">
                 <path
                     d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
@@ -764,7 +764,7 @@ $$</p>
     </li>
     <li>
         <a target="_blank" rel="noopener noreferrer" aria-label="share Understanding PLONK (Part 1): Plonkish Arithmetization on ycombinator"
-            href="https://news.ycombinator.com/submitlink?t=Understanding%20PLONK%20%28Part%201%29%3a%20Plonkish%20Arithmetization&u=http%3a%2f%2flocalhost%3a1313%2fposts%2f1-arithmetization%2f">
+            href="https://news.ycombinator.com/submitlink?t=Understanding%20PLONK%20%28Part%201%29%3a%20Plonkish%20Arithmetization&u=%2f%2flocalhost%3a1313%2fposts%2f1-arithmetization%2f">
             <svg version="1.1" xml:space="preserve" width="30px" height="30px" viewBox="0 0 512 512" fill="currentColor"
                 xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape">
                 <path
@@ -779,7 +779,7 @@ $$</p>
     </main>
     
 <footer class="footer">
-        <span>&copy; 2026 <a href="http://localhost:1313/">Purple Blog</a></span> · 
+        <span>&copy; 2026 <a href="//localhost:1313/">Purple Blog</a></span> · 
 
     <span>
         Powered by

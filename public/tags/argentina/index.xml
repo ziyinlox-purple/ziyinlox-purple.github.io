@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Argentina on Purple Blog</title>
+    <link>//localhost:1313/tags/argentina/</link>
+    <description>Recent content in Argentina on Purple Blog</description>
+    <image>
+      <title>Purple Blog</title>
+      <url>//localhost:1313/images/papermod-cover.png</url>
+      <link>//localhost:1313/images/papermod-cover.png</link>
+    </image>
+    <generator>Hugo</generator>
+    <language>en</language>
+    <lastBuildDate>Thu, 12 Mar 2026 00:00:00 +0000</lastBuildDate>
+    <atom:link href="//localhost:1313/tags/argentina/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Argentina Travelogue (I): Buenos Aires, South America’s Purple City</title>
+      <link>//localhost:1313/posts/argentina-buenos-aires/</link>
+      <pubDate>Sun, 25 Feb 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/posts/argentina-buenos-aires/</guid>
+      <description>Having just wrapped up my trip to Argentina, it felt both like a reunion with old friends and a brand-new adventure.</description>
+    </item>
+  </channel>
+</rss>

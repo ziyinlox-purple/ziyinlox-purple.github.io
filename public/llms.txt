@@ -1,9 +1,11 @@
 # Purple Blog
 
 ## Posts
-- [Understanding PLONK (Part 1): Plonkish Arithmetization](http://localhost:1313/posts/1-arithmetization/)
-- [Understanding PLONK (Part 2): Lagrange-basis](http://localhost:1313/posts/2-lagrange-basis/)
-- [Understanding PLONK (Part 3): Permutation Argument](http://localhost:1313/posts/3-permutation/)
-- [Understanding PLONK (Part 4): Arithmetic Constraints and Copy Constraints](http://localhost:1313/posts/4-constraints/)
-- [Understanding Plonk (Part 5): Polynomial Commitments](http://localhost:1313/posts/5-polycom/)
-- [Da Nang Tết Survival Guide: How I Learned the Hard Way to Avoid Becoming a 'Sitting Duck'](http://localhost:1313/posts/da-nang/)
+- [Understanding PLONK (Part 1): Plonkish Arithmetization](//localhost:1313/posts/1-arithmetization/)
+- [Understanding PLONK (Part 2): Lagrange-basis](//localhost:1313/posts/2-lagrange-basis/)
+- [Understanding PLONK (Part 3): Permutation Argument](//localhost:1313/posts/3-permutation/)
+- [Understanding PLONK (Part 4): Arithmetic Constraints and Copy Constraints](//localhost:1313/posts/4-constraints/)
+- [Understanding Plonk (Part 5): Polynomial Commitments](//localhost:1313/posts/5-polycom/)
+- [Three Colors in Chiang Rai: White, Blue, and Black](//localhost:1313/posts/chiang-rai/)
+- [Argentina Travelogue (I): Buenos Aires, South America’s Purple City](//localhost:1313/posts/argentina-buenos-aires/)
+- [Da Nang Tết Survival Guide: How I Learned the Hard Way to Avoid Becoming a 'Sitting Duck'](//localhost:1313/posts/da-nang/)

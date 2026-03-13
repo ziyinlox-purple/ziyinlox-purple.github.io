@@ -2,23 +2,30 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Da Nang on Purple Blog</title>
-    <link>http://localhost:1313/tags/da-nang/</link>
+    <link>//localhost:1313/tags/da-nang/</link>
     <description>Recent content in Da Nang on Purple Blog</description>
     <image>
       <title>Purple Blog</title>
-      <url>http://localhost:1313/images/papermod-cover.png</url>
-      <link>http://localhost:1313/images/papermod-cover.png</link>
+      <url>//localhost:1313/images/papermod-cover.png</url>
+      <link>//localhost:1313/images/papermod-cover.png</link>
     </image>
     <generator>Hugo</generator>
     <language>en</language>
     <lastBuildDate>Thu, 12 Mar 2026 00:00:00 +0000</lastBuildDate>
-    <atom:link href="http://localhost:1313/tags/da-nang/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="//localhost:1313/tags/da-nang/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>春节岘港生存报告：我是如何凭本事当猪仔的</title>
-      <link>http://localhost:1313/posts/da-nang/</link>
+      <title>Da Nang Tết Survival Guide: How I Learned the Hard Way to Avoid Becoming a &#39;Sitting Duck&#39;</title>
+      <link>//localhost:1313/posts/da-nang/</link>
       <pubDate>Sun, 25 Feb 2024 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/posts/da-nang/</guid>
-      <description>岘港的春节像是一场高热量的试炼，虽然身体被病痛和焦虑折磨，但灵魂却在跨越国界的交谈中得到了治愈。</description>
+      <guid>//localhost:1313/posts/da-nang/</guid>
+      <description>The Lunar New Year in Da Nang felt like a high-stakes trial. Despite the physical toll of illness and anxiety, my soul found healing in conversations that transcended borders.</description>
+    </item>
+    <item>
+      <title>阿根廷游记（一）：南美紫色之城，布宜诺斯艾利斯</title>
+      <link>//localhost:1313/posts/argentina-buenos-aires/index.zh-cn/</link>
+      <pubDate>Sun, 25 Feb 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/posts/argentina-buenos-aires/index.zh-cn/</guid>
+      <description>刚结束没多久阿根廷的旅行，既算是和老友见面，也算是一场新的冒险。</description>
     </item>
   </channel>
 </rss>

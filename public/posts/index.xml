@@ -2,31 +2,31 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Posts on Purple Blog</title>
-    <link>http://localhost:1313/posts/</link>
+    <link>//localhost:1313/posts/</link>
     <description>Recent content in Posts on Purple Blog</description>
     <image>
       <title>Purple Blog</title>
-      <url>http://localhost:1313/images/papermod-cover.png</url>
-      <link>http://localhost:1313/images/papermod-cover.png</link>
+      <url>//localhost:1313/images/papermod-cover.png</url>
+      <link>//localhost:1313/images/papermod-cover.png</link>
     </image>
     <generator>Hugo</generator>
     <language>en</language>
     <lastBuildDate>Thu, 12 Mar 2026 00:00:00 +0000</lastBuildDate>
-    <atom:link href="http://localhost:1313/posts/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="//localhost:1313/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Understanding PLONK (Part 1): Plonkish Arithmetization</title>
-      <link>http://localhost:1313/posts/1-arithmetization/</link>
+      <link>//localhost:1313/posts/1-arithmetization/</link>
       <pubDate>Tue, 10 Mar 2026 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/posts/1-arithmetization/</guid>
+      <guid>//localhost:1313/posts/1-arithmetization/</guid>
       <description>&lt;h1 id=&#34;introduction&#34;&gt;Introduction&lt;/h1&gt;
 &lt;p&gt;Arithmetization refers to the process of converting computations into mathematical objects and then proving them using zero-knowledge proofs.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Plonkish Arithmetization&lt;/strong&gt; is a unique arithmetization method specific to the Plonk proof system. Before the advent of Plonkish, the dominant circuit representation was &lt;strong&gt;R1CS&lt;/strong&gt;, which was widely adopted by systems like Pinocchio, Groth16, and Bulletproofs. In 2019, the Plonk scheme introduced a seemingly retro style of circuit encoding. However, since Plonk pushed polynomial encoding to its limits, it is no longer confined to arithmetic circuits with just &amp;ldquo;addition gates&amp;rdquo; and &amp;ldquo;multiplication gates&amp;rdquo;; it can also support more flexible &lt;strong&gt;custom gates&lt;/strong&gt; and &lt;strong&gt;lookup gates&lt;/strong&gt;.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Understanding PLONK (Part 2): Lagrange-basis</title>
-      <link>http://localhost:1313/posts/2-lagrange-basis/</link>
+      <link>//localhost:1313/posts/2-lagrange-basis/</link>
       <pubDate>Tue, 10 Mar 2026 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/posts/2-lagrange-basis/</guid>
+      <guid>//localhost:1313/posts/2-lagrange-basis/</guid>
       <description>&lt;h1 id=&#34;introduction&#34;&gt;Introduction&lt;/h1&gt;
 &lt;p&gt;In the previous article, we mentioned that to implement the protocol verification process, the Prover initially encodes each column of the $W$ table using polynomial coding and sends the encoded results to the Verifier for verification. Through further interaction, we can verify whether the equation&lt;/p&gt;
 &lt;p&gt;$$
@@ -37,9 +37,9 @@ $$&lt;/p&gt;
     </item>
     <item>
       <title>Understanding PLONK (Part 3): Permutation Argument</title>
-      <link>http://localhost:1313/posts/3-permutation/</link>
+      <link>//localhost:1313/posts/3-permutation/</link>
       <pubDate>Tue, 10 Mar 2026 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/posts/3-permutation/</guid>
+      <guid>//localhost:1313/posts/3-permutation/</guid>
       <description>&lt;p&gt;Plonkish circuit encoding uses two matrices, $(Q, \sigma)$, to describe the circuit&amp;rsquo;s scaffold, where $Q$ represents the operation selectors and $\sigma$ represents permutation constraints. These constraints enforce that certain positions in the $W$ matrix must hold identical values. This article focuses on explaining the principles of the &lt;strong&gt;permutation argument&lt;/strong&gt;.&lt;/p&gt;
 &lt;/br&gt;
 &lt;h2 id=&#34;reviewing-copy-constraints&#34;&gt;Reviewing Copy Constraints&lt;/h2&gt;
@@ -47,9 +47,9 @@ $$&lt;/p&gt;
     </item>
     <item>
       <title>Understanding PLONK (Part 4): Arithmetic Constraints and Copy Constraints</title>
-      <link>http://localhost:1313/posts/4-constraints/</link>
+      <link>//localhost:1313/posts/4-constraints/</link>
       <pubDate>Tue, 10 Mar 2026 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/posts/4-constraints/</guid>
+      <guid>//localhost:1313/posts/4-constraints/</guid>
       <description>&lt;h2 id=&#34;recap-of-permutation-argument&#34;&gt;Recap of Permutation Argument&lt;/h2&gt;
 &lt;p&gt;In the previous section, we discussed how the Prover proves that two vectors $\vec{a}$ and $\vec{b}$ of length $n$ satisfy a pre-defined (public) permutation relationship $\sigma(\cdot)$, i.e.,&lt;/p&gt;
 &lt;p&gt;$$
@@ -59,9 +59,9 @@ $$&lt;/p&gt;
     </item>
     <item>
       <title>Understanding Plonk (Part 5): Polynomial Commitments</title>
-      <link>http://localhost:1313/posts/5-polycom/</link>
+      <link>//localhost:1313/posts/5-polycom/</link>
       <pubDate>Tue, 10 Mar 2026 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/posts/5-polycom/</guid>
+      <guid>//localhost:1313/posts/5-polycom/</guid>
       <description>&lt;h2 id=&#34;what-is-a-polynomial-commitment&#34;&gt;What is a Polynomial Commitment?&lt;/h2&gt;
 &lt;p&gt;A &lt;strong&gt;commitment&lt;/strong&gt; is a way to &amp;ldquo;lock&amp;rdquo; a message, resulting in a commitment value. This value is referred to as the &lt;strong&gt;commitment&lt;/strong&gt; to the object.&lt;/p&gt;
 &lt;p&gt;$$
@@ -75,11 +75,26 @@ $$&lt;/p&gt;
 &lt;p&gt;The simplest commitment mechanism is a hash function. Note that such a hash function must provide cryptographic security, such as SHA256 or Keccak. Besides hash functions, there are also schemes like Pedersen commitments.&lt;/p&gt;</description>
     </item>
     <item>
-      <title>春节岘港生存报告：我是如何凭本事当猪仔的</title>
-      <link>http://localhost:1313/posts/da-nang/</link>
+      <title>A White, Blue, and Black Meditation on Life and Death in Chiang Rai</title>
+      <link>//localhost:1313/posts/chiang-rai/</link>
+      <pubDate>Wed, 03 Jul 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/posts/chiang-rai/</guid>
+      <description>&lt;p&gt;Recently, a close friend&amp;rsquo;s boyfriend came to Chiang Mai. They were planning to rent a car and drive to Chiang Rai, and invited me to join them. The itinerary was extremely simple and straightforward: the White Temple, the Blue Temple, and the Black House. Once we finished visiting the three places, we&amp;rsquo;d head straight back.&lt;/p&gt;
+&lt;p&gt;My willpower, unfortunately, was weak. I let myself get dragged into the trip, abandoning the articles I was supposed to read and the work waiting for me. And just like that, I became the shining third wheel.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Da Nang Tết Survival Guide: How I Learned the Hard Way to Avoid Becoming a &#39;Sitting Duck&#39;</title>
+      <link>//localhost:1313/posts/da-nang/</link>
       <pubDate>Sun, 25 Feb 2024 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/posts/da-nang/</guid>
-      <description>岘港的春节像是一场高热量的试炼，虽然身体被病痛和焦虑折磨，但灵魂却在跨越国界的交谈中得到了治愈。</description>
+      <guid>//localhost:1313/posts/da-nang/</guid>
+      <description>The Lunar New Year in Da Nang felt like a high-stakes trial. Despite the physical toll of illness and anxiety, my soul found healing in conversations that transcended borders.</description>
+    </item>
+    <item>
+      <title>阿根廷游记（一）：南美紫色之城，布宜诺斯艾利斯</title>
+      <link>//localhost:1313/posts/argentina-buenos-aires/index.zh-cn/</link>
+      <pubDate>Sun, 25 Feb 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/posts/argentina-buenos-aires/index.zh-cn/</guid>
+      <description>刚结束没多久阿根廷的旅行，既算是和老友见面，也算是一场新的冒险。</description>
     </item>
   </channel>
 </rss>

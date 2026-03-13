@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Thailand on Purple Blog</title>
+    <link>//localhost:1313/tags/thailand/</link>
+    <description>Recent content in Thailand on Purple Blog</description>
+    <image>
+      <title>Purple Blog</title>
+      <url>//localhost:1313/images/papermod-cover.png</url>
+      <link>//localhost:1313/images/papermod-cover.png</link>
+    </image>
+    <generator>Hugo</generator>
+    <language>en</language>
+    <lastBuildDate>Thu, 12 Mar 2026 00:00:00 +0000</lastBuildDate>
+    <atom:link href="//localhost:1313/tags/thailand/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>A White, Blue, and Black Meditation on Life and Death in Chiang Rai</title>
+      <link>//localhost:1313/posts/chiang-rai/</link>
+      <pubDate>Wed, 03 Jul 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/posts/chiang-rai/</guid>
+      <description>&lt;p&gt;Recently, a close friend&amp;rsquo;s boyfriend came to Chiang Mai. They were planning to rent a car and drive to Chiang Rai, and invited me to join them. The itinerary was extremely simple and straightforward: the White Temple, the Blue Temple, and the Black House. Once we finished visiting the three places, we&amp;rsquo;d head straight back.&lt;/p&gt;
+&lt;p&gt;My willpower, unfortunately, was weak. I let myself get dragged into the trip, abandoning the articles I was supposed to read and the work waiting for me. And just like that, I became the shining third wheel.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

@@ -2,64 +2,92 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Tags on Purple Blog</title>
-    <link>http://localhost:1313/tags/</link>
+    <link>//localhost:1313/tags/</link>
     <description>Recent content in Tags on Purple Blog</description>
     <image>
       <title>Purple Blog</title>
-      <url>http://localhost:1313/images/papermod-cover.png</url>
-      <link>http://localhost:1313/images/papermod-cover.png</link>
+      <url>//localhost:1313/images/papermod-cover.png</url>
+      <link>//localhost:1313/images/papermod-cover.png</link>
     </image>
     <generator>Hugo</generator>
     <language>en</language>
     <lastBuildDate>Thu, 12 Mar 2026 00:00:00 +0000</lastBuildDate>
-    <atom:link href="http://localhost:1313/tags/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="//localhost:1313/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Cryptography</title>
-      <link>http://localhost:1313/tags/cryptography/</link>
+      <link>//localhost:1313/tags/cryptography/</link>
       <pubDate>Tue, 10 Mar 2026 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/tags/cryptography/</guid>
+      <guid>//localhost:1313/tags/cryptography/</guid>
       <description></description>
     </item>
     <item>
       <title>Math</title>
-      <link>http://localhost:1313/tags/math/</link>
+      <link>//localhost:1313/tags/math/</link>
       <pubDate>Tue, 10 Mar 2026 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/tags/math/</guid>
+      <guid>//localhost:1313/tags/math/</guid>
       <description></description>
     </item>
     <item>
       <title>Zero Knowledge</title>
-      <link>http://localhost:1313/tags/zero-knowledge/</link>
+      <link>//localhost:1313/tags/zero-knowledge/</link>
       <pubDate>Tue, 10 Mar 2026 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/tags/zero-knowledge/</guid>
+      <guid>//localhost:1313/tags/zero-knowledge/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Chiang Rai</title>
+      <link>//localhost:1313/tags/chiang-rai/</link>
+      <pubDate>Wed, 03 Jul 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/chiang-rai/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Thailand</title>
+      <link>//localhost:1313/tags/thailand/</link>
+      <pubDate>Wed, 03 Jul 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/thailand/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Argentina</title>
+      <link>//localhost:1313/tags/argentina/</link>
+      <pubDate>Sun, 25 Feb 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/argentina/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Buenos Aires</title>
+      <link>//localhost:1313/tags/buenos-aires/</link>
+      <pubDate>Sun, 25 Feb 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/buenos-aires/</guid>
       <description></description>
     </item>
     <item>
       <title>Da Nang</title>
-      <link>http://localhost:1313/tags/da-nang/</link>
+      <link>//localhost:1313/tags/da-nang/</link>
       <pubDate>Sun, 25 Feb 2024 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/tags/da-nang/</guid>
+      <guid>//localhost:1313/tags/da-nang/</guid>
       <description></description>
     </item>
     <item>
       <title>Digital Nomad</title>
-      <link>http://localhost:1313/tags/digital-nomad/</link>
+      <link>//localhost:1313/tags/digital-nomad/</link>
       <pubDate>Sun, 25 Feb 2024 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/tags/digital-nomad/</guid>
+      <guid>//localhost:1313/tags/digital-nomad/</guid>
       <description></description>
     </item>
     <item>
       <title>Tips</title>
-      <link>http://localhost:1313/tags/tips/</link>
+      <link>//localhost:1313/tags/tips/</link>
       <pubDate>Sun, 25 Feb 2024 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/tags/tips/</guid>
+      <guid>//localhost:1313/tags/tips/</guid>
       <description></description>
     </item>
     <item>
       <title>Vietnam</title>
-      <link>http://localhost:1313/tags/vietnam/</link>
+      <link>//localhost:1313/tags/vietnam/</link>
       <pubDate>Sun, 25 Feb 2024 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/tags/vietnam/</guid>
+      <guid>//localhost:1313/tags/vietnam/</guid>
       <description></description>
     </item>
   </channel>
