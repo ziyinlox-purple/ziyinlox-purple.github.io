@@ -71,7 +71,19 @@
     <loc>//localhost:1313/tags/zero-knowledge/</loc>
     <lastmod>2026-03-10T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>//localhost:1313/posts/chiang-rai/</loc>
+    <loc>//localhost:1313/tags/argentina/</loc>
+    <lastmod>2026-03-12T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/posts/argentina-iguazu/</loc>
+    <lastmod>2026-03-12T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/iguazu/</loc>
+    <lastmod>2026-03-12T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/tips/</loc>
+    <lastmod>2026-03-12T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/categories/travel/</loc>
     <lastmod>2026-03-12T00:00:00+00:00</lastmod>
   </url><url>
     <loc>//localhost:1313/tags/chiang-rai/</loc>
@@ -80,7 +92,13 @@
     <loc>//localhost:1313/tags/thailand/</loc>
     <lastmod>2026-03-12T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>//localhost:1313/categories/travel/</loc>
+    <loc>//localhost:1313/posts/chiang-rai/</loc>
+    <lastmod>2026-03-12T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/posts/argentina-buenos-aires/</loc>
+    <lastmod>2026-03-12T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/buenos-aires/</loc>
     <lastmod>2026-03-12T00:00:00+00:00</lastmod>
   </url><url>
     <loc>//localhost:1313/tags/da-nang/</loc>
@@ -92,13 +110,7 @@
     <loc>//localhost:1313/tags/digital-nomad/</loc>
     <lastmod>2026-03-12T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>//localhost:1313/tags/tips/</loc>
-    <lastmod>2026-03-12T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>//localhost:1313/tags/vietnam/</loc>
-    <lastmod>2026-03-12T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>//localhost:1313/posts/argentina-buenos-aires/index.zh-cn/</loc>
     <lastmod>2026-03-12T00:00:00+00:00</lastmod>
   </url><url>
     <loc>//localhost:1313/series/</loc>

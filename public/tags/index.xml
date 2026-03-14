@@ -35,6 +35,27 @@
       <description></description>
     </item>
     <item>
+      <title>Argentina</title>
+      <link>//localhost:1313/tags/argentina/</link>
+      <pubDate>Tue, 16 Dec 2025 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/argentina/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Iguazu</title>
+      <link>//localhost:1313/tags/iguazu/</link>
+      <pubDate>Tue, 16 Dec 2025 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/iguazu/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Tips</title>
+      <link>//localhost:1313/tags/tips/</link>
+      <pubDate>Tue, 16 Dec 2025 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/tips/</guid>
+      <description></description>
+    </item>
+    <item>
       <title>Chiang Rai</title>
       <link>//localhost:1313/tags/chiang-rai/</link>
       <pubDate>Wed, 03 Jul 2024 00:00:00 +0000</pubDate>
@@ -46,13 +67,6 @@
       <link>//localhost:1313/tags/thailand/</link>
       <pubDate>Wed, 03 Jul 2024 00:00:00 +0000</pubDate>
       <guid>//localhost:1313/tags/thailand/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Argentina</title>
-      <link>//localhost:1313/tags/argentina/</link>
-      <pubDate>Sun, 25 Feb 2024 00:00:00 +0000</pubDate>
-      <guid>//localhost:1313/tags/argentina/</guid>
       <description></description>
     </item>
     <item>
@@ -74,13 +88,6 @@
       <link>//localhost:1313/tags/digital-nomad/</link>
       <pubDate>Sun, 25 Feb 2024 00:00:00 +0000</pubDate>
       <guid>//localhost:1313/tags/digital-nomad/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Tips</title>
-      <link>//localhost:1313/tags/tips/</link>
-      <pubDate>Sun, 25 Feb 2024 00:00:00 +0000</pubDate>
-      <guid>//localhost:1313/tags/tips/</guid>
       <description></description>
     </item>
     <item>

@@ -1,6 +1,6 @@
 ---
 title: "阿根廷游记（一）：南美紫色之城，布宜诺斯艾利斯"
-date: 2024-02-25
+date: 2025-12-07
 lastmod: 2026-03-12
 tags: [ "Argentina", "Buenos Aires",  "Tips"]
 categories: ["Travel"]

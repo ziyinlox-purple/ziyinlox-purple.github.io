@@ -1,6 +1,6 @@
 ---
 title: "Argentina Travelogue (I): Buenos Aires, South America’s Purple City"
-date: 2024-02-25
+date: 2025-12-07
 lastmod: 2026-03-12
 tags: [ "Argentina", "Buenos Aires",  "Tips"]
 categories: ["Travel"]
