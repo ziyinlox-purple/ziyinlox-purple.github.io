@@ -6,6 +6,7 @@
 - [Understanding PLONK (Part 3): Permutation Argument](//localhost:1313/posts/3-permutation/)
 - [Understanding PLONK (Part 4): Arithmetic Constraints and Copy Constraints](//localhost:1313/posts/4-constraints/)
 - [Understanding Plonk (Part 5): Polynomial Commitments](//localhost:1313/posts/5-polycom/)
+- [Argentina Travelogue (III) Spending $1000  in 48 Hours: My Perito Moreno Glacier 'Special Forces' Trip](//localhost:1313/posts/argentina-el-calafate/)
 - [Argentina Travelogue (II): Stepping into Iguazu, Enveloped by Roaring Waters, Lush Greens, and Wild Creatures](//localhost:1313/posts/argentina-iguazu/)
 - [Argentina Travelogue (I): Buenos Aires, South America’s Purple City](//localhost:1313/posts/argentina-buenos-aires/)
 - [Three Colors in Chiang Rai: White, Blue, and Black](//localhost:1313/posts/chiang-rai/)
