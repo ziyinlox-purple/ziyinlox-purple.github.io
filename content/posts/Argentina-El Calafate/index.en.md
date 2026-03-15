@@ -1,5 +1,5 @@
 ---
-title: "Argentina Travelogue (III) Spending $1000  in 48 Hours: My Perito Moreno Glacier 'Special Forces' Trip"
+title: "Argentina Travelogue (III): Spending $1000  in 48 Hours: My Perito Moreno Glacier 'Special Forces' Trip"
 date: 2025-12-22
 lastmod: 2026-03-12
 tags: [ "Argentina", "El Calafate",  "Tips"]

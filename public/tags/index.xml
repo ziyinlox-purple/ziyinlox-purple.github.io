@@ -14,10 +14,45 @@
     <lastBuildDate>Thu, 12 Mar 2026 00:00:00 +0000</lastBuildDate>
     <atom:link href="//localhost:1313/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>Cryptography</title>
+      <link>//localhost:1313/tags/cryptography/</link>
+      <pubDate>Tue, 10 Mar 2026 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/cryptography/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Math</title>
+      <link>//localhost:1313/tags/math/</link>
+      <pubDate>Tue, 10 Mar 2026 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/math/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Zero Knowledge</title>
+      <link>//localhost:1313/tags/zero-knowledge/</link>
+      <pubDate>Tue, 10 Mar 2026 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/zero-knowledge/</guid>
+      <description></description>
+    </item>
+    <item>
       <title>Argentina</title>
       <link>//localhost:1313/tags/argentina/</link>
-      <pubDate>Mon, 22 Dec 2025 00:00:00 +0000</pubDate>
+      <pubDate>Thu, 15 Jan 2026 00:00:00 +0000</pubDate>
       <guid>//localhost:1313/tags/argentina/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Tips</title>
+      <link>//localhost:1313/tags/tips/</link>
+      <pubDate>Thu, 15 Jan 2026 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/tips/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Ushuaia</title>
+      <link>//localhost:1313/tags/ushuaia/</link>
+      <pubDate>Thu, 15 Jan 2026 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/ushuaia/</guid>
       <description></description>
     </item>
     <item>
@@ -28,10 +63,52 @@
       <description></description>
     </item>
     <item>
-      <title>Tips</title>
-      <link>//localhost:1313/tags/tips/</link>
-      <pubDate>Mon, 22 Dec 2025 00:00:00 +0000</pubDate>
-      <guid>//localhost:1313/tags/tips/</guid>
+      <title>Iguazu</title>
+      <link>//localhost:1313/tags/iguazu/</link>
+      <pubDate>Tue, 16 Dec 2025 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/iguazu/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Buenos Aires</title>
+      <link>//localhost:1313/tags/buenos-aires/</link>
+      <pubDate>Sun, 07 Dec 2025 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/buenos-aires/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Chiang Rai</title>
+      <link>//localhost:1313/tags/chiang-rai/</link>
+      <pubDate>Wed, 03 Jul 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/chiang-rai/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Thailand</title>
+      <link>//localhost:1313/tags/thailand/</link>
+      <pubDate>Wed, 03 Jul 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/thailand/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Da Nang</title>
+      <link>//localhost:1313/tags/da-nang/</link>
+      <pubDate>Sun, 25 Feb 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/da-nang/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Digital Nomad</title>
+      <link>//localhost:1313/tags/digital-nomad/</link>
+      <pubDate>Sun, 25 Feb 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/digital-nomad/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Vietnam</title>
+      <link>//localhost:1313/tags/vietnam/</link>
+      <pubDate>Sun, 25 Feb 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/vietnam/</guid>
       <description></description>
     </item>
   </channel>

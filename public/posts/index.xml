@@ -75,6 +75,13 @@ $$&lt;/p&gt;
 &lt;p&gt;The simplest commitment mechanism is a hash function. Note that such a hash function must provide cryptographic security, such as SHA256 or Keccak. Besides hash functions, there are also schemes like Pedersen commitments.&lt;/p&gt;</description>
     </item>
     <item>
+      <title>Argentina Travelogue (IV): Ushuaia—In the Lonely End of the World, There are Still Friends</title>
+      <link>//localhost:1313/posts/argentina-ushuaia/</link>
+      <pubDate>Thu, 15 Jan 2026 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/posts/argentina-ushuaia/</guid>
+      <description>This post recounts my itinerary and experiences in Ushuaia. Portions can be used as a practical travel guide.</description>
+    </item>
+    <item>
       <title>Argentina Travelogue (III) Spending $1000  in 48 Hours: My Perito Moreno Glacier &#39;Special Forces&#39; Trip</title>
       <link>//localhost:1313/posts/argentina-el-calafate/</link>
       <pubDate>Mon, 22 Dec 2025 00:00:00 +0000</pubDate>
