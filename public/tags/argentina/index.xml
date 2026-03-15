@@ -14,6 +14,13 @@
     <lastBuildDate>Thu, 12 Mar 2026 00:00:00 +0000</lastBuildDate>
     <atom:link href="//localhost:1313/tags/argentina/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>Argentina Travelogue (Final): In Bariloche, Wasting Time Amidst Lakes and Mountains</title>
+      <link>//localhost:1313/posts/argentina-bariloche/</link>
+      <pubDate>Thu, 29 Jan 2026 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/posts/argentina-bariloche/</guid>
+      <description>This post recounts my itinerary and experiences in Bariloche. Portions can be used as a practical travel guide.</description>
+    </item>
+    <item>
       <title>Argentina Travelogue (IV): Ushuaia—In the Lonely End of the World, There are Still Friends</title>
       <link>//localhost:1313/posts/argentina-ushuaia/</link>
       <pubDate>Thu, 15 Jan 2026 00:00:00 +0000</pubDate>
@@ -21,7 +28,7 @@
       <description>This post recounts my itinerary and experiences in Ushuaia. Portions can be used as a practical travel guide.</description>
     </item>
     <item>
-      <title>Argentina Travelogue (III) Spending $1000  in 48 Hours: My Perito Moreno Glacier &#39;Special Forces&#39; Trip</title>
+      <title>Argentina Travelogue (III): Spending $1000  in 48 Hours: My Perito Moreno Glacier &#39;Special Forces&#39; Trip</title>
       <link>//localhost:1313/posts/argentina-el-calafate/</link>
       <pubDate>Mon, 22 Dec 2025 00:00:00 +0000</pubDate>
       <guid>//localhost:1313/posts/argentina-el-calafate/</guid>

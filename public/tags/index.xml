@@ -37,14 +37,21 @@
     <item>
       <title>Argentina</title>
       <link>//localhost:1313/tags/argentina/</link>
-      <pubDate>Thu, 15 Jan 2026 00:00:00 +0000</pubDate>
+      <pubDate>Thu, 29 Jan 2026 00:00:00 +0000</pubDate>
       <guid>//localhost:1313/tags/argentina/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Bariloche</title>
+      <link>//localhost:1313/tags/bariloche/</link>
+      <pubDate>Thu, 29 Jan 2026 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/bariloche/</guid>
       <description></description>
     </item>
     <item>
       <title>Tips</title>
       <link>//localhost:1313/tags/tips/</link>
-      <pubDate>Thu, 15 Jan 2026 00:00:00 +0000</pubDate>
+      <pubDate>Thu, 29 Jan 2026 00:00:00 +0000</pubDate>
       <guid>//localhost:1313/tags/tips/</guid>
       <description></description>
     </item>

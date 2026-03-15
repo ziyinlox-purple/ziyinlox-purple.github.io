@@ -74,13 +74,19 @@
     <loc>//localhost:1313/tags/argentina/</loc>
     <lastmod>2026-03-12T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>//localhost:1313/posts/argentina-ushuaia/</loc>
+    <loc>//localhost:1313/posts/argentina-bariloche/</loc>
+    <lastmod>2026-03-12T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/bariloche/</loc>
     <lastmod>2026-03-12T00:00:00+00:00</lastmod>
   </url><url>
     <loc>//localhost:1313/tags/tips/</loc>
     <lastmod>2026-03-12T00:00:00+00:00</lastmod>
   </url><url>
     <loc>//localhost:1313/categories/travel/</loc>
+    <lastmod>2026-03-12T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/posts/argentina-ushuaia/</loc>
     <lastmod>2026-03-12T00:00:00+00:00</lastmod>
   </url><url>
     <loc>//localhost:1313/tags/ushuaia/</loc>
