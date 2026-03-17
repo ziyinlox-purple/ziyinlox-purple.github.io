@@ -84,6 +84,20 @@
       <description></description>
     </item>
     <item>
+      <title>China</title>
+      <link>//localhost:1313/tags/china/</link>
+      <pubDate>Mon, 22 Sep 2025 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/china/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Guangzhou</title>
+      <link>//localhost:1313/tags/guangzhou/</link>
+      <pubDate>Mon, 22 Sep 2025 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/guangzhou/</guid>
+      <description></description>
+    </item>
+    <item>
       <title>Chiang Rai</title>
       <link>//localhost:1313/tags/chiang-rai/</link>
       <pubDate>Wed, 03 Jul 2024 00:00:00 +0000</pubDate>
